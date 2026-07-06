@@ -1,65 +1,143 @@
-import Image from "next/image";
+import { Star, Zap } from 'lucide-react'
+import Image from 'next/image'
+import Course from './components/Course'
+import HowItWorks from './components/HowItWorks'
+import Review from './components/Review'
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="flex min-h-screen flex-col justify-between relative">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#eef2ff] via-white to-[#f8f9fc] -z-10" />
+
+      <section className="flex flex-col items-start justify-center gap-6 sm:gap-8 mt-12 sm:mt-16 lg:mt-24 pb-16 sm:pb-24 py-4 px-8 sm:px-12 lg:px-24">
+        <div className="text-[#4f46e5] flex items-center gap-2 text-sm font-bold tracking-wide bg-[#eef2ff] rounded-lg px-4 py-2 w-fit">
+          <Zap className="w-4 h-4" /> New: AI-powered learning paths →
+        </div>
+
+        <h1 className="text-4xl sm:text-7xl font-bold text-gray-900 leading-tight">
+          Learn modern skills.
+          <br />
+          <span className="text-[#4f46e5]">
+            Build real projects.
+          </span>
+        </h1>
+
+        <p className="text-gray-600 text-lg sm:text-xl max-w-xl">
+          Join 240,000 learners mastering in-demand skills with project-based courses taught by industry practitioners — not academics.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 lg:gap-6 mt-2 w-full sm:w-auto">
+          <a href="#" className="text-sm sm:text-base font-bold text-white bg-[#4f46e5] hover:bg-[#4338ca] transition-colors rounded-lg px-6 py-3 text-center">
+            Start Learning →
+          </a>
+          <a href="#" className="text-sm sm:text-base font-bold text-gray-600 border border-gray-300 hover:border-gray-400 hover:shadow-sm transition-all rounded-lg px-6 py-3 text-center">
+            Browse Courses
+          </a>
+        </div>
+
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 mt-4">
+          <div className="flex items-center -space-x-2">
+            <Image src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=32&h=32&fit=crop&auto=format" width={32} height={32} alt="Learner avatar" className="w-8 h-8 rounded-full ring-2 ring-white" />
+            <Image src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=32&h=32&fit=crop&auto=format" width={32} height={32} alt="Learner 2" className="w-8 h-8 rounded-full ring-2 ring-white" />
+            <Image src="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=32&h=32&fit=crop&auto=format" width={32} height={32} alt="Learner 3" className="w-8 h-8 rounded-full ring-2 ring-white" />
+            <Image src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=32&h=32&fit=crop&auto=format" width={32} height={32} alt="Learner 4" className="w-8 h-8 rounded-full ring-2 ring-white" />
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-0.5">
+              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+              <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+            </div>
+            <span className="font-bold text-sm">4.9/5</span>
+            <span className="text-gray-600 text-sm">from 18,400 reviews</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-2 sm:grid-cols-4 gap-8 sm:gap-12 lg:gap-16 bg-white border border-gray-200 p-8 sm:p-12 lg:p-16">
+        <div className="flex flex-col items-center gap-2">
+          <h1 className="text-3xl sm:text-4xl font-bold">240k+</h1>
+          <p className="text-gray-600 text-sm text-center">
+            Active Students
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="flex flex-col items-center gap-2">
+          <h1 className="text-3xl sm:text-4xl font-bold">500+</h1>
+          <p className="text-gray-600 text-sm text-center">
+            Expert Courses
+          </p>
         </div>
-      </main>
-    </div>
+        <div className="flex flex-col items-center gap-2">
+          <h1 className="text-3xl sm:text-4xl font-bold">98%</h1>
+          <p className="text-gray-600 text-sm text-center">
+            Satisfaction Rate
+          </p>
+        </div>
+        <div className="flex flex-col items-center gap-2">
+          <h1 className="text-3xl sm:text-4xl font-bold">82%</h1>
+          <p className="text-gray-600 text-sm text-center">
+            Career Outcome
+          </p>
+        </div>
+      </section>
+
+      <section className="flex flex-col items-start justify-center gap-6 sm:gap-8 mt-12 sm:mt-16 lg:mt-24 py-4 px-8 sm:px-12 lg:px-24">
+        <div className="flex flex-col gap-2 w-full">
+          <h2 className="uppercase text-[#4f46e5] font-bold">Courses</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 w-full font-bold">
+            <h1 className="text-2xl sm:text-4xl">Most popular right now</h1>
+            <a className="text-[#4f46e5] group shrink-0" href="#">
+              <span className="inline-block transition-transform group-hover:-translate-x-1">View all</span> →
+            </a>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 lg:gap-16 w-full">
+          <Course />
+          <Course />
+          <Course />
+          <Course />
+          <Course />
+          <Course />
+        </div>
+
+      </section>
+
+      <section className="flex flex-col items-center justify-center gap-6 sm:gap-8 mt-12 sm:mt-16 lg:mt-24 py-12 px-8 sm:py-16 sm:px-12 lg:px-24 bg-white border border-gray-200 w-full">
+        <div className="flex flex-col gap-2 w-full max-w-3xl text-center">
+          <h2 className="uppercase text-[#4f46e5] font-bold">Process</h2>
+          <h1 className="text-3xl sm:text-4xl font-bold">How Learnify works</h1>
+          <HowItWorks />
+        </div>
+      </section>
+
+      <section className="flex flex-col items-center justify-center gap-6 sm:gap-8 py-12 px-8 sm:py-16 sm:px-12 lg:px-24 w-full">
+        <div className="flex flex-col gap-2 w-full text-center">
+          <h2 className="uppercase text-[#4f46e5] font-bold">Testimonials</h2>
+          <h1 className="text-3xl sm:text-4xl font-bold">From learners like you</h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 lg:gap-16 w-full mt-8">
+            <Review />
+            <Review />
+            <Review />
+          </div>
+        </div>
+
+        <div className="flex flex-col items-center justify-center gap-6 sm:gap-8 mt-12 sm:mt-16 lg:mt-24 py-12 px-8 sm:py-16 sm:px-12 lg:px-24 bg-[#4f46e5] text-white w-full rounded-3xl">
+          <div className="flex flex-col gap-2 w-full max-w-3xl text-center">
+            <h2 className="uppercase text-white font-bold">Get started</h2>
+            <h1 className="text-3xl sm:text-4xl font-bold">Start learning today</h1>
+            <p className="text-white text-base sm:text-xl max-w-xl mx-auto">
+              Join 240,000 learners mastering in-demand skills with project-based courses taught by industry practitioners — not academics.
+            </p>
+            <a href="#" className="text-sm sm:text-base font-bold text-[#4f46e5] bg-white hover:bg-gray-100 transition-colors rounded-lg px-6 py-3 mt-4 inline-block mx-auto">
+              Start Learning →
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </main>
   );
 }
