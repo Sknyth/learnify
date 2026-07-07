@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Menu } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import {
   Sheet,
   SheetContent,
@@ -8,6 +8,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet"
+import Logo from './Logo'
 
 export default function MobileNav() {
 	return (
@@ -22,10 +23,7 @@ export default function MobileNav() {
 			<SheetContent side="right" className="w-72">
 				<SheetHeader>
 					<SheetTitle className="flex items-center gap-2 text-xl font-bold text-gray-900">
-						<div className="w-8 h-8 rounded-lg bg-[#4f46e5] flex items-center justify-center shrink-0">
-							<BookOpen className="w-4 h-4 text-white" strokeWidth={2} />
-						</div>
-						Learnify
+						<Logo />
 					</SheetTitle>
 				</SheetHeader>
 
