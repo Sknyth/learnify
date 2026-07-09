@@ -14,3 +14,34 @@ model User {
   name      String
   createdAt DateTime @default(now())
 }
+
+model Course {
+  id            String   @id @default(cuid())
+  title         String
+  description   String
+  category      Category
+  level         Level
+  price         Int
+  duration      String
+  imageUrl      String
+  rating        Float    @default(0)
+  reviewsCount  Int      @default(0)
+  studentsCount Int      @default(0)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum Level {
+  Beginner
+  Intermediate
+  Advanced
+}
+
+enum Category {
+  WebDev
+  Design
+  DataScience
+  DevOps
+  Mobile
+}

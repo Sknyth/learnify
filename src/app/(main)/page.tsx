@@ -1,13 +1,15 @@
+import CoursesList from '@/components/CoursesList'
+import HowItWorks from '@/components/HowItWorks'
+import Review from '@/components/Review'
 import { Star, Zap } from 'lucide-react'
 import Image from 'next/image'
-import Course from './components/Course'
-import HowItWorks from './components/HowItWorks'
-import Review from './components/Review'
 
-export default function Home() {
+
+export default async function Home() {
+  
   return (
     <main className="flex min-h-screen flex-col justify-between relative">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#eef2ff] via-white to-[#f8f9fc] -z-10" />
+      <div className="absolute inset-0 bg-linear-to-br from-[#eef2ff] via-white to-[#f8f9fc] -z-10" />
 
       <section className="flex flex-col items-start justify-center gap-6 sm:gap-8 mt-12 sm:mt-16 lg:mt-24 pb-16 sm:pb-24 py-4 px-8 sm:px-12 lg:px-24">
         <div className="text-[#4f46e5] flex items-center gap-2 text-sm font-bold tracking-wide bg-[#eef2ff] rounded-lg px-4 py-2 w-fit">
@@ -94,14 +96,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 lg:gap-16 w-full">
-          <Course />
-          <Course />
-          <Course />
-          <Course />
-          <Course />
-          <Course />
-        </div>
+        <CoursesList />
 
       </section>
 

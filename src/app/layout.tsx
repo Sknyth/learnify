@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Inter, Geist } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import Header from "./components/Header";
-import Footer from './components/Footer'
 import { cn } from "@/lib/utils";
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import UserStoreInitializer from '@/components/UserStoreInitializer'
-
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+import CoursesStoreInitializer from '@/components/CoursesStoreInitializer'
+import { prisma } from '@/lib/prisma'
 
 const inter = Inter({
   subsets: ["latin"],
@@ -24,19 +22,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
   const user = await getCurrentUser()
+  const courses = await prisma.course.findMany({
+		orderBy: { createdAt: 'desc' },
+	})
 
   return (
-    <html lang="en" className={cn("h-full", "antialiased", inter.variable, "font-sans", geist.variable)}>
+    <html lang="en" className={cn("h-full", "antialiased", inter.variable, "font-sans")}>
       <body className="min-h-full flex flex-col font-sans">
         <UserStoreInitializer user={user} />
-        <Header />
-        <main className="flex-1 pt-20">
-          {children}
-        </main>
-        <Footer />        
-        </body>
+        <CoursesStoreInitializer courses={courses} />
+        {children}
+      </body>
     </html>
   );
 }
