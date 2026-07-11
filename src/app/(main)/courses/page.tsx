@@ -31,7 +31,7 @@ export default function Page() {
 	})
 
 	return (
-		<main className="min-h-screen">
+		<div className="min-h-screen">
 			<section className="flex flex-col items-start justify-center gap-6 sm:gap-8 py-12 px-8 sm:px-12 lg:px-24">
 				<div className="flex flex-col gap-2">
 					<h1 className="text-4xl font-bold">Explore Courses</h1>
@@ -100,6 +100,6 @@ export default function Page() {
 					)}
 				</div>
 			</section>
-		</main>
+		</div>
 	)
 }

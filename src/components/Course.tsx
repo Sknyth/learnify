@@ -6,8 +6,7 @@ import { Course as CourseType } from '@/store/coursesStore'
 export default function Course({ course }: { course: CourseType }) {
 	return (
 		<Link
-			// href={`/courses/${course.id}`}
-			href="#"
+			href={`/courses/${course.id}`}
 			className="flex flex-col items-start bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg w-full cursor-pointer group hover:scale-[1.01] hover:-translate-y-0.5 transition-all duration-300 ease-in-out"
 		>
 			<div className="w-full h-44 overflow-hidden">

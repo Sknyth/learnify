@@ -9,7 +9,7 @@ export default function InfoCourseDashboard() {
 		<div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:flex-row sm:p-6">
 			<Image
 				src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=340&fit=crop&auto=format"
-				className="h-40 w-full rounded-xl bg-gray-100 object-cover sm:h-24 sm:w-36 sm:flex-shrink-0"
+				className="h-40 w-full rounded-xl bg-gray-100 object-cover sm:h-24 sm:w-36 sm:shrink-0"
 				width={600}
 				height={340}
 				alt="Full-Stack React & Node.js"

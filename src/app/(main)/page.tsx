@@ -3,12 +3,13 @@ import HowItWorks from '@/components/HowItWorks'
 import Review from '@/components/Review'
 import { Star, Zap } from 'lucide-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 
 export default async function Home() {
   
   return (
-    <main className="flex min-h-screen flex-col justify-between relative">
+    <div className="flex min-h-screen flex-col justify-between relative">
       <div className="absolute inset-0 bg-linear-to-br from-[#eef2ff] via-white to-[#f8f9fc] -z-10" />
 
       <section className="flex flex-col items-start justify-center gap-6 sm:gap-8 mt-12 sm:mt-16 lg:mt-24 pb-16 sm:pb-24 py-4 px-8 sm:px-12 lg:px-24">
@@ -29,12 +30,12 @@ export default async function Home() {
         </p>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 lg:gap-6 mt-2 w-full sm:w-auto">
-          <a href="#" className="text-sm sm:text-base font-bold text-white bg-[#4f46e5] hover:bg-[#4338ca] transition-colors rounded-lg px-6 py-3 text-center">
+          <Link href="/courses" className="text-sm sm:text-base font-bold text-white bg-[#4f46e5] hover:bg-[#4338ca] transition-colors rounded-lg px-6 py-3 text-center">
             Start Learning →
-          </a>
-          <a href="#" className="text-sm sm:text-base font-bold text-gray-600 border border-gray-300 hover:border-gray-400 hover:shadow-sm transition-all rounded-lg px-6 py-3 text-center">
+          </Link>
+          <Link href="/courses" className="text-sm sm:text-base font-bold text-gray-600 border border-gray-300 hover:border-gray-400 hover:shadow-sm transition-all rounded-lg px-6 py-3 text-center">
             Browse Courses
-          </a>
+          </Link>
         </div>
 
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6 mt-4">
@@ -90,9 +91,9 @@ export default async function Home() {
           <h2 className="uppercase text-[#4f46e5] font-bold">Courses</h2>
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0 w-full font-bold">
             <h1 className="text-2xl sm:text-4xl">Most popular right now</h1>
-            <a className="text-[#4f46e5] group shrink-0" href="#">
+            <Link className="text-[#4f46e5] group shrink-0" href="/courses">
               <span className="inline-block transition-transform group-hover:-translate-x-1">View all</span> →
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -126,13 +127,13 @@ export default async function Home() {
             <p className="text-white text-base sm:text-xl max-w-xl mx-auto">
               Join 240,000 learners mastering in-demand skills with project-based courses taught by industry practitioners — not academics.
             </p>
-            <a href="#" className="text-sm sm:text-base font-bold text-[#4f46e5] bg-white hover:bg-gray-100 transition-colors rounded-lg px-6 py-3 mt-4 inline-block mx-auto">
+            <Link href="/courses" className="text-sm sm:text-base font-bold text-[#4f46e5] bg-white hover:bg-gray-100 transition-colors rounded-lg px-6 py-3 mt-4 inline-block mx-auto">
               Start Learning →
-            </a>
+            </Link>
           </div>
         </div>
       </section>
 
-    </main>
+    </div>
   );
 }

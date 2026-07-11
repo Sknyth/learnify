@@ -104,9 +104,9 @@ export default function SignUpForm() {
 			</div>
 
 			<div className="flex items-center gap-2">
-				<hr className="flex-grow border-gray-300" />
+				<hr className="grow border-gray-300" />
 				<span className="text-sm text-gray-500">or</span>
-				<hr className="flex-grow border-gray-300" />
+				<hr className="grow border-gray-300" />
 			</div>
 
 			<div className="flex flex-col gap-2">

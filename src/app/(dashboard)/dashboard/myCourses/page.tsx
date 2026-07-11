@@ -4,7 +4,7 @@ import InfoCourseDashboard from '@/components/InfoCourseDashboard'
 
 export default function Page() {
 	return (
-		<main className="flex min-h-screen">
+		<div className="flex min-h-screen">
 			<AsideDashboard />
 			<div className="py-8 sm:py-12 px-4 sm:px-8 lg:px-16 xl:px-24 flex flex-col mx-auto w-full gap-6 sm:gap-10">
 				<div className="flex flex-col justify-start items-start">
@@ -24,6 +24,6 @@ export default function Page() {
 					<InfoCourseDashboard />
 				</div>
 			</div>
-		</main>
+		</div>
 	)
 }
