@@ -2,27 +2,33 @@ import { Play } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
-export default function InfoCourseDashboard() {
-	const progress = 35
+type Props = {
+	title: string
+	imageUrl: string
+	lastLesson: string
+	progress: number
+	courseId: string
+}
 
+export default function InfoCourseDashboard({ title, imageUrl, lastLesson, progress, courseId }: Props) {
 	return (
 		<div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:flex-row sm:p-6">
 			<Image
-				src="https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=600&h=340&fit=crop&auto=format"
+				src={imageUrl}
 				className="h-40 w-full rounded-xl bg-gray-100 object-cover sm:h-24 sm:w-36 sm:shrink-0"
 				width={600}
 				height={340}
-				alt="Full-Stack React & Node.js"
+				alt={title}
 			/>
 
 			<div className="min-w-0 flex-1">
 				<div className="flex items-start justify-between gap-4">
 					<div className="min-w-0">
 						<h2 className="truncate text-lg font-semibold text-gray-950">
-							Full-Stack React & Node.js
+							{title}
 						</h2>
 						<p className="mt-1 truncate text-sm text-gray-500">
-							Last lesson: React 18 Core Concepts
+							Last lesson: {lastLesson}
 						</p>
 					</div>
 
@@ -53,7 +59,7 @@ export default function InfoCourseDashboard() {
 
 				<Link
 					className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 sm:w-auto"
-					href="#"
+					href={`/courses/${courseId}`}
 				>
 					<Play className="h-4 w-4" />
 					Continue Learning

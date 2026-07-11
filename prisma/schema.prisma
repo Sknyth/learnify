@@ -15,6 +15,8 @@ model User {
   phone     String?
   jobTitle  String?
   createdAt DateTime @default(now())
+
+  enrollments Enrollment[]
 }
 
 model Course {
@@ -29,31 +31,46 @@ model Course {
   rating        Float    @default(0)
   reviewsCount  Int      @default(0)
   studentsCount Int      @default(0)
-
   learningPoints String[]
-  modules Module[]
 
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  modules     Module[]
+  enrollments Enrollment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Enrollment {
+  id       String @id @default(cuid())
+  userId   String
+  courseId String
+  progress Int    @default(0)
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  enrolledAt DateTime @default(now())
+
+  @@unique([userId, courseId])
 }
 
 model Module {
-  id        String   @id @default(cuid())
-  title     String
-  order     Int
-  courseId  String
-  course    Course   @relation(fields: [courseId], references: [id])
-  lessons   Lesson[]
+  id       String   @id @default(cuid())
+  title    String
+  order    Int
+  courseId String
+  course   Course   @relation(fields: [courseId], references: [id])
+  lessons  Lesson[]
 }
 
 model Lesson {
-  id          String  @id @default(cuid())
-  title       String
-  duration    String
-  isFree      Boolean @default(false)
-  order       Int
-  moduleId    String
-  module      Module  @relation(fields: [moduleId], references: [id])
+  id       String  @id @default(cuid())
+  title    String
+  duration String
+  isFree   Boolean @default(false)
+  order    Int
+  moduleId String
+  module   Module  @relation(fields: [moduleId], references: [id])
 }
 
 enum Level {
