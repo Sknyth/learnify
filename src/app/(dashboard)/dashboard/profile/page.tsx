@@ -19,7 +19,7 @@ export default async function Page() {
           key={user.id}
           user={{
             ...user,
-            createdAt: user.createdAt,
+            createdAt: user.createdAt.toLocaleDateString('ru-RU')
           }}
         />
       </div>

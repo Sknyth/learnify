@@ -85,7 +85,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 						</div>
 					</div>
 
-					<Curriculum modules={course.modules} />
+					<Curriculum courseId={id} modules={course.modules} />
 				</div>
 
 				<aside className="w-full lg:w-1/3 lg:sticky lg:top-24 flex flex-col gap-4">
