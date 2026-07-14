@@ -41,10 +41,11 @@ model Course {
 }
 
 model Enrollment {
-  id       String @id @default(cuid())
-  userId   String
-  courseId String
-  progress Int    @default(0)
+  id             String   @id @default(cuid())
+  userId         String
+  courseId       String
+  progress       Int      @default(0)
+  completedLessons String[] @default([])
 
   user   User   @relation(fields: [userId], references: [id])
   course Course @relation(fields: [courseId], references: [id])
@@ -69,6 +70,7 @@ model Lesson {
   duration String
   isFree   Boolean @default(false)
   order    Int
+  videoUrl String
   moduleId String
   module   Module  @relation(fields: [moduleId], references: [id])
 }
