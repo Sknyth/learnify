@@ -68,7 +68,6 @@ model Lesson {
   id       String  @id @default(cuid())
   title    String
   duration String
-  isFree   Boolean @default(false)
   order    Int
   videoUrl String
   moduleId String

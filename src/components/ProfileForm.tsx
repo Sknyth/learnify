@@ -7,7 +7,7 @@ type User = {
   id: string
   name: string
   email: string
-  createdAt: string
+  createdAt: Date
   phone: string | null
   jobTitle: string | null
 }

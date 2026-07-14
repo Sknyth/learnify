@@ -11,7 +11,7 @@ type Props = {
 	nextLessonId?: string
 }
 
-export default function MarkCompleteButton({ lessonId, courseId, isCompleted, nextLessonId }: Props) {
+export default function ButtonCompleteLesson({ lessonId, courseId, isCompleted, nextLessonId }: Props) {
 	const [completed, setCompleted] = useState(isCompleted)
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()

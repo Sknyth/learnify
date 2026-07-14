@@ -32,7 +32,7 @@ export default function SignUpForm() {
 			}
 
 			setUser(data.user)
-			router.push("/dashboard")
+			router.push("/dashboard/myCourses")
 			router.refresh()
 		} catch {
 			setError("Something went wrong. Please try again.")

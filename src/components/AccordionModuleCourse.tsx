@@ -4,6 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { getCurrentUser } from '@/lib/getCurrentUser'
+import { prisma } from '@/lib/prisma'
 import { Play, Lock } from "lucide-react"
 import Link from 'next/link'
 
@@ -11,7 +13,6 @@ type Lesson = {
   id: string
   title: string
   duration: string
-  isFree: boolean
 }
 
 type Module = {
@@ -20,7 +21,26 @@ type Module = {
   lessons: Lesson[]
 }
 
-export default function Curriculum({ courseId, modules }: { courseId: string; modules: Module[] }) {
+export default async function Curriculum({ courseId, modules }: { courseId: string; modules: Module[] }) {
+  const user = await getCurrentUser()
+
+  let isEnrolled = false
+
+  if (user && user.id) {
+    const existing = await prisma.enrollment.findUnique({
+      where: { 
+        userId_courseId: { 
+          userId: user.id, 
+          courseId 
+        } 
+      }
+    })
+    
+    if (existing) {
+      isEnrolled = true
+    }
+  }
+
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6">
       <h2 className="text-2xl font-bold mb-6">Curriculum</h2>
@@ -42,8 +62,10 @@ export default function Curriculum({ courseId, modules }: { courseId: string; mo
             </AccordionTrigger>
             <AccordionContent>
               <div className="flex flex-col gap-1 pb-2">
-                {module.lessons.map((lesson) => (
-                  lesson.isFree ? (
+                {module.lessons.map((lesson) => {
+                  const isAccessible = isEnrolled
+
+                  return isAccessible ? (
                     <Link
                       key={lesson.id}
                       href={`/courses/${courseId}/lessons/${lesson.id}`}
@@ -53,9 +75,6 @@ export default function Curriculum({ courseId, modules }: { courseId: string; mo
                         <Play className="w-4 h-4 text-[#4f46e5]" />
                         <span className="text-[#4f46e5] font-medium">
                           {lesson.title}
-                        </span>
-                        <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">
-                          Free
                         </span>
                       </div>
                       <span className="text-gray-400 text-sm">{lesson.duration}</span>
@@ -75,7 +94,7 @@ export default function Curriculum({ courseId, modules }: { courseId: string; mo
                       <span className="text-gray-400 text-sm">{lesson.duration}</span>
                     </div>
                   )
-                ))}
+                })}
               </div>
             </AccordionContent>
           </AccordionItem>
