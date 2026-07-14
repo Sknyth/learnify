@@ -8,12 +8,21 @@ import { BookOpen, Clock, Medal } from 'lucide-react'
 export default async function Page() {
   const user = await getCurrentUser()
 
-  if (!user) return
+  if (!user) return null
 
   const enrollments = await prisma.enrollment.findMany({
     where: { userId: user.id },
     include: {
-      course: true,
+      course: {
+        include: {
+          modules: {
+            orderBy: { order: 'asc' },
+            include: {
+              lessons: { orderBy: { order: 'asc' } },
+            },
+          },
+        },
+      },
     },
     orderBy: { enrolledAt: 'desc' },
   })
@@ -39,16 +48,29 @@ export default async function Page() {
           {enrollments.length === 0 ? (
             <p className="text-gray-500 text-sm">You haven&apos;t enrolled in any courses yet.</p>
           ) : (
-            enrollments.map((enrollment) => (
-              <InfoCourseDashboard
-                key={enrollment.id}
-                title={enrollment.course.title}
-                imageUrl={enrollment.course.imageUrl}
-                lastLesson="—"
-                progress={enrollment.progress}
-                courseId={enrollment.course.id}
-              />
-            ))
+            enrollments.map((enrollment) => {
+              const allLessons = enrollment.course.modules.flatMap((m) => m.lessons)
+              
+              const nextLesson = allLessons.find(
+                (lesson) => !enrollment.completedLessons.includes(lesson.id)
+              )
+
+              const targetLesson = nextLesson || allLessons[allLessons.length - 1]
+              const lessonId = targetLesson?.id || ''
+              const lastLessonTitle = targetLesson?.title || 'No lessons'
+
+              return (
+                <InfoCourseDashboard
+                  key={enrollment.id}
+                  title={enrollment.course.title}
+                  imageUrl={enrollment.course.imageUrl}
+                  lastLesson={lastLessonTitle}
+                  progress={enrollment.progress}
+                  courseId={enrollment.course.id}
+                  lessonId={lessonId}
+                />
+              )
+            })
           )}
         </div>
       </div>
