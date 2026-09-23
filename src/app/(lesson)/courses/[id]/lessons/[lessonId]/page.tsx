@@ -75,7 +75,7 @@ export default async function Page({
       <LessonHeader
         courseId={course.id}
         lessonTitle={lesson.title}
-        progress={Math.round((lessonNumber / totalLessons) * 100)}
+        progress={enrollment.progress}
       />
 
       <div className="flex flex-1 overflow-hidden">

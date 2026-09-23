@@ -1,4 +1,4 @@
-import { Play } from 'lucide-react'
+import { CircleCheck, Play } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -19,6 +19,8 @@ export default function InfoCourseDashboard({
   courseId,
   lessonId 
 }: Props) {
+
+  const isCompleted = progress === 100
   return (
     <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:flex-row sm:p-6">
       <Image
@@ -65,13 +67,17 @@ export default function InfoCourseDashboard({
           </div>
         </div>
 
-        <Link
+        {!isCompleted ? <Link
           className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 sm:w-auto"
           href={`/courses/${courseId}/lessons/${lessonId}`}
         >
           <Play className="h-4 w-4" />
           Continue Learning
         </Link>
+        : <button className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition sm:w-auto" disabled>
+          <CircleCheck className="h-4 w-4" />
+          Completed
+          </button>}
       </div>
     </div>
   )

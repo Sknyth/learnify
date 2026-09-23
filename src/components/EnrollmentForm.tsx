@@ -13,10 +13,89 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 	const [error, setError] = useState("")
 	const [loading, setLoading] = useState(false)
 	const router = useRouter()
+	const [name, setName] = useState("")
+	const [nameError, setNameError] = useState("")
+	const [number, setNumber] = useState("")
+	const [numberError, setNumberError] = useState("")
+	const [expiry, setExpiry] = useState("")
+	const [expiryError, setExpiryError] = useState("")
+	const [cvc, setCvc] = useState("")
+	const [cvcError, setCvcError] = useState("")
+
+	function validateName(value: string) {
+		if (!value.trim()) {
+			setNameError("Enter the cardholder's name")
+			return false
+		}
+		if (value.trim().length < 3) {
+			setNameError("The name is too short.")
+			return false
+		}
+		setNameError("")
+		return true
+	}
+
+	function validateNumber(value: string) {
+		const digits = value.replace(/\D/g, "")
+		if (!digits) {
+			setNumberError("Enter the card number")
+			return false
+		}
+		if (digits.length < 16) {
+			setNumberError("The number is too short.")
+			return false
+		}
+		setNumberError("")
+		return true
+	}
+
+	function validateExpiry(value: string) {
+		if (!value) {
+			setExpiryError("Enter the card expiry date")
+			return false
+		}
+		if (value.length < 5) {
+			setExpiryError("Expiry date must be in MM/YY format")
+			return false
+		}
+		setExpiryError("")
+		return true
+	}
+
+	function validateCvc(value: string) {
+			if (!value.trim()) {
+				setCvcError("Enter the card CVC")
+				return false
+			}
+			if (value.trim().length < 3) {
+				setCvcError("CVC is too short")
+				return false
+			}
+			setCvcError("")
+			return true
+		}
+
+	function formatExpiry(value: string) {
+		const digits = value.replace(/\D/g, "").slice(0, 4)
+
+		if (digits.length >= 2) {
+			return `${digits.slice(0, 2)}/${digits.slice(2)}`
+		}
+
+		return digits
+	}
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
 		setError("")
+
+		const isNameValid = validateName(name)
+		const isNumberValid = validateNumber(number)
+		const isExpiryValid = validateExpiry(expiry)
+		const isCvcValid = validateCvc(cvc)
+		
+		if (!isNameValid || !isNumberValid || !isExpiryValid || !isCvcValid) return
+		
 		setLoading(true)
 
 		try {
@@ -41,7 +120,7 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 			setLoading(false)
 		}
 	}
-
+	
 	return (
 		<form onSubmit={handleSubmit} className="lg:col-span-3 bg-white rounded-2xl border border-gray-200 p-6 sm:p-7 flex flex-col gap-6">
 			<h1 className="font-bold text-xl">Payment Details</h1>
@@ -53,9 +132,15 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 						type="text"
 						id="name"
 						name="name"
+						onChange={(e) => {
+							setName(e.target.value)
+							if (nameError) validateName(e.target.value)
+						}}
+						onBlur={() => validateName(name)}
 						placeholder="Jordan Mitchell"
 						className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 					/>
+					{nameError && <p className="text-red-500 text-xs">{nameError}</p>}
 				</div>
 
 				<div className="flex flex-col gap-2">
@@ -64,9 +149,17 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 						type="text"
 						id="number"
 						name="number"
+						onChange={(e) => {
+							setNumber(e.target.value)
+							if (numberError) validateNumber(e.target.value)
+						}}
+						onBlur={() => validateNumber(number)}
+						inputMode="numeric"
+						maxLength={16}
 						placeholder="4242 4242 4242 4242"
 						className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 					/>
+					{numberError && <p className="text-red-500 text-xs">{numberError}</p>}
 				</div>
 
 				<div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
@@ -76,9 +169,19 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 							type="text"
 							id="expiry"
 							name="expiry"
+							value={expiry}
+							onChange={(e) => {
+								const formatted = formatExpiry(e.target.value)
+								setExpiry(formatted)
+								if (expiryError) validateExpiry(formatted)
+							}}
+							onBlur={() => validateExpiry(expiry)}
 							placeholder="MM/YY"
+							maxLength={5}
+							inputMode="numeric"
 							className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 						/>
+						{expiryError && <p className="text-red-500 text-xs">{expiryError}</p>}
 					</div>
 
 					<div className="flex flex-col gap-2">
@@ -88,8 +191,15 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 							id="cvc"
 							name="cvc"
 							placeholder="123"
+							onChange={(e) => {
+								setCvc(e.target.value)
+								if (cvcError) validateCvc(e.target.value)
+							}}
+							onBlur={() => validateCvc(cvc)}
+							maxLength={4}
 							className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 						/>
+						{cvcError && <p className="text-red-500 text-xs">{cvcError}</p>}
 					</div>
 				</div>
 			</div>

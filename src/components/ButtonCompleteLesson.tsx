@@ -47,7 +47,7 @@ export default function ButtonCompleteLesson({ lessonId, courseId, isCompleted, 
 			className={`flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors ${
 				completed
 					? 'bg-green-500 text-white cursor-default'
-					: 'bg-[#4f46e5] hover:bg-[#4338ca] text-white'
+					: 'bg-[#4f46e5] hover:bg-[#4338ca] text-white cursor-pointer'
 			}`}
 		>
 			<CheckCircle className="w-4 h-4" />
