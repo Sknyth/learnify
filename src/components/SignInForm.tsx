@@ -68,7 +68,7 @@ export default function SignInForm() {
 
 			<div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0 text-sm text-gray-500">
 				<a href="#" className="hover:text-gray-900 transition-colors">Forgot password?</a>
-				<Link href="signUp" className="hover:text-gray-900 transition-colors">Create an account</Link>
+				<Link href="signUp" className="text-[#4f46e5] hover:underline transition-all font-bold">Create an account</Link>
 			</div>
 
 			<div className="flex items-center gap-2">

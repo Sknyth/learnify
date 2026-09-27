@@ -4,13 +4,13 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
 	const { name, email, password } = await req.json()
-	
-	if(!name || !email || !password) {
+
+	if (!name || !email || !password) {
 		return new Response(JSON.stringify({ message: 'Missing required fields' }), { status: 400 })
 	}
 
-	const existingUser = await prisma.user.findUnique({ where: { email}})
-	if(existingUser) {
+	const existingUser = await prisma.user.findUnique({ where: { email } })
+	if (existingUser) {
 		return new Response(JSON.stringify({ message: 'User already exists' }), { status: 400 })
 	}
 
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
 		}
 	})
 
-	const token = generateToken({ userId: user.id })
+	const token = generateToken({ userId: user.id, role: user.role })
 
 	const response = NextResponse.json(
 		{ user: { id: user.id, name: user.name, email: user.email } },

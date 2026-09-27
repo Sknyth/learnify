@@ -26,6 +26,7 @@ const notificationSettings = [
 ]
 
 export default function Page() {
+
   const [settings, setSettings] = useState({
     courseUpdates: true,
     emailDigest: false,

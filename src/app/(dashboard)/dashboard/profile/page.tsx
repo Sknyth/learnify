@@ -1,11 +1,12 @@
 import AsideDashboard from '@/components/AsideDashboard'
 import ProfileForm from '@/components/ProfileForm'
 import { getCurrentUser } from '@/lib/getCurrentUser'
+import { redirect } from 'next/navigation'
 
 export default async function Page() {
   const user = await getCurrentUser()
 
-  if (!user) return
+  if (!user) redirect('/')
 
   return (
     <div className="flex min-h-screen">

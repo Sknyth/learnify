@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Menu, Settings, Users, LogOut } from 'lucide-react'
+import { BookOpen, Menu, Settings, Users, LogOut, Shield, LayoutDashboard } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import {
@@ -12,20 +12,24 @@ import {
 import { useUserStore } from '@/store/userStore'
 import { cn } from '@/lib/utils'
 import Logo from './Logo'
+import { useState } from 'react'
 
 export default function MobileNav() {
 	const user = useUserStore((state) => state.user)
 	const clearUser = useUserStore((state) => state.clearUser)
 	const router = useRouter()
 	const pathname = usePathname()
+	const [open, setOpen] = useState(false)
 
-	const isDashboard = pathname.startsWith('/dashboard')
 	const isActiveCourses = pathname === "/courses"
 	const isActiveMyCourses = pathname === "/dashboard/myCourses"
 	const isActiveProfile = pathname === "/dashboard/profile"
 	const isActiveSettings = pathname === "/dashboard/settings"
+	const isActiveAdminDashboard = pathname === "/admin/dashboard"
+	const isActiveAdminUsers = pathname === "/admin/users"
 
 	async function handleLogout() {
+		setOpen(false)
 		await fetch("/api/auth/logout", { method: "POST" })
 		clearUser()
 		router.push("/")
@@ -33,7 +37,7 @@ export default function MobileNav() {
 	}
 
 	return (
-		<Sheet>
+		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger
 				render={
 					<button className="md:hidden p-2 -mr-2 rounded-lg hover:bg-gray-50 transition-colors" aria-label="Toggle menu">
@@ -50,17 +54,10 @@ export default function MobileNav() {
 					<Link href="/courses" className={cn(
 							"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-3",
 							isActiveCourses && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
-						)}>
+						)}
+						onClick={() => setOpen(false)}>
 						Courses
 					</Link>
-					{user && (
-						<Link href="/dashboard/myCourses" className={cn(
-								"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-3",
-								isDashboard && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
-							)}>
-							Dashboard
-						</Link>
-					)}
 
 					<div className="h-px bg-gray-200 my-2" />
 
@@ -73,28 +70,55 @@ export default function MobileNav() {
 								<span className="text-sm font-bold text-gray-700 truncate">{user.name}</span>
 							</div>
 
-							{isDashboard && (
+							<span className="text-xs font-semibold text-gray-400 uppercase tracking-wide px-4 pb-1">
+								Dashboard
+							</span>
+							<Link href="/dashboard/myCourses" className={cn(
+									"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
+									isActiveMyCourses && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+								)}
+								onClick={() => setOpen(false)}>
+								<BookOpen className="w-4 h-4" />
+								My Courses
+							</Link>
+							<Link href="/dashboard/profile" className={cn(
+									"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
+									isActiveProfile && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+								)}
+								onClick={() => setOpen(false)}>
+								<Users className="w-4 h-4" />
+								Profile
+							</Link>
+							<Link href="/dashboard/settings" className={cn(
+									"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
+									isActiveSettings && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+								)}
+								onClick={() => setOpen(false)}>
+								<Settings className="w-4 h-4" />
+								Settings
+							</Link>
+
+							{user.role === 'ADMIN' && (
 								<>
-									<Link href="/dashboard/myCourses" className={cn(
+									<div className="h-px bg-gray-200 my-2" />
+									<span className="text-xs font-semibold text-gray-400 uppercase tracking-wide px-4 pb-1">
+										Admin
+									</span>
+									<Link href="/admin/dashboard" className={cn(
 											"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
-											isActiveMyCourses && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
-										)}>
-										<BookOpen className="w-4 h-4" />
-										My Courses
+											isActiveAdminDashboard && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+										)}
+										onClick={() => setOpen(false)}>
+										<LayoutDashboard className="w-4 h-4" />
+										Dashboard
 									</Link>
-									<Link href="/dashboard/profile" className={cn(
+									<Link href="/admin/users" className={cn(
 											"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
-											isActiveProfile && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
-										)}>
-										<Users className="w-4 h-4" />
-										Profile
-									</Link>
-									<Link href="/dashboard/settings" className={cn(
-											"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
-											isActiveSettings && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
-										)}>
-										<Settings className="w-4 h-4" />
-										Settings
+											isActiveAdminUsers && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+										)}
+										onClick={() => setOpen(false)}>
+										<Shield className="w-4 h-4" />
+										Users
 									</Link>
 								</>
 							)}
@@ -111,10 +135,14 @@ export default function MobileNav() {
 						</>
 					) : (
 						<div className="flex flex-col gap-2">
-							<Link href="/signIn" className="text-sm font-bold text-center text-gray-600 border border-gray-300 hover:border-gray-400 transition-colors rounded-lg px-4 py-3">
+							<Link
+							 href="/signIn" className="text-sm font-bold text-center text-gray-600 border border-gray-300 hover:border-gray-400 transition-colors rounded-lg px-4 py-3"
+							 onClick={() => setOpen(false)}>
 								Sign In
 							</Link>
-							<Link href="/signUp" className="text-sm font-bold text-center text-white bg-[#4f46e5] hover:bg-[#4338ca] transition-colors rounded-lg px-4 py-3">
+							<Link 
+							href="/signUp" className="text-sm font-bold text-center text-white bg-[#4f46e5] hover:bg-[#4338ca] transition-colors rounded-lg px-4 py-3"
+							onClick={() => setOpen(false)}>
 								Sign Up
 							</Link>
 						</div>

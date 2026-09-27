@@ -13,6 +13,7 @@ export default function Header() {
 
 	const isActiveCourses = pathname === "/courses"
 	const isDashboard = pathname.startsWith('/dashboard')
+	const isAdmin = pathname.startsWith('/admin')
 
 	return (
 		<header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm fixed top-0 left-0 right-0 z-50 h-16 sm:h-20">
@@ -33,6 +34,14 @@ export default function Header() {
 								isDashboard && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
 							)}>
 							Dashboard
+						</Link>
+					)}
+					{user?.role === 'ADMIN' && (
+						<Link href="/admin/dashboard" className={cn(
+								"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2",
+								isAdmin && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+							)}>
+							Admin
 						</Link>
 					)}
 				</div>

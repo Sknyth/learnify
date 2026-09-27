@@ -4,11 +4,12 @@ import InfoCourseDashboard from '@/components/InfoCourseDashboard'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { prisma } from '@/lib/prisma'
 import { BookOpen, Clock, Medal } from 'lucide-react'
+import { redirect } from 'next/navigation'
 
 export default async function Page() {
   const user = await getCurrentUser()
 
-  if (!user) return null
+  if (!user) redirect('/')
 
   const enrollments = await prisma.enrollment.findMany({
     where: { userId: user.id },
@@ -27,6 +28,11 @@ export default async function Page() {
     orderBy: { enrolledAt: 'desc' },
   })
 
+  const completedCourses = enrollments.reduce((count, enrollment) => {
+    if (enrollment.progress === 100) return count + 1
+    return count
+  }, 0)
+
   return (
     <div className="flex min-h-screen">
       <AsideDashboard />
@@ -41,7 +47,7 @@ export default async function Page() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <InfoBoxDashboard Icon={BookOpen} count={enrollments.length} desc="Courses" />
           <InfoBoxDashboard Icon={Clock} count={0} desc="Hours watched" />
-          <InfoBoxDashboard Icon={Medal} count={0} desc="Certificates" />
+          <InfoBoxDashboard Icon={Medal} count={completedCourses} desc="Certificates" />
         </div>
 
         <div className="flex flex-col gap-4">

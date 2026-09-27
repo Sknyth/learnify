@@ -6,6 +6,7 @@ import { getCurrentUser } from '@/lib/getCurrentUser'
 import UserStoreInitializer from '@/components/UserStoreInitializer'
 import CoursesStoreInitializer from '@/components/CoursesStoreInitializer'
 import { prisma } from '@/lib/prisma'
+import { Toaster } from 'sonner'
 
 const inter = Inter({
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default async function RootLayout({
         <UserStoreInitializer user={user} />
         <CoursesStoreInitializer courses={courses} />
         {children}
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

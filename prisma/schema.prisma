@@ -16,6 +16,8 @@ model User {
   jobTitle  String?
   createdAt DateTime @default(now())
 
+  role      Role     @default(ADMIN)
+
   enrollments Enrollment[]
 }
 
@@ -72,6 +74,11 @@ model Lesson {
   videoUrl String
   moduleId String
   module   Module  @relation(fields: [moduleId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 enum Level {
