@@ -10,23 +10,41 @@ export default async function Page() {
   const user = await getCurrentUser()
 	const users = await prisma.user.findMany()
 	const courses = await prisma.course.findMany()
+  const enrollments = await prisma.enrollment.findMany({
+    include: { course: { select: { price: true } } },
+  })
 
-	const months = [
-    { id: 1, name: 'Jan', value: 11 },
-    { id: 2, name: 'Feb', value: 18 },
-    { id: 3, name: 'Mar', value: 24 },
-		{ id: 4, name: 'Apr', value: 45 },
-		{ id: 5, name: 'May', value: 34 },
-		{ id: 6, name: 'Jun', value: 39 },
-  ];
 	
   if (!user || user.role !== 'ADMIN') redirect('/dashboard/myCourses')
 
 	const avgRating = courses.length > 0 ? Math.round((courses.reduce((sum, course) => sum + course.rating, 0) / courses.length) * 10) / 10 : 0
 
+  // const totalRevenue = enrollments.reduce((sum, e) => sum + e.course.price, 0)
+
+  const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+
+  const monthlyRevenue = enrollments
+    .filter((e) => e.enrolledAt >= startOfMonth)
+    .reduce((sum, e) => sum + e.course.price, 0)
+
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const start = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1)
+    const end = new Date(start.getFullYear(), start.getMonth() + 1, 1)
+
+    const revenue = enrollments
+      .filter((e) => e.enrolledAt >= start && e.enrolledAt < end)
+      .reduce((sum, e) => sum + e.course.price, 0)
+
+    return {
+      id: i,
+      name: start.toLocaleString('en-US', { month: 'short' }),
+      value: revenue,
+    }
+  })
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex">
       <AsideAdmin />
       <div className="py-8 sm:py-12 px-4 sm:px-8 lg:px-16 xl:px-24 flex flex-col mx-auto w-full gap-6 sm:gap-10">
         <div className="flex flex-col justify-start items-start gap-1">
@@ -37,7 +55,7 @@ export default async function Page() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <InfoBoxDashboard Icon={TrendingUp} count={38700} desc="Monthly Revenue" isMoney={true} />
+          <InfoBoxDashboard Icon={TrendingUp} count={monthlyRevenue} desc="Monthly Revenue" isMoney={true} />
           <InfoBoxDashboard Icon={Users} count={users.length} desc="Total Users" />
           <InfoBoxDashboard Icon={BookOpen} count={courses.length} desc="Active Courses" />
           <InfoBoxDashboard Icon={Star} count={avgRating} desc="Avg. Rating" />

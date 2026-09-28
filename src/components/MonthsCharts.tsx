@@ -32,7 +32,7 @@ export default function MonthsCharts({ data }: Props) {
 						<p className="text-sm text-gray-500 mb-1 transition-all duration-300 group-hover:text-gray-800 group-hover:font-medium"
 							style={{ opacity: mounted ? 1 : 0 }}
 						>
-							${value}k
+							${value}{value > 999 ? 'k' : ''}
 						</p>
 						<div className="w-full h-32 bg-gray-100 rounded-t-2xl flex items-end overflow-hidden transition-shadow duration-300 group-hover:shadow-[0_0_0_1px_rgba(0,0,0,0.04)]">
 							<div

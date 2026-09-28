@@ -81,8 +81,8 @@ export default function UsersTable({ users }: Props) {
 					<thead>
 						<tr className="bg-gray-50/80 border-b border-gray-200">
 							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">User</th>
-							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 hidden sm:table-cell">Courses</th>
-							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 hidden md:table-cell">Joined</th>
+							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">Courses</th>
+							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">Joined</th>
 							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">Role</th>
 							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">Actions</th>
 						</tr>
@@ -101,12 +101,12 @@ export default function UsersTable({ users }: Props) {
 										</div>
 									</div>
 								</td>
-								<td className="px-4 sm:px-6 py-4 hidden sm:table-cell">
+								<td className="px-4 sm:px-6 py-4">
 									<span className="inline-flex items-center gap-1.5 bg-[#4338ca]/10 text-[#4338ca] font-medium px-2.5 py-1 rounded-full text-xs whitespace-nowrap">
 										{u.enrollments.length} {u.enrollments.length === 1 ? 'course' : 'courses'}
 									</span>
 								</td>
-								<td className="px-4 sm:px-6 py-4 text-sm text-gray-500 hidden md:table-cell whitespace-nowrap">
+								<td className="px-4 sm:px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
 									{new Date(u.createdAt).toLocaleDateString('en-US', {
 										day: 'numeric',
 										month: 'short',

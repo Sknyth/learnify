@@ -197,6 +197,7 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 							}}
 							onBlur={() => validateCvc(cvc)}
 							maxLength={4}
+							inputMode="numeric"
 							className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 						/>
 						{cvcError && <p className="text-red-500 text-xs">{cvcError}</p>}
