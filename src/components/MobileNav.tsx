@@ -1,6 +1,6 @@
 "use client"
 
-import { BookOpen, Menu, Settings, Users, LogOut, Shield, LayoutDashboard, TrendingUp } from 'lucide-react'
+import { BookOpen, Menu, Settings, Users, LogOut, TrendingUp, ChartNoAxesColumn } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter, usePathname } from 'next/navigation'
 import {
@@ -28,6 +28,7 @@ export default function MobileNav() {
 	const isActiveAdminDashboard = pathname === "/admin/dashboard"
 	const isActiveAdminUsers = pathname === "/admin/users"
 	const isActiveAdminSales = pathname === "/admin/sales"
+	const isActiveAdminCourses = pathname === "/admin/courses"
 
 	async function handleLogout() {
 		setOpen(false)
@@ -110,15 +111,23 @@ export default function MobileNav() {
 											isActiveAdminDashboard && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
 										)}
 										onClick={() => setOpen(false)}>
-										<LayoutDashboard className="w-4 h-4" />
+										<ChartNoAxesColumn className="w-4 h-4" />
 										Dashboard
+									</Link>
+									<Link href="/admin/courses" className={cn(
+											"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
+											isActiveAdminCourses && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+										)}
+										onClick={() => setOpen(false)}>
+										<BookOpen className="w-4 h-4" />
+										Courses
 									</Link>
 									<Link href="/admin/users" className={cn(
 											"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
 											isActiveAdminUsers && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
 										)}
 										onClick={() => setOpen(false)}>
-										<Shield className="w-4 h-4" />
+										<Users className="w-4 h-4" />
 										Users
 									</Link>
 									<Link href="/admin/sales" onClick={() => setOpen(false)} className={cn(
