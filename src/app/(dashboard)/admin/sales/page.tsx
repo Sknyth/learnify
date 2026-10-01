@@ -1,5 +1,6 @@
 import AsideAdmin from '@/components/AsideAdmin'
 import SalesTable from '@/components/SalesTable'
+import InfoBoxSales from '@/components/InfoBoxSales'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
@@ -13,6 +14,21 @@ export default async function Page() {
 		orderBy: { createdAt: 'desc' }
 	})
 
+	const enrollments = await prisma.enrollment.findMany({
+		include: { course: { select: { price: true } } },
+	})
+
+	const now = new Date()
+  const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
+
+  const monthlyRevenue = enrollments
+    .filter((e) => e.enrolledAt >= startOfMonth)
+    .reduce((sum, e) => sum + e.course.price, 0)
+
+	const avgOrder = enrollments.length > 0 ? enrollments.reduce((sum, e) => sum + e.course.price, 0) / enrollments.length : 0
+
+	const totalRevenue = enrollments.reduce((sum, e) => sum + e.course.price, 0)
+
 	return (
 		<div className="flex">
 			<AsideAdmin />
@@ -22,6 +38,15 @@ export default async function Page() {
 					<h2 className="text-gray-500 text-sm sm:text-base">
 						Revenue breakdown by course
 					</h2>
+				</div>
+
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
+					<InfoBoxSales title={"Total Revenue"} count={totalRevenue} desc={"all time"} />
+					<InfoBoxSales title={"This Month"} count={monthlyRevenue} desc={new Date().toLocaleDateString('en-US', {
+						month: 'short',
+						year: 'numeric'
+					})} />
+					<InfoBoxSales title={"Avg. Order"} count={avgOrder} desc={"all time"} />
 				</div>
 
 				<SalesTable courses={courses} />

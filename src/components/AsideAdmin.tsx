@@ -1,7 +1,7 @@
 'use client'
 
 import { useUserStore } from '@/store/userStore'
-import { BookOpen, Shield, TrendingUp } from 'lucide-react'
+import { BookOpen, ChartNoAxesColumn, Shield, TrendingUp, Users } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -13,6 +13,7 @@ export default function AsideAdmin() {
 	const isActiveDashboard = pathname === "/admin/dashboard"
 	const isActiveUsers = pathname === "/admin/users"
 	const isActiveSales = pathname === "/admin/sales"
+	const isActiveCourses = pathname === "/admin/courses"
 
 	if (!user) {
 		return (
@@ -42,14 +43,21 @@ export default function AsideAdmin() {
 						"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2 cursor-pointer",
 						isActiveDashboard && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
 					)}>
-					<BookOpen className="w-4 h-4" />
+					<ChartNoAxesColumn className="w-4 h-4" />
 						Dashboard
+				</Link>
+				<Link href="/admin/courses" className={cn(
+						"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2 cursor-pointer",
+						isActiveCourses && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+					)}>
+					<BookOpen className="w-4 h-4" />
+						Courses
 				</Link>
 				<Link href="/admin/users" className={cn(
 						"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2 cursor-pointer",
 						isActiveUsers && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
 					)}>
-					<BookOpen className="w-4 h-4" />
+					<Users className="w-4 h-4" />
 						Users
 				</Link>
 				<Link href="/admin/sales" className={cn(

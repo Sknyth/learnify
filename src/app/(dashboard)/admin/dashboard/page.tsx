@@ -19,8 +19,6 @@ export default async function Page() {
 
 	const avgRating = courses.length > 0 ? Math.round((courses.reduce((sum, course) => sum + course.rating, 0) / courses.length) * 10) / 10 : 0
 
-  // const totalRevenue = enrollments.reduce((sum, e) => sum + e.course.price, 0)
-
   const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
 

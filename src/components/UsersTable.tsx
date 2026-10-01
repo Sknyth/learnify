@@ -1,6 +1,7 @@
 'use client'
 
 import { deleteUser, updateUserRole } from '@/app/(dashboard)/admin/users/actions'
+import { Users } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
@@ -80,62 +81,77 @@ export default function UsersTable({ users }: Props) {
 				<table className="w-full border-collapse min-w-160">
 					<thead>
 						<tr className="bg-gray-50/80 border-b border-gray-200">
-							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">User</th>
-							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">Courses</th>
-							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">Joined</th>
-							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">Role</th>
-							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3">Actions</th>
+							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">User</th>
+							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Courses</th>
+							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Joined</th>
+							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Role</th>
+							<th className="text-right text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Actions</th>
 						</tr>
 					</thead>
 					<tbody className="divide-y divide-gray-100">
-						{users.map((u) => (
-							<tr key={u.id} className="transition-colors hover:bg-gray-50/70">
-								<td className="px-4 sm:px-6 py-4">
-									<div className="flex items-center gap-3 min-w-0">
-										<div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-linear-to-br from-[#6366f1] to-[#4338ca] text-white flex items-center justify-center font-bold text-sm shrink-0 ring-1 ring-black/5">
-											{u.name?.[0]?.toUpperCase() ?? "?"}
+						{users.length === 0 ? (
+							<tr>
+								<td colSpan={5} className="px-4 sm:px-6 py-16">
+									<div className="flex flex-col items-center justify-center text-center">
+										<div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#4338ca]/10">
+											<Users className="h-6 w-6 text-[#4338ca]" />
 										</div>
-										<div className="flex flex-col min-w-0">
-											<span className="text-sm font-semibold text-gray-800 truncate">{u.name}</span>
-											<span className="text-xs text-gray-400 truncate">{u.email}</span>
-										</div>
+										<p className="text-sm font-semibold text-gray-800">No users yet</p>
+										<p className="mt-1 max-w-xs text-sm text-gray-400">
+											Registered users will appear here.
+										</p>
 									</div>
 								</td>
-								<td className="px-4 sm:px-6 py-4">
-									<span className="inline-flex items-center gap-1.5 bg-[#4338ca]/10 text-[#4338ca] font-medium px-2.5 py-1 rounded-full text-xs whitespace-nowrap">
-										{u.enrollments.length} {u.enrollments.length === 1 ? 'course' : 'courses'}
-									</span>
-								</td>
-								<td className="px-4 sm:px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-									{new Date(u.createdAt).toLocaleDateString('en-US', {
-										day: 'numeric',
-										month: 'short',
-										year: 'numeric'
-									})}
-								</td>
-								<td className="px-4 sm:px-6 py-4 text-sm">
-									<RoleSelect user={u} disabled={isPending} />
-								</td>
-								<td className="px-4 sm:px-6 py-4 text-sm text-gray-500">
-									<button
-										className="text-white hover:bg-[#b91c1c] font-medium transition-colors bg-[#dc2626] cursor-pointer px-2.5 py-1 rounded-md disabled:opacity-50 whitespace-nowrap"
-										onClick={() => handleDelete(u.id, u.name)}
-										disabled={isPending}
-									>
-										Delete
-									</button>
-								</td>
 							</tr>
-						))}
+						) : (
+							users.map((u) => (
+								<tr key={u.id} className="transition-colors hover:bg-gray-50/70">
+									<td className="px-4 sm:px-6 py-4">
+										<div className="flex items-center gap-3 min-w-0">
+											<div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-linear-to-br from-[#6366f1] to-[#4338ca] text-white flex items-center justify-center font-bold text-sm shrink-0 ring-1 ring-black/5">
+												{u.name?.[0]?.toUpperCase() ?? u.email[0]?.toUpperCase() ?? '?'}
+											</div>
+											<div className="flex flex-col min-w-0">
+												<span className="text-sm font-semibold text-gray-800 truncate">
+													{u.name ?? 'No name'}
+												</span>
+												<span className="text-xs text-gray-400 truncate">{u.email}</span>
+											</div>
+										</div>
+									</td>
+									<td className="px-4 sm:px-6 py-4">
+										<span className="inline-flex items-center gap-1.5 bg-[#4338ca]/10 text-[#4338ca] font-medium px-2.5 py-1 rounded-full text-xs whitespace-nowrap">
+											{u.enrollments.length} {u.enrollments.length === 1 ? 'course' : 'courses'}
+										</span>
+									</td>
+									<td className="px-4 sm:px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+										{new Date(u.createdAt).toLocaleDateString('en-US', {
+											day: 'numeric',
+											month: 'short',
+											year: 'numeric'
+										})}
+									</td>
+									<td className="px-4 sm:px-6 py-4 text-sm">
+										<RoleSelect user={u} disabled={isPending} />
+									</td>
+									<td className="px-4 sm:px-6 py-4">
+										<div className="flex items-center justify-end">
+											<button
+												type="button"
+												className="text-white hover:bg-[#b91c1c] font-medium text-sm transition-colors bg-[#dc2626] cursor-pointer px-2.5 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+												onClick={() => handleDelete(u.id, u.name)}
+												disabled={isPending}
+											>
+												Delete
+											</button>
+										</div>
+									</td>
+								</tr>
+							))
+						)}
 					</tbody>
 				</table>
 			</div>
-
-			{users.length === 0 && (
-				<div className="px-6 py-12 text-center text-gray-400 text-sm">
-					No users yet
-				</div>
-			)}
 		</div>
 	)
 }
