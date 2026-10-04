@@ -1,4 +1,4 @@
-import Curriculum from '@/components/AccordionModuleCourse'
+import Curriculum from '@/components/Curriculum'
 import { prisma } from '@/lib/prisma'
 import { CheckCircle, CirclePlay, Clock, Globe, Star, Shield, Award, Infinity as InfinityIcon } from 'lucide-react'
 import { notFound } from 'next/navigation'

@@ -1,20 +1,39 @@
 'use client'
 
-import { BookOpen, PenLine, Trash } from 'lucide-react'
+import { BookOpen, Trash } from 'lucide-react'
 import Image from 'next/image'
+import EditCourseButton from './EditCourseButton'
+
+import type { CourseWithModules } from './CourseFormDialog'
+import { deleteCourse } from '@/app/(dashboard)/admin/courses/actions'
+import { toast } from 'sonner'
+import { startTransition } from 'react'
 
 type Props = {
-	courses: {
-		id: string
-		title: string
-		price: number
-		imageUrl: string
-		category: string
-		studentsCount: number
-	}[]
+	courses: (CourseWithModules & { _count: { enrollments: number } })[]
 }
 
 export default function CoursesTable({ courses }: Props) {
+	const handleDelete = (courseId: string, courseTitle: string | null) => {
+		toast('Delete this course?', {
+			description: `${courseTitle ?? 'This course'} will be permanently removed.`,
+			action: {
+				label: 'Delete',
+				onClick: () => {
+					startTransition(async () => {
+						const result = await deleteCourse(courseId)
+						if (result?.success) {
+							toast.success('Course deleted')
+						} else {
+							toast.error(result?.error ?? 'Error deleting course')
+						}
+					})
+				},
+			},
+			cancel: { label: 'Cancel', onClick: () => {} },
+		})
+	}
+	
 	return (
 		<div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
 			<div className="overflow-x-auto">
@@ -49,11 +68,11 @@ export default function CoursesTable({ courses }: Props) {
 									<td className="px-4 sm:px-6 py-4">
 										<div className="flex max-w-xs min-w-0 items-center gap-3">
 											<Image
-												alt=""
+												alt={c.title}
 												src={c.imageUrl}
-												width={46}
-												height={60}
-												className=" shrink-0 rounded-lg object-cover"
+												width={64}
+												height={40}
+												className="h-10 w-16 shrink-0 rounded-lg object-cover"
 											/>
 											<span className="min-w-0 truncate text-sm font-semibold text-gray-800">
 												{c.title}
@@ -66,24 +85,19 @@ export default function CoursesTable({ courses }: Props) {
 										</span>
 									</td>
 									<td className="px-4 sm:px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-										{c.studentsCount.toLocaleString('en-US')}
+										{c._count.enrollments.toLocaleString('en-US')}
 									</td>
 									<td className="px-4 sm:px-6 py-4 text-sm font-semibold text-gray-800 whitespace-nowrap">
 										${c.price.toLocaleString('en-US', { maximumFractionDigits: 2 })}
 									</td>
 									<td className="px-4 sm:px-6 py-4">
 										<div className="flex items-center justify-end gap-1">
-											<button
-												type="button"
-												aria-label="Edit"
-												className="group inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl transition-colors hover:bg-[#4338ca]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4338ca]"
-											>
-												<PenLine className="h-4 w-4 text-gray-400 transition-colors group-hover:text-[#4338ca]" />
-											</button>
+											<EditCourseButton course={c} /> 
 											<button
 												type="button"
 												aria-label="Delete"
 												className="group inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+												onClick={() => handleDelete(c.id, c.title)}
 											>
 												<Trash className="h-4 w-4 text-gray-400 transition-colors group-hover:text-red-500" />
 											</button>

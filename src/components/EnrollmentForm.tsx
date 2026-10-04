@@ -3,6 +3,7 @@
 import { Shield } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 type Props = {
 	courseId: string
@@ -10,9 +11,8 @@ type Props = {
 }
 
 export default function EnrollmentForm({ courseId, price }: Props) {
-	const [error, setError] = useState("")
-	const [loading, setLoading] = useState(false)
 	const router = useRouter()
+	const [loading, setLoading] = useState(false)
 	const [name, setName] = useState("")
 	const [nameError, setNameError] = useState("")
 	const [number, setNumber] = useState("")
@@ -87,15 +87,14 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
-		setError("")
 
 		const isNameValid = validateName(name)
 		const isNumberValid = validateNumber(number)
 		const isExpiryValid = validateExpiry(expiry)
 		const isCvcValid = validateCvc(cvc)
-		
+
 		if (!isNameValid || !isNumberValid || !isExpiryValid || !isCvcValid) return
-		
+
 		setLoading(true)
 
 		try {
@@ -108,14 +107,15 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 			const data = await res.json()
 
 			if (!res.ok) {
-				setError(data.error)
+				toast.error(data.error ?? "Failed to enroll")
 				return
 			}
 
+			toast.success("Enrolled successfully")
 			router.push("/dashboard/myCourses")
 			router.refresh()
 		} catch {
-			setError("Something went wrong. Please try again.")
+			toast.error("Something went wrong. Please try again.")
 		} finally {
 			setLoading(false)
 		}
@@ -211,8 +211,6 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 					Your payment is encrypted and secured by Stripe. We never store your card details.
 				</p>
 			</span>
-
-			{error && <p className="text-red-500 text-sm">{error}</p>}
 
 			<button
 				type="submit"

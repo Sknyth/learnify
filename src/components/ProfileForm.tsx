@@ -2,6 +2,7 @@
 
 import { useUserStore } from '@/store/userStore'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 type User = {
   id: string
@@ -19,11 +20,9 @@ export default function ProfileForm({ user }: { user: User }) {
   const [phone, setPhone] = useState(user.phone ?? "")
   const [jobTitle, setJobTitle] = useState(user.jobTitle ?? "")
   const setUser = useUserStore((state) => state.setUser)
-  const [error, setError] = useState("")
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    setError("")
 
     try {
       const res = await fetch("/api/profile", {
@@ -35,13 +34,14 @@ export default function ProfileForm({ user }: { user: User }) {
       const data = await res.json()
 
       if (!res.ok) {
-        setError(data.error)
+        toast.error(data.error ?? "Failed to update profile")
         return
       }
 
       setUser(data.user)
+      toast.success("Profile updated")
     } catch {
-      setError("Something went wrong. Please try again.")
+      toast.error("Something went wrong. Please try again.")
     }
   }
 
@@ -64,10 +64,6 @@ export default function ProfileForm({ user }: { user: User }) {
             </p>
           </div>
         </div>
-
-        <button className="border border-gray-300 hover:border-gray-400 transition-colors text-sm font-bold px-4 py-2 rounded-xl shrink-0">
-          Edit Photo
-        </button>
       </div>
 
       <hr className="border-gray-200" />
@@ -124,9 +120,7 @@ export default function ProfileForm({ user }: { user: User }) {
         </div>
       </div>
 
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-        
-      <button type="submit" className="w-full sm:w-fit bg-[#4f46e5] hover:bg-[#4338ca] transition-colors text-white font-bold px-6 py-3 rounded-xl">
+      <button type="submit" className="w-full sm:w-fit bg-[#4f46e5] hover:bg-[#4338ca] transition-colors text-white font-bold px-6 py-3 rounded-xl cursor-pointer">
         Save Changes
       </button>
     </form>

@@ -4,18 +4,18 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useUserStore } from '@/store/userStore'
+import { toast } from 'sonner'
 
 export default function SignUpForm() {
 	const [name, setName] = useState("")
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
-	const [error, setError] = useState("")
 	const router = useRouter()
 	const setUser = useUserStore((state) => state.setUser)
 
+
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
-		setError("")
 
 		try {
 			const res = await fetch("/api/auth/signUp", {
@@ -27,7 +27,7 @@ export default function SignUpForm() {
 			const data = await res.json()
 
 			if (!res.ok) {
-				setError(data.error)
+				toast.error(data.error ?? "Failed to create account")
 				return
 			}
 
@@ -35,7 +35,7 @@ export default function SignUpForm() {
 			router.push("/dashboard/myCourses")
 			router.refresh()
 		} catch {
-			setError("Something went wrong. Please try again.")
+			toast.error("Something went wrong. Please try again.")
 		}
 	}
 
@@ -90,8 +90,6 @@ export default function SignUpForm() {
 						required
 					/>
 				</div>
-
-				{error && <p className="text-red-500 text-sm">{error}</p>}
 
 				<button type="submit" className="bg-[#4f46e5] text-white font-bold py-2 px-4 rounded-xl hover:bg-[#4338ca] transition-colors mt-1 cursor-pointer">
 					Create account

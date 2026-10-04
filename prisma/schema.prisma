@@ -49,8 +49,8 @@ model Enrollment {
   progress       Int      @default(0)
   completedLessons String[] @default([])
 
-  user   User   @relation(fields: [userId], references: [id])
-  course Course @relation(fields: [courseId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
   enrolledAt DateTime @default(now())
 
@@ -62,7 +62,7 @@ model Module {
   title    String
   order    Int
   courseId String
-  course   Course   @relation(fields: [courseId], references: [id])
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   lessons  Lesson[]
 }
 
@@ -73,7 +73,7 @@ model Lesson {
   order    Int
   videoUrl String
   moduleId String
-  module   Module  @relation(fields: [moduleId], references: [id])
+  module   Module  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 }
 
 enum Role {

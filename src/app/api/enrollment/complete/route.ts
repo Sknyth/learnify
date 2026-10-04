@@ -1,27 +1,35 @@
-import { verifyToken } from '@/lib/auth'
+import { getAuthUser } from '@/lib/getAuthUser'
 import { prisma } from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-  const token = req.cookies.get('token')?.value
-  const payload = token && verifyToken(token)
-
+  const payload = getAuthUser(req)
   if (!payload) {
     return NextResponse.json({ error: 'Not authorized' }, { status: 401 })
   }
 
-  const { lessonId, courseId } = await req.json()
+  const body = await req.json().catch(() => null)
+  const lessonId = body?.lessonId
+  const courseId = body?.courseId
 
-  if (!lessonId || !courseId) {
+  if (typeof lessonId !== 'string' || typeof courseId !== 'string') {
     return NextResponse.json({ error: 'lessonId and courseId are required' }, { status: 400 })
   }
 
   const enrollment = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: payload.userId, courseId } },
   })
-
   if (!enrollment) {
-    return NextResponse.json({ error: 'Not enrolled' }, { status: 404 })
+    return NextResponse.json({ error: 'Not enrolled' }, { status: 403 })
+  }
+
+  // урок должен принадлежать именно этому курсу
+  const lesson = await prisma.lesson.findFirst({
+    where: { id: lessonId, module: { courseId } },
+    select: { id: true },
+  })
+  if (!lesson) {
+    return NextResponse.json({ error: 'Lesson not found in this course' }, { status: 404 })
   }
 
   if (enrollment.completedLessons.includes(lessonId)) {
@@ -33,14 +41,13 @@ export async function POST(req: NextRequest) {
   })
 
   const newCompletedLessons = [...enrollment.completedLessons, lessonId]
-  const progress = Math.round((newCompletedLessons.length / totalLessons) * 100)
+  const progress = totalLessons
+    ? Math.min(100, Math.round((newCompletedLessons.length / totalLessons) * 100))
+    : 0
 
   const updated = await prisma.enrollment.update({
     where: { userId_courseId: { userId: payload.userId, courseId } },
-    data: {
-      completedLessons: newCompletedLessons,
-      progress,
-    },
+    data: { completedLessons: newCompletedLessons, progress },
   })
 
   return NextResponse.json({ enrollment: updated })

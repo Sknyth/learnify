@@ -4,37 +4,38 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useUserStore } from '@/store/userStore'
+import { toast } from 'sonner'
 
 export default function SignInForm() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
-	const [error, setError] = useState("")
 	const router = useRouter()
 	const setUser = useUserStore((state) => state.setUser)
 
+
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
-		setError("")
 
 		try {
 			const res = await fetch("/api/auth/signIn", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ email, password }),
+				body: JSON.stringify({ email: email.trim(), password }),
 			})
 
 			const data = await res.json()
 
 			if (!res.ok) {
-				setError(data.error)
+				toast.error(data.error ?? "Invalid email or password")
 				return
 			}
 
 			setUser(data.user)
+			toast.success("Welcome back!")
 			router.push("/dashboard/myCourses")
 			router.refresh()
 		} catch {
-			setError("Something went wrong. Please try again.")
+			toast.error("Something went wrong. Please try again.")
 		}
 	}
 
@@ -58,8 +59,6 @@ export default function SignInForm() {
 					<label htmlFor="password" className="text-sm font-bold text-gray-600">Password</label>
 					<input type="password" id="password" name="password" placeholder="Enter your password" className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all" value={password} onChange={(e) => setPassword(e.target.value)} />
 				</div>
-
-				{error && <p className="text-red-500 text-sm">{error}</p>}
 
 				<button type="submit" className="bg-[#4f46e5] text-white font-bold py-2 px-4 rounded-xl hover:bg-[#4338ca] transition-colors mt-1 cursor-pointer">
 					Sign In
