@@ -1,6 +1,6 @@
 'use client'
 
-import AsideDashboard from '@/components/AsideDashboard'
+import AsideDashboard from '@/features/dashboard/components/AsideDashboard'
 import { Bell, Lock, Mail, Shield, Smartphone } from 'lucide-react'
 import { useState } from 'react'
 

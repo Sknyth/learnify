@@ -1,5 +1,5 @@
-import Logo from "@/components/Logo"
-import SignInForm from "@/components/SignInForm"
+import Logo from "@/components/layout/Logo"
+import SignInForm from "@/features/auth/components/SignInForm"
 
 export default function page() {
 	

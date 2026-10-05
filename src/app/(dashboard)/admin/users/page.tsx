@@ -1,5 +1,5 @@
-import AsideAdmin from '@/components/AsideAdmin'
-import UsersTable from '@/components/UsersTable'
+import AsideAdmin from '@/features/admin/components/AsideAdmin'
+import UsersTable from '@/features/admin/components/UsersTable'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'

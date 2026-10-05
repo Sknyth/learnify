@@ -1,4 +1,4 @@
-import CoursesList from '@/components/CoursesList'
+import CoursesList from '@/features/courses/components/CoursesList'
 import HowItWorks from '@/components/HowItWorks'
 import Review from '@/components/Review'
 import { Star, Zap } from 'lucide-react'

@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { getCurrentUser } from '@/lib/getCurrentUser'
-import UserStoreInitializer from '@/components/UserStoreInitializer'
-import CoursesStoreInitializer from '@/components/CoursesStoreInitializer'
+import UserStoreInitializer from '@/components/shared/UserStoreInitializer'
+import CoursesStoreInitializer from '@/components/shared/CoursesStoreInitializer'
 import { prisma } from '@/lib/prisma'
 import { Toaster } from 'sonner'
 

@@ -1,9 +1,9 @@
-import AsideAdmin from '@/components/AsideAdmin'
-import CoursesTable from '@/components/CoursesTable'
+import AsideAdmin from '@/features/admin/components/AsideAdmin'
+import CoursesTable from '@/features/admin/components/CoursesTable'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
-import AddCourseButton from '@/components/AddCourseButton'
+import AddCourseButton from '@/features/courses/components/AddCourseButton'
 
 export default async function Page() {
 	const user = await getCurrentUser()

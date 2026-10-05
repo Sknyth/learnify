@@ -9,15 +9,15 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import React from "react"
-import { addCourse, editCourse } from '@/app/(dashboard)/admin/courses/actions'
-import { BasicInfoSection } from "@/components/course-form/BasicInfoSection"
-import { CourseFormFooter } from "@/components/course-form/CourseFormFooter"
-import { CurriculumSection } from "@/components/course-form/CurriculumSection"
-import { LearningPointsSection } from "@/components/course-form/LearningPointsSection"
-import type { CourseForm, CourseWithModules } from "@/components/course-form/types"
+import { addCourse, editCourse } from '@/features/courses/actions/course-actions'
+import { BasicInfoSection } from "@/features/courses/course-form/BasicInfoSection"
+import { CourseFormFooter } from "@/features/courses/course-form/CourseFormFooter"
+import { CurriculumSection } from "@/features/courses/course-form/CurriculumSection"
+import { LearningPointsSection } from "@/features/courses/course-form/LearningPointsSection"
+import type { CourseForm, CourseWithModules } from "@/features/courses/course-form/types"
 import { toast } from 'sonner'
 
-export type { CourseForm, CourseWithModules } from "@/components/course-form/types"
+export type { CourseForm, CourseWithModules } from "@/features/courses/course-form/types"
 
 type Props = {
   trigger: React.ReactElement

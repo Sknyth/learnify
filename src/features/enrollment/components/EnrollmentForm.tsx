@@ -4,6 +4,15 @@ import { Shield } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
+import { enrollInCourse } from '../lib/enrollment-client'
+import {
+	emptyPaymentErrors,
+	formatExpiry,
+	validatePayment,
+	validatePaymentField,
+	type PaymentField,
+	type PaymentValues,
+} from '../lib/payment-validation'
 
 type Props = {
 	courseId: string
@@ -13,109 +22,50 @@ type Props = {
 export default function EnrollmentForm({ courseId, price }: Props) {
 	const router = useRouter()
 	const [loading, setLoading] = useState(false)
-	const [name, setName] = useState("")
-	const [nameError, setNameError] = useState("")
-	const [number, setNumber] = useState("")
-	const [numberError, setNumberError] = useState("")
-	const [expiry, setExpiry] = useState("")
-	const [expiryError, setExpiryError] = useState("")
-	const [cvc, setCvc] = useState("")
-	const [cvcError, setCvcError] = useState("")
+	const [values, setValues] = useState<PaymentValues>({
+		name: '',
+		number: '',
+		expiry: '',
+		cvc: '',
+	})
+	const [errors, setErrors] = useState(emptyPaymentErrors)
 
-	function validateName(value: string) {
-		if (!value.trim()) {
-			setNameError("Enter the cardholder's name")
-			return false
+	function updateField(field: PaymentField, value: string) {
+		const nextValue = field === 'expiry' ? formatExpiry(value) : value
+
+		setValues((current) => ({ ...current, [field]: nextValue }))
+		if (errors[field]) {
+			setErrors((current) => ({
+				...current,
+				[field]: validatePaymentField(field, nextValue),
+			}))
 		}
-		if (value.trim().length < 3) {
-			setNameError("The name is too short.")
-			return false
-		}
-		setNameError("")
-		return true
 	}
 
-	function validateNumber(value: string) {
-		const digits = value.replace(/\D/g, "")
-		if (!digits) {
-			setNumberError("Enter the card number")
-			return false
-		}
-		if (digits.length < 16) {
-			setNumberError("The number is too short.")
-			return false
-		}
-		setNumberError("")
-		return true
-	}
-
-	function validateExpiry(value: string) {
-		if (!value) {
-			setExpiryError("Enter the card expiry date")
-			return false
-		}
-		if (value.length < 5) {
-			setExpiryError("Expiry date must be in MM/YY format")
-			return false
-		}
-		setExpiryError("")
-		return true
-	}
-
-	function validateCvc(value: string) {
-			if (!value.trim()) {
-				setCvcError("Enter the card CVC")
-				return false
-			}
-			if (value.trim().length < 3) {
-				setCvcError("CVC is too short")
-				return false
-			}
-			setCvcError("")
-			return true
-		}
-
-	function formatExpiry(value: string) {
-		const digits = value.replace(/\D/g, "").slice(0, 4)
-
-		if (digits.length >= 2) {
-			return `${digits.slice(0, 2)}/${digits.slice(2)}`
-		}
-
-		return digits
+	function validateField(field: PaymentField) {
+		setErrors((current) => ({
+			...current,
+			[field]: validatePaymentField(field, values[field]),
+		}))
 	}
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
 
-		const isNameValid = validateName(name)
-		const isNumberValid = validateNumber(number)
-		const isExpiryValid = validateExpiry(expiry)
-		const isCvcValid = validateCvc(cvc)
+		const result = validatePayment(values)
+		setErrors(result.errors)
 
-		if (!isNameValid || !isNumberValid || !isExpiryValid || !isCvcValid) return
+		if (!result.isValid) return
 
 		setLoading(true)
 
 		try {
-			const res = await fetch("/api/enrollment/enroll", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ courseId }),
-			})
-
-			const data = await res.json()
-
-			if (!res.ok) {
-				toast.error(data.error ?? "Failed to enroll")
-				return
-			}
-
+			await enrollInCourse(courseId)
 			toast.success("Enrolled successfully")
 			router.push("/dashboard/myCourses")
 			router.refresh()
-		} catch {
-			toast.error("Something went wrong. Please try again.")
+		} catch (error) {
+			toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.")
 		} finally {
 			setLoading(false)
 		}
@@ -132,15 +82,13 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 						type="text"
 						id="name"
 						name="name"
-						onChange={(e) => {
-							setName(e.target.value)
-							if (nameError) validateName(e.target.value)
-						}}
-						onBlur={() => validateName(name)}
+						value={values.name}
+						onChange={(e) => updateField('name', e.target.value)}
+						onBlur={() => validateField('name')}
 						placeholder="Jordan Mitchell"
 						className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 					/>
-					{nameError && <p className="text-red-500 text-xs">{nameError}</p>}
+					{errors.name && <p className="text-red-500 text-xs">{errors.name}</p>}
 				</div>
 
 				<div className="flex flex-col gap-2">
@@ -149,17 +97,15 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 						type="text"
 						id="number"
 						name="number"
-						onChange={(e) => {
-							setNumber(e.target.value)
-							if (numberError) validateNumber(e.target.value)
-						}}
-						onBlur={() => validateNumber(number)}
+						value={values.number}
+						onChange={(e) => updateField('number', e.target.value)}
+						onBlur={() => validateField('number')}
 						inputMode="numeric"
 						maxLength={16}
 						placeholder="4242 4242 4242 4242"
 						className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 					/>
-					{numberError && <p className="text-red-500 text-xs">{numberError}</p>}
+					{errors.number && <p className="text-red-500 text-xs">{errors.number}</p>}
 				</div>
 
 				<div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
@@ -169,19 +115,15 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 							type="text"
 							id="expiry"
 							name="expiry"
-							value={expiry}
-							onChange={(e) => {
-								const formatted = formatExpiry(e.target.value)
-								setExpiry(formatted)
-								if (expiryError) validateExpiry(formatted)
-							}}
-							onBlur={() => validateExpiry(expiry)}
+							value={values.expiry}
+							onChange={(e) => updateField('expiry', e.target.value)}
+							onBlur={() => validateField('expiry')}
 							placeholder="MM/YY"
 							maxLength={5}
 							inputMode="numeric"
 							className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 						/>
-						{expiryError && <p className="text-red-500 text-xs">{expiryError}</p>}
+						{errors.expiry && <p className="text-red-500 text-xs">{errors.expiry}</p>}
 					</div>
 
 					<div className="flex flex-col gap-2">
@@ -191,16 +133,14 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 							id="cvc"
 							name="cvc"
 							placeholder="123"
-							onChange={(e) => {
-								setCvc(e.target.value)
-								if (cvcError) validateCvc(e.target.value)
-							}}
-							onBlur={() => validateCvc(cvc)}
+							value={values.cvc}
+							onChange={(e) => updateField('cvc', e.target.value)}
+							onBlur={() => validateField('cvc')}
 							maxLength={4}
 							inputMode="numeric"
 							className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all w-full"
 						/>
-						{cvcError && <p className="text-red-500 text-xs">{cvcError}</p>}
+						{errors.cvc && <p className="text-red-500 text-xs">{errors.cvc}</p>}
 					</div>
 				</div>
 			</div>

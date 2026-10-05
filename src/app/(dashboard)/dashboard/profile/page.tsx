@@ -1,5 +1,5 @@
-import AsideDashboard from '@/components/AsideDashboard'
-import ProfileForm from '@/components/ProfileForm'
+import AsideDashboard from '@/features/dashboard/components/AsideDashboard'
+import ProfileForm from '@/features/profile/components/ProfileForm'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { redirect } from 'next/navigation'
 

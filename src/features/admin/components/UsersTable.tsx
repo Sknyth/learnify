@@ -1,6 +1,6 @@
 'use client'
 
-import { deleteUser, updateUserRole } from '@/app/(dashboard)/admin/users/actions'
+import { deleteUser, updateUserRole } from '@/features/admin/actions/user-actions'
 import { Users } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'

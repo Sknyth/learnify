@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { Shield, Star } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
-import EnrrollmentForm from '@/components/EnrollmentForm'
+import EnrrollmentForm from '@/features/enrollment/components/EnrollmentForm'
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	

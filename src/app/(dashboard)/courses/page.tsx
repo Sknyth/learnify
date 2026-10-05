@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { useCoursesStore } from "@/store/coursesStore"
-import Course from "@/components/Course"
+import Course from "@/features/courses/components/Course"
 
 const categories = ["All", "WebDev", "Design", "DataScience", "DevOps", "Mobile"]
 const categoryLabels: Record<string, string> = {

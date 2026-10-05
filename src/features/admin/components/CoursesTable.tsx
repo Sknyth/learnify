@@ -2,10 +2,10 @@
 
 import { BookOpen, Trash } from 'lucide-react'
 import Image from 'next/image'
-import EditCourseButton from './EditCourseButton'
+import EditCourseButton from '@/features/courses/components/EditCourseButton'
 
-import type { CourseWithModules } from './CourseFormDialog'
-import { deleteCourse } from '@/app/(dashboard)/admin/courses/actions'
+import type { CourseWithModules } from '@/features/courses/components/CourseFormDialog'
+import { deleteCourse } from '@/features/courses/actions/course-actions'
 import { toast } from 'sonner'
 import { startTransition } from 'react'
 

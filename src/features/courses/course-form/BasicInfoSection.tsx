@@ -5,7 +5,7 @@ import type { Category, Level } from "@/generated/prisma/client"
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import type { CourseForm } from "@/components/course-form/types"
+import type { CourseForm } from "@/features/courses/course-form/types"
 
 type Props = {
   form: CourseForm

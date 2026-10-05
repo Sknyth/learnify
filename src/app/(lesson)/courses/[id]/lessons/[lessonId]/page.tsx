@@ -1,17 +1,10 @@
-import ButtonCompleteLesson from '@/components/ButtonCompleteLesson'
-import LessonHeader from '@/components/LessonHeader'
+import LessonHeader from '@/features/lessons/components/LessonHeader'
+import ButtonCompleteLesson from '@/features/lessons/components/ButtonCompleteLesson'
+import LessonPlayer from '@/features/lessons/components/LessonPlayer'
+import LessonSidebar from '@/features/lessons/components/LessonSidebar'
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import { prisma } from '@/lib/prisma'
-import { Play } from 'lucide-react'
-import Link from 'next/link'
 import { notFound, redirect } from 'next/navigation'
-
-function getYouTubeEmbedUrl(url: string): string {
-  const videoId = url.includes('watch?v=')
-    ? url.split('watch?v=')[1].split('&')[0]
-    : url.split('/').pop()
-  return `https://www.youtube.com/embed/${videoId}`
-}
 
 export default async function Page({
   params,
@@ -78,26 +71,12 @@ export default async function Page({
         progress={enrollment.progress}
       />
 
-      <div className="flex flex-1 overflow-hidden">
-        <div className="flex flex-col flex-1 min-w-0">
-          <div className="flex-1 bg-black flex items-center justify-center">
-            {lesson.videoUrl ? (
-              <iframe
-                src={getYouTubeEmbedUrl(lesson.videoUrl)}
-                className="w-full h-full"
-                allowFullScreen
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              />
-            ) : (
-              <div className="flex flex-col items-center gap-3 text-gray-500">
-                <Play className="w-12 h-12" />
-                <p>No video available</p>
-              </div>
-            )}
-          </div>
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden lg:flex-row">
+        <div className="flex min-h-0 flex-1 flex-col">
+          <LessonPlayer videoUrl={lesson.videoUrl} />
 
-          <div className="bg-white border-t border-gray-200 px-6 py-4 flex items-center justify-between">
-            <div>
+          <div className="flex flex-col gap-4 border-t border-gray-200 bg-white px-4 py-4 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="min-w-0">
               <h1 className="font-bold text-lg text-gray-900">{lesson.title}</h1>
               <p className="text-sm text-gray-500">
                 {moduleName} · Lesson {lessonNumber} of {totalLessons}
@@ -112,41 +91,7 @@ export default async function Page({
           </div>
         </div>
 
-        <aside className="hidden lg:flex flex-col w-80 shrink-0 bg-[#1a1a2e] border-l border-white/10 overflow-y-auto">
-          {modules.map((module) => (
-            <div key={module.id}>
-              <div className="px-4 py-3 border-b border-white/10">
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-wide">
-                  Module {module.order}
-                </p>
-                <h2 className="text-sm font-semibold text-white mt-0.5">
-                  {module.title}
-                </h2>
-              </div>
-
-              <div className="flex flex-col">
-                {module.lessons.map((l) => {
-                  const isActive = l.id === lessonId
-                  return (
-                    <Link
-                      key={l.id}
-                      href={`/courses/${id}/lessons/${l.id}`}
-                      className={`flex items-center gap-3 px-4 py-3 text-sm transition-colors border-b border-white/5 ${
-                        isActive
-                          ? 'bg-[#4f46e5]/20 text-white'
-                          : 'text-gray-400 hover:bg-white/5 hover:text-white'
-                      }`}
-                    >
-                      <Play className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-[#4f46e5]'}`} />
-                      <span className="flex-1 truncate">{l.title}</span>
-                      <span className="text-xs text-gray-500 shrink-0">{l.duration}</span>
-                    </Link>
-                  )
-                })}
-              </div>
-            </div>
-          ))}
-        </aside>
+        <LessonSidebar courseId={id} lessonId={lessonId} modules={modules} />
       </div>
     </div>
   )

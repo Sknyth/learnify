@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Input } from "@/components/ui/input"
-import type { CourseForm } from "@/components/course-form/types"
+import type { CourseForm } from "@/features/courses/course-form/types"
 
 type Props = {
   form: CourseForm
