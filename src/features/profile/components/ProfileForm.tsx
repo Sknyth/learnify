@@ -1,6 +1,6 @@
 'use client'
 
-import { useUserStore } from '@/store/userStore'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
@@ -19,7 +19,7 @@ export default function ProfileForm({ user }: { user: User }) {
   const [email, setEmail] = useState(user.email)
   const [phone, setPhone] = useState(user.phone ?? "")
   const [jobTitle, setJobTitle] = useState(user.jobTitle ?? "")
-  const setUser = useUserStore((state) => state.setUser)
+  const router = useRouter()
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -38,8 +38,8 @@ export default function ProfileForm({ user }: { user: User }) {
         return
       }
 
-      setUser(data.user)
       toast.success("Profile updated")
+      router.refresh()
     } catch {
       toast.error("Something went wrong. Please try again.")
     }

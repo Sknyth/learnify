@@ -2,10 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import { getCurrentUser } from '@/lib/getCurrentUser'
-import UserStoreInitializer from '@/components/shared/UserStoreInitializer'
-import CoursesStoreInitializer from '@/components/shared/CoursesStoreInitializer'
-import { prisma } from '@/lib/prisma'
 import { Toaster } from 'sonner'
 
 const inter = Inter({
@@ -23,16 +19,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getCurrentUser()
-  const courses = await prisma.course.findMany({
-    orderBy: { createdAt: 'desc' },
-  })
-
   return (
     <html lang="en" className={cn("h-full", "antialiased", inter.variable, "font-sans")}>
       <body className="min-h-full flex flex-col font-sans">
-        <UserStoreInitializer user={user} />
-        <CoursesStoreInitializer courses={courses} />
         {children}
         <Toaster
           position="top-right"

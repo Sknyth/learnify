@@ -1,11 +1,11 @@
-import { useUserStore } from '@/store/userStore'
+'use client'
+
 import { LogOut } from 'lucide-react'
 import { useRouter } from "next/navigation"
 import { toast } from 'sonner'
 
 export default function LogoutButton() {
 	const router = useRouter()
-	const clearUser = useUserStore((state) => state.clearUser)
 
 	async function handleLogout() {
 		try {
@@ -16,7 +16,6 @@ export default function LogoutButton() {
 				return
 			}
 
-			clearUser()
 			toast.success("Logged out")
 			router.push("/")
 			router.refresh()

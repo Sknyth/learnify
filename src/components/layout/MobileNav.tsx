@@ -9,11 +9,17 @@ import {
   SheetHeader,
   SheetTrigger,
 } from "@/components/ui/sheet"
-import { useUserStore } from '@/store/userStore'
 import { cn } from '@/lib/utils'
 import Logo from './Logo'
 import { useState } from 'react'
 import { adminNavItems, dashboardNavItems, primaryNavItems, type NavItem } from './navigation'
+
+type MobileNavUser = {
+	id: string
+	name: string
+	email: string
+	role: 'USER' | 'ADMIN'
+} | null
 
 function MobileNavLink({
 	item,
@@ -45,9 +51,7 @@ function MobileNavLink({
 	)
 }
 
-export default function MobileNav() {
-	const user = useUserStore((state) => state.user)
-	const clearUser = useUserStore((state) => state.clearUser)
+export default function MobileNav({ user }: { user: MobileNavUser }) {
 	const router = useRouter()
 	const pathname = usePathname()
 	const [open, setOpen] = useState(false)
@@ -55,7 +59,6 @@ export default function MobileNav() {
 	async function handleLogout() {
 		setOpen(false)
 		await fetch("/api/auth/logout", { method: "POST" })
-		clearUser()
 		router.push("/")
 		router.refresh()
 	}

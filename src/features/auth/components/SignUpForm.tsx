@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useUserStore } from '@/store/userStore'
 import { toast } from 'sonner'
 
 export default function SignUpForm() {
@@ -11,8 +10,6 @@ export default function SignUpForm() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const router = useRouter()
-	const setUser = useUserStore((state) => state.setUser)
-
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
@@ -31,7 +28,6 @@ export default function SignUpForm() {
 				return
 			}
 
-			setUser(data.user)
 			router.push("/dashboard/myCourses")
 			router.refresh()
 		} catch {

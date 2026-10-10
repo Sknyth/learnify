@@ -1,9 +1,22 @@
 import { Star } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Course as CourseType } from '@/store/coursesStore'
 
-export default function Course({ course }: { course: CourseType }) {
+export type CourseCardData = {
+	id: string
+	title: string
+	description: string
+	category: string
+	level: string
+	price: number
+	duration: string
+	imageUrl: string
+	rating: number
+	reviewsCount: number
+	studentsCount: number
+}
+
+export default function Course({ course }: { course: CourseCardData }) {
 	return (
 		<Link
 			href={`/courses/${course.id}`}

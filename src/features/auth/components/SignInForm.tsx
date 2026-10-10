@@ -3,15 +3,12 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useUserStore } from '@/store/userStore'
 import { toast } from 'sonner'
 
 export default function SignInForm() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const router = useRouter()
-	const setUser = useUserStore((state) => state.setUser)
-
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
@@ -30,7 +27,6 @@ export default function SignInForm() {
 				return
 			}
 
-			setUser(data.user)
 			toast.success("Welcome back!")
 			router.push("/dashboard/myCourses")
 			router.refresh()
