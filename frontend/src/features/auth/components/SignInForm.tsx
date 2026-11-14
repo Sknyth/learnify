@@ -14,16 +14,20 @@ export default function SignInForm() {
 		e.preventDefault()
 
 		try {
-			const res = await fetch("/api/auth/signIn", {
+			const res = await fetch("http://localhost:8080/api/auth/signIn", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
+				credentials: "include",
 				body: JSON.stringify({ email: email.trim(), password }),
 			})
 
-			const data = await res.json()
+			const data = await res.json().catch(() => null)
 
 			if (!res.ok) {
-				toast.error(data.error ?? "Invalid email or password")
+				toast.error(
+					data?.error ?? data?.detail ??
+					(res.status === 401 ? "Invalid email or password" : "Unable to sign in right now.")
+				)
 				return
 			}
 

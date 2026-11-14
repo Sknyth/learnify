@@ -1,5 +1,5 @@
 export async function enrollInCourse(courseId: string) {
-  const res = await fetch('/api/enrollment/enroll', {
+  const res = await fetch('/api/enrollments/enroll', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ courseId }),

@@ -2,31 +2,28 @@ import AsideDashboard from '@/features/dashboard/components/AsideDashboard'
 import InfoBoxDashboard from '@/features/dashboard/components/InfoBoxDashboard'
 import InfoCourseDashboard from '@/features/dashboard/components/InfoCourseDashboard'
 import { getCurrentUser } from '@/lib/getCurrentUser'
-import { prisma } from '@/lib/prisma'
+import { serverFetch } from '@/lib/serverApi'
+import { MyEnrollmentDto } from '@/types'
 import { BookOpen, Clock, Medal } from 'lucide-react'
 import { redirect } from 'next/navigation'
 
+async function getEnrollments(): Promise<MyEnrollmentDto[]> {
+  try {
+    const res = await serverFetch('/api/enrollments/my')
+    if (!res.ok) throw new Error(`Failed to fetch enrollments: ${res.status}`)
+    return res.json()
+  } catch (error) {
+    console.error('Error fetching enrollments:', error)
+    return []
+  }
+}
 export default async function Page() {
   const user = await getCurrentUser()
 
   if (!user) redirect('/')
 
-  const enrollments = await prisma.enrollment.findMany({
-    where: { userId: user.id },
-    include: {
-      course: {
-        include: {
-          modules: {
-            orderBy: { order: 'asc' },
-            include: {
-              lessons: { orderBy: { order: 'asc' } },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { enrolledAt: 'desc' },
-  })
+  const enrollments = await getEnrollments()
+
 
   const completedCourses = enrollments.reduce((count, enrollment) => {
     if (enrollment.progress === 100) return count + 1

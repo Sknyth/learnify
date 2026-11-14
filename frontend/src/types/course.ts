@@ -12,3 +12,10 @@ export interface CourseDto {
   studentsCount: number
   learningPoints?: string[]
 }
+
+export interface CourseSalesDto {
+  id: string
+  title: string
+  price: number
+  enrollmentsCount: number
+}

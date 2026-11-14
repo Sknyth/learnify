@@ -1,14 +1,14 @@
 'use server'
 
-import {
-  deleteUser as deleteUserAction,
-  updateUserRole as updateUserRoleAction,
-} from '@/features/admin/actions/user-actions'
+import { serverFetch } from '@/lib/serverApi'
 
-export async function deleteUser(userId: string) {
-  return deleteUserAction(userId)
-}
-
-export async function updateUserRole(userId: string, newRole: 'USER' | 'ADMIN') {
-  return updateUserRoleAction(userId, newRole)
+export async function serverGet<T>(path: string, fallback: T): Promise<T> {
+  try {
+    const res = await serverFetch(path)
+    if (!res.ok) throw new Error(`GET ${path} failed: ${res.status}`)
+    return await res.json()
+  } catch (error) {
+    console.error(error)
+    return fallback
+  }
 }

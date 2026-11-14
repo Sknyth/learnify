@@ -1,20 +1,11 @@
 'use client'
 
+import { UserDto } from '@/types'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { toast } from 'sonner'
 
-type User = {
-  id: string
-  name: string
-  email: string
-  createdAt: Date
-  phone: string | null
-  jobTitle: string | null
-}
-
-
-export default function ProfileForm({ user }: { user: User }) {
+export default function ProfileForm({ user }: { user: UserDto }) {
   const [name, setName] = useState(user.name)
   const [email, setEmail] = useState(user.email)
   const [phone, setPhone] = useState(user.phone ?? "")
@@ -25,7 +16,7 @@ export default function ProfileForm({ user }: { user: User }) {
     e.preventDefault()
 
     try {
-      const res = await fetch("/api/profile", {
+      const res = await fetch("/api/users/update", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, phone, jobTitle }),

@@ -18,10 +18,19 @@ public class AuthService {
 
     public record AuthResponse(String token, UserDto user) {}
 
+    public UserDto me(String userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return UserDto.fromEntity(user);
+    }
+
     public AuthResponse createUser(String email, String password, String name) {
         if (name == null || name.isBlank() || email == null || email.isBlank() || password == null || password.isBlank()) {
             throw new IllegalArgumentException("Fields cannot be empty");
         }
+
+        email = email.trim().toLowerCase(java.util.Locale.ROOT);
+        name = name.trim();
 
         if (userRepository.existsByEmail(email)) {
             throw new RuntimeException("User with this email already exists");
@@ -46,7 +55,9 @@ public class AuthService {
             throw new IllegalArgumentException("Email and password are required");
         }
 
-        UserEntity user = userRepository.findByEmail(email)
+        email = email.trim().toLowerCase(java.util.Locale.ROOT);
+
+        UserEntity user = userRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
         if (!bcrypt.matches(password, user.getPassword())) {

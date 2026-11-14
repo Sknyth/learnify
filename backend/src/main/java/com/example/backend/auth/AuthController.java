@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.Map;
 
@@ -17,6 +18,13 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDto> me(Authentication auth) {
+        String userId = (String) auth.getPrincipal();
+        return ResponseEntity.ok(authService.me(userId));
+    }
 
     @PostMapping("/signUp")
     public ResponseEntity<UserDto> createUser(

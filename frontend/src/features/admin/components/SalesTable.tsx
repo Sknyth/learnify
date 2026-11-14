@@ -1,19 +1,15 @@
 'use client'
 
+import { CourseSalesDto } from '@/types'
 import { BarChart3 } from 'lucide-react'
 
 type Props = {
-	courses: {
-		id: string
-		title: string
-		price: number
-		enrollments: { id: string }[]
-	}[]
+	courses: CourseSalesDto[]
 }
 
 export default function SalesTable({ courses }: Props) {
-	const sorted = [...courses].sort((a, b) => b.enrollments.length - a.enrollments.length)
-	const maxSales = Math.max(...courses.map((c) => c.enrollments.length), 1)
+	const sorted = [...courses].sort((a, b) => b.enrollmentsCount - a.enrollmentsCount)
+	const maxSales = Math.max(...courses.map((c) => c.enrollmentsCount), 1)
 
 	return (
 		<div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
@@ -49,7 +45,7 @@ export default function SalesTable({ courses }: Props) {
 							</tr>
 						) : (
 							sorted.map((c) => {
-								const sales = c.enrollments.length
+								const sales = c.enrollmentsCount
 								const percent = Math.round((sales / maxSales) * 100)
 
 								return (

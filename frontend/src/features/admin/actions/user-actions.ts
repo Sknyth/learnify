@@ -1,34 +1,34 @@
 'use server'
 
-import { getCurrentUser } from '@/lib/getCurrentUser'
-import { prisma } from '@/lib/prisma'
+import { serverFetch } from '@/lib/serverApi'
 import { revalidatePath } from 'next/cache'
 
 export async function deleteUser(userId: string) {
-	const currentUser = await getCurrentUser()
-	if (!currentUser || currentUser.role !== 'ADMIN') {
-		return { success: false, error: 'Unauthorized' }
-	}
-	if (currentUser.id === userId) {
-		return { success: false, error: 'Cannot delete yourself' }
-	}
-	await prisma.user.delete({ where: { id: userId } })
-	revalidatePath('/admin/users')
-	return { success: true }
+	const res = await serverFetch(`/api/users/delete/${encodeURIComponent(userId)}`, {
+		method: 'DELETE',
+	})
+
+  if (!res.ok){
+		const data = await res.json().catch(() => null)
+		return { success: false, error: data?.error ?? `Request failed (${res.status})` }
+	} 
+
+  revalidatePath('/admin/users')
+  return { success: true }
 }
 
 export async function updateUserRole(userId: string, newRole: 'USER' | 'ADMIN') {
-	const currentUser = await getCurrentUser()
-	if (!currentUser || currentUser.role !== 'ADMIN') {
-		return { success: false, error: 'Unauthorized' }
-	}
-	if (currentUser.id === userId) {
-		return { success: false, error: 'Cannot change your own role' }
-	}
-	await prisma.user.update({
-		where: { id: userId },
-		data: { role: newRole },
-	})
-	revalidatePath('/admin/users')
-	return { success: true }
+  const res = await serverFetch('/api/users/update/role', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ userId, role: newRole }),
+  })
+
+  if (!res.ok){
+		const data = await res.json().catch(() => null)
+		return { success: false, error: data?.error ?? `Request failed (${res.status})` }
+	} 
+
+  revalidatePath('/admin/users')
+  return { success: true }
 }

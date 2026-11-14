@@ -10,8 +10,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, String> {
     boolean existsByEmail(String email);
 
-    @Override
-    Optional<UserEntity> findById(String s);
-
     Optional<UserEntity> findByEmail(String email);
+
+    Optional<UserEntity> findByEmailIgnoreCase(String email);
 }

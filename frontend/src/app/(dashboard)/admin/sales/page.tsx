@@ -2,21 +2,29 @@ import AsideAdmin from '@/features/admin/components/AsideAdmin'
 import SalesTable from '@/features/admin/components/SalesTable'
 import InfoBoxSales from '@/features/admin/components/InfoBoxSales'
 import { getCurrentUser } from '@/lib/getCurrentUser'
-import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
+import { CourseSalesDto, MyEnrollmentDto } from '@/types'
+import { serverFetch } from '@/lib/serverApi'
+import { serverGet } from './actions'
+
+async function getEnrollments(): Promise<MyEnrollmentDto[]> {
+	try {
+		const res = await serverFetch('/api/enrollments')
+		if (!res.ok) throw new Error('Failed to fetch enrollments')
+		return res.json()
+	} catch (error) {
+		console.error('Error fetching enrollments:', error)
+		return []
+	}
+}
 
 export default async function Page() {
 	const user = await getCurrentUser()
 	if (!user || user.role !== 'ADMIN') redirect('/dashboard/myCourses')
 
-	const courses = await prisma.course.findMany({
-		include: { enrollments: true },
-		orderBy: { createdAt: 'desc' }
-	})
+	const courses = await serverGet<CourseSalesDto[]>('/api/courses/sales', [])
 
-	const enrollments = await prisma.enrollment.findMany({
-		include: { course: { select: { price: true } } },
-	})
+	const enrollments = await getEnrollments()
 
 	const now = new Date()
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
