@@ -10,8 +10,9 @@ const nextConfig: NextConfig = {
     ],
   },
   async rewrites() {
+    const apiUrl = (process.env.API_URL ?? "http://localhost:8080").replace(/\/+$/, "");
     return [
-      { source: "/api/:path*", destination: "http://localhost:8080/api/:path*" },
+      { source: "/api/:path*", destination: `${apiUrl}/api/:path*` },
     ]
   },
 };

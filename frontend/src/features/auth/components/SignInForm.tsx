@@ -14,7 +14,7 @@ export default function SignInForm() {
 		e.preventDefault()
 
 		try {
-			const res = await fetch("http://localhost:8080/api/auth/signIn", {
+			const res = await fetch("/api/auth/signIn", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				credentials: "include",

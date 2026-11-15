@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -18,6 +19,9 @@ import java.util.Map;
 public class AuthController {
 
     private final AuthService authService;
+
+    @Value("${app.cookie-secure:true}")
+    private boolean secureCookie;
 
 
     @GetMapping("/me")
@@ -30,7 +34,7 @@ public class AuthController {
     public ResponseEntity<Void> logout() {
         ResponseCookie cookie = ResponseCookie.from("token", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(secureCookie)
                 .path("/")
                 .maxAge(0)
                 .sameSite("Strict")
@@ -54,7 +58,7 @@ public class AuthController {
 
         ResponseCookie jwtCookie = ResponseCookie.from("token", authResult.token())
                 .httpOnly(true)
-                .secure(false)
+                .secure(secureCookie)
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60)
                 .sameSite("Strict")
@@ -77,7 +81,7 @@ public class AuthController {
 
         ResponseCookie jwtCookie = ResponseCookie.from("token", authResult.token())
                 .httpOnly(true)
-                .secure(false)
+                .secure(secureCookie)
                 .path("/")
                 .maxAge(7 * 24 * 60 * 60)
                 .sameSite("Strict")
