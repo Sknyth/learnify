@@ -1,7 +1,7 @@
 'use client'
 
 import type React from "react"
-import type { Category, Level } from "@/generated/prisma/client"
+import type { Category, Level } from "@/types/course"
 import { Field } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"

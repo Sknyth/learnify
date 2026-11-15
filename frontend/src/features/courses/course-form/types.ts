@@ -1,19 +1,26 @@
-import type { Course, Lesson, Module } from "@/generated/prisma/client"
+import type { CourseDto } from "@/types/course"
+import type { Category, Level } from "@/types/course"
 
-export type CourseWithModules = Course & {
-  modules: (Module & { lessons: Lesson[] })[]
-}
+type LessonForm = { title: string; duration: string; videoUrl: string; tempId: string }
 
-type LessonForm = Pick<Lesson, "title" | "duration" | "videoUrl"> & { tempId: string }
-
-type ModuleForm = Pick<Module, "title"> & {
+type ModuleForm = {
+  title: string
   tempId: string
   lessons: LessonForm[]
 }
 
-export type CourseForm = Omit<
-  Course,
-  "id" | "rating" | "reviewsCount" | "studentsCount" | "createdAt" | "updatedAt"
-> & {
+export type CourseWithModules = CourseDto & {
+  modules: (ModuleForm & { id: string; order: number; lessons: (LessonForm & { id: string; order: number })[] })[]
+}
+
+export type CourseForm = {
+  title: string
+  description: string
+  category: Category
+  level: Level
+  price: number
+  duration: string
+  imageUrl: string
+  learningPoints: string[]
   modules: ModuleForm[]
 }

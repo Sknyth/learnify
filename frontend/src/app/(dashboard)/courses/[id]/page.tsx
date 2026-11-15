@@ -1,28 +1,20 @@
 import Curriculum from '@/features/courses/components/Curriculum'
-import { prisma } from '@/lib/prisma'
+import { serverFetch } from '@/lib/serverApi'
 import { CheckCircle, CirclePlay, Clock, Globe, Star, Shield, Award, Infinity as InfinityIcon } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import type { CourseDto } from '@/types/course'
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params
 
 	if (!id) return notFound()
 
-	const course = await prisma.course.findUnique({
-		where: { id },
-		include: {
-			modules: {
-				orderBy: { order: 'asc' },
-				include: {
-					lessons: { orderBy: { order: 'asc' } }
-				}
-			}
-		}
-	})
-
-	if (!course) return notFound()
+	const response = await serverFetch(`/api/courses/${encodeURIComponent(id)}`)
+	if (response.status === 404) return notFound()
+	if (!response.ok) throw new Error('Failed to load course')
+	const course: CourseDto = await response.json()
 
 	const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0)
 

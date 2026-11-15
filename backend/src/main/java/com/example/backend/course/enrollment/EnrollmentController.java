@@ -25,6 +25,11 @@ public class EnrollmentController {
         return enrollmentService.findMyEnrollments((String) auth.getPrincipal());
     }
 
+    @GetMapping("/courses/{courseId}/status")
+    public boolean enrollmentStatus(@PathVariable String courseId, Authentication auth) {
+        return enrollmentService.isEnrolled((String) auth.getPrincipal(), courseId);
+    }
+
     @PostMapping("/enroll")
     public ResponseEntity<EnrollmentDto> enroll(@RequestBody Map<String, String> request, Authentication auth) {
         String userId = (String) auth.getPrincipal();

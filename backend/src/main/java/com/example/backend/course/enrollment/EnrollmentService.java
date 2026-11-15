@@ -28,6 +28,11 @@ public class EnrollmentService {
     }
 
     @Transactional(readOnly = true)
+    public boolean isEnrolled(String userId, String courseId) {
+        return enrollmentRepository.existsByUserIdAndCourseId(userId, courseId);
+    }
+
+    @Transactional(readOnly = true)
     public List<MyEnrollmentDto> findMyEnrollments(String userId) {
         return enrollmentRepository.findByUserIdOrderByEnrolledAtDesc(userId).stream()
                 .map(MyEnrollmentDto::fromEntity)

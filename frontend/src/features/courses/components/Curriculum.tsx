@@ -5,14 +5,14 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { getCurrentUser } from '@/lib/getCurrentUser'
-import { prisma } from '@/lib/prisma'
+import { serverFetch } from '@/lib/serverApi'
 import { Play, Lock } from "lucide-react"
 import Link from 'next/link'
 
 type Lesson = {
   id: string
   title: string
-  duration: string
+  duration: string | null
 }
 
 type Module = {
@@ -27,18 +27,8 @@ export default async function Curriculum({ courseId, modules }: { courseId: stri
   let isEnrolled = false
 
   if (user && user.id) {
-    const existing = await prisma.enrollment.findUnique({
-      where: { 
-        userId_courseId: { 
-          userId: user.id, 
-          courseId 
-        } 
-      }
-    })
-    
-    if (existing) {
-      isEnrolled = true
-    }
+    const response = await serverFetch(`/api/enrollments/courses/${encodeURIComponent(courseId)}/status`)
+    if (response.ok) isEnrolled = await response.json()
   }
 
   return (

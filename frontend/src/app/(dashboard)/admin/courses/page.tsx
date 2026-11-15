@@ -1,26 +1,27 @@
 import AsideAdmin from '@/features/admin/components/AsideAdmin'
 import CoursesTable from '@/features/admin/components/CoursesTable'
 import { getCurrentUser } from '@/lib/getCurrentUser'
-import { prisma } from '@/lib/prisma'
 import { redirect } from 'next/navigation'
 import AddCourseButton from '@/features/courses/components/AddCourseButton'
+import { CourseDto } from '@/types'
+import { serverFetch } from '@/lib/serverApi'
+
+async function getCourses(): Promise<CourseDto[]> {
+	try {
+		const res = await serverFetch('/api/courses?limit=6')
+		if (!res.ok) throw new Error('Failed to fetch courses')
+		return res.json()
+	} catch (error) {
+		console.error('Error fetching courses:', error)
+		return []
+	}
+}
 
 export default async function Page() {
 	const user = await getCurrentUser()
 	if (!user || user.role !== 'ADMIN') redirect('/dashboard/myCourses')
 
-	const courses = await prisma.course.findMany({
-	include: {
-		_count: { select: { enrollments: true } },
-		modules: {
-			orderBy: { order: 'asc' },
-			include: {
-				lessons: { orderBy: { order: 'asc' } },
-			},
-		},
-	},
-	orderBy: { createdAt: 'desc' },
-})
+	const courses = await getCourses()
 
 	return (
 		<div className="flex flex-col md:flex-row">

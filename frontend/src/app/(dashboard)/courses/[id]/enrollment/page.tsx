@@ -1,4 +1,4 @@
-import { prisma } from '@/lib/prisma'
+import { serverFetch } from '@/lib/serverApi'
 import { Shield, Star } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
@@ -10,9 +10,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
 	if (!id) return notFound()
 
-	const course = await prisma.course.findUnique({ where: { id } })
-
-	if (!course) return notFound()
+	const response = await serverFetch(`/api/courses/${encodeURIComponent(id)}`)
+	if (response.status === 404) return notFound()
+	if (!response.ok) throw new Error('Failed to load course')
+	const course = await response.json()
 
 	const originalPrice = Math.round(course.price / 0.45)
 	const discount = originalPrice - course.price

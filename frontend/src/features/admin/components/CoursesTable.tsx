@@ -4,13 +4,13 @@ import { BookOpen, Trash } from 'lucide-react'
 import Image from 'next/image'
 import EditCourseButton from '@/features/courses/components/EditCourseButton'
 
-import type { CourseWithModules } from '@/features/courses/components/CourseFormDialog'
 import { deleteCourse } from '@/features/courses/actions/course-actions'
 import { toast } from 'sonner'
 import { startTransition } from 'react'
+import { CourseDto } from '@/types'
 
 type Props = {
-	courses: (CourseWithModules & { _count: { enrollments: number } })[]
+	courses: CourseDto[]
 }
 
 export default function CoursesTable({ courses }: Props) {
@@ -85,14 +85,14 @@ export default function CoursesTable({ courses }: Props) {
 										</span>
 									</td>
 									<td className="px-4 sm:px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-										{c._count.enrollments.toLocaleString('en-US')}
+										{c.studentsCount.toLocaleString('en-US')}
 									</td>
 									<td className="px-4 sm:px-6 py-4 text-sm font-semibold text-gray-800 whitespace-nowrap">
 										${c.price.toLocaleString('en-US', { maximumFractionDigits: 2 })}
 									</td>
 									<td className="px-4 sm:px-6 py-4">
 										<div className="flex items-center justify-end gap-1">
-											<EditCourseButton course={c} /> 
+											<EditCourseButton course={c} />
 											<button
 												type="button"
 												aria-label="Delete"

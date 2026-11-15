@@ -15,20 +15,21 @@ import { CourseFormFooter } from "@/features/courses/course-form/CourseFormFoote
 import { CurriculumSection } from "@/features/courses/course-form/CurriculumSection"
 import { LearningPointsSection } from "@/features/courses/course-form/LearningPointsSection"
 import type { CourseForm, CourseWithModules } from "@/features/courses/course-form/types"
+import { Category, Level } from "@/types/course"
 import { toast } from 'sonner'
 
 export type { CourseForm, CourseWithModules } from "@/features/courses/course-form/types"
 
 type Props = {
   trigger: React.ReactElement
-  course?: CourseWithModules
+  course?: { id: string }
 }
 
 const emptyForm: CourseForm = {
   title: "",
   description: "",
-  category: "WebDev",
-  level: "Beginner",
+  category: Category.WebDev,
+  level: Level.Beginner,
   price: 0,
   duration: "",
   imageUrl: "",
@@ -36,58 +37,78 @@ const emptyForm: CourseForm = {
   modules: [],
 }
 
+function toForm(c: CourseWithModules): CourseForm {
+  return {
+    title: c.title,
+    description: c.description,
+    category: c.category,
+    level: c.level,
+    price: c.price,
+    duration: c.duration,
+    imageUrl: c.imageUrl,
+    learningPoints: c.learningPoints,
+    modules: c.modules.map((m) => ({
+      tempId: m.id,
+      title: m.title,
+      lessons: m.lessons.map((l) => ({
+        tempId: l.id,
+        title: l.title,
+        duration: l.duration ?? '',
+        videoUrl: l.videoUrl ?? '',
+      })),
+    })),
+  }
+}
+
 export default function CourseFormDialog({ course, trigger }: Props) {
-  const isEditing = !!course
+  const courseId = course?.id
+  const isEditing = !!courseId
   const [open, setOpen] = React.useState(false)
-
-  const [form, setForm] = React.useState<CourseForm>(() =>
-    course
-      ? {
-          title: course.title,
-          description: course.description,
-          category: course.category,
-          level: course.level,
-          price: course.price,
-          duration: course.duration,
-          imageUrl: course.imageUrl,
-          learningPoints: course.learningPoints,
-          modules: course.modules.map((m) => ({
-            tempId: m.id,
-            title: m.title,
-            lessons: m.lessons.map((l) => ({
-              tempId: l.id,
-              title: l.title,
-              duration: l.duration,
-              videoUrl: l.videoUrl,
-            })),
-          })),
-        }
-      : emptyForm
-  )
-
+  const [loading, setLoading] = React.useState(false)
+  const [form, setForm] = React.useState<CourseForm>(emptyForm)
   const [isPending, startTransition] = React.useTransition()
+
+  async function loadCourse() {
+    if (!courseId) return
+    setLoading(true)
+    try {
+      const r = await fetch(`/api/courses/${courseId}`)
+      if (!r.ok) throw new Error()
+      const c: CourseWithModules = await r.json()
+      setForm(toForm(c))
+    } catch {
+      toast.error('Failed to load course')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  function handleOpenChange(next: boolean) {
+    setOpen(next)
+    if (next) loadCourse()
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
 
     startTransition(async () => {
-      const res = course ? await editCourse(form, course.id) : await addCourse(form)
+      const res = courseId ? await editCourse(form, courseId) : await addCourse(form)
 
       if (!res.success) {
         toast.error(res.error ?? 'Something went wrong')
         return
       }
 
-      toast.success(course ? 'Course updated' : 'Course added')
+      toast.success(courseId ? 'Course updated' : 'Course added')
       setOpen(false)
-      if (!course) setForm(emptyForm)
+      if (!courseId) setForm(emptyForm)
     })
   }
 
   const lessonsTotal = form.modules.reduce((sum, m) => sum + m.lessons.length, 0)
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger render={trigger} />
 
       <DialogContent className="flex max-h-[90dvh] w-[calc(100%-1rem)] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
@@ -110,7 +131,7 @@ export default function CourseFormDialog({ course, trigger }: Props) {
 
         <CourseFormFooter
           isEditing={isEditing}
-          isPending={isPending}
+          isPending={isPending || loading}
           lessonsTotal={lessonsTotal}
           modulesTotal={form.modules.length}
         />
