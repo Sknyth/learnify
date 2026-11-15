@@ -32,4 +32,11 @@ public class EnrollmentController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(enrollmentService.enroll(userId, courseId));
     }
+
+    @PostMapping("/complete-lesson")
+    public ResponseEntity<EnrollmentDto> completeLesson(@RequestBody Map<String, String> request, Authentication auth) {
+        String userId = (String) auth.getPrincipal();
+        return ResponseEntity.ok(
+                enrollmentService.completeLesson(userId, request.get("courseId"), request.get("lessonId")));
+    }
 }

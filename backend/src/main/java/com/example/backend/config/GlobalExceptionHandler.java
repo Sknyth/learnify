@@ -28,8 +28,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> notFound(RuntimeException e) {
+        e.printStackTrace();
         return build(HttpStatus.NOT_FOUND, e.getMessage());
     }
+
 
     private ResponseEntity<Map<String, String>> build(HttpStatus status, String message) {
         return ResponseEntity.status(status).body(Map.of("error", message == null ? "Error" : message));

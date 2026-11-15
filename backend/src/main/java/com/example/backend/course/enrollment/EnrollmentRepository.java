@@ -14,8 +14,10 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, St
     @Query("select e from EnrollmentEntity e join fetch e.course")
     List<EnrollmentEntity> findAllWithCourse();
 
-    @EntityGraph(attributePaths = {"course", "course.modules"})
+    @EntityGraph(attributePaths = {"course", "course.moduleEntities"})
     List<EnrollmentEntity> findByUserIdOrderByEnrolledAtDesc(String userId);
 
     boolean existsByUserIdAndCourseId(String userId, String courseId);
+
+    Optional<EnrollmentEntity> findByUserIdAndCourseId(String userId, String courseId);
 }

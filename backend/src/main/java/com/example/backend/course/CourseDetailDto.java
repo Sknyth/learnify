@@ -1,6 +1,7 @@
 package com.example.backend.course;
 
 import com.example.backend.model.CourseEntity;
+import com.example.backend.model.ModuleEntity;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,8 +12,8 @@ public record CourseDetailDto(String id, String title, String imageUrl, List<Mod
                 c.getId(),
                 c.getTitle(),
                 c.getImageUrl(),
-                c.getModules().stream()
-                        .sorted(Comparator.comparing(com.example.backend.model.Module::getOrder))
+                c.getModuleEntities().stream()
+                        .sorted(Comparator.comparing(ModuleEntity::getOrder))
                         .map(ModuleDto::fromEntity)
                         .toList());
     }

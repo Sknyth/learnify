@@ -1,18 +1,19 @@
 package com.example.backend.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "\"Lesson\"")
+@Table(name = "\"Module\"")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Lesson {
+public class ModuleEntity {
 
     @Id
     private String id;
@@ -20,18 +21,16 @@ public class Lesson {
     @Column(nullable = false)
     private String title;
 
-    private String duration;
-
     @Column(name = "\"order\"")
     private Integer order;
 
-    @Column(name = "\"videoUrl\"")
-    private String videoUrl;
-
-    @Column(name = "\"moduleId\"", nullable = false)
-    private String moduleId;
+    @Column(name = "\"courseId\"", nullable = false)
+    private String courseId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "\"moduleId\"", insertable = false, updatable = false)
-    private Module module;
+    @JoinColumn(name = "\"courseId\"", insertable = false, updatable = false)
+    private CourseEntity courseEntity;
+
+    @OneToMany(mappedBy = "moduleEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LessonEntity> lessonEntities;
 }

@@ -21,10 +21,10 @@ export default function ButtonCompleteLesson({ lessonId, courseId, isCompleted, 
 		setLoading(true)
 
 		try {
-			const res = await fetch('/api/enrollment/complete', {
+			const res = await fetch('/api/enrollments/complete-lesson', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ lessonId, courseId }),
+				body: JSON.stringify({ courseId, lessonId }),
 			})
 
 			if (res.ok) {

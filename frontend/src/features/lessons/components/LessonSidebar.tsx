@@ -4,7 +4,7 @@ import Link from 'next/link'
 type Lesson = {
   id: string
   title: string
-  duration: string
+  duration: string | null
 }
 
 type Module = {
@@ -55,7 +55,7 @@ export default function LessonSidebar({ courseId, lessonId, modules }: Props) {
                 >
                   <Play className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-white' : 'text-[#4f46e5]'}`} />
                   <span className="flex-1 truncate">{lesson.title}</span>
-                  <span className="text-xs text-gray-500 shrink-0">{lesson.duration}</span>
+                  <span className="text-xs text-gray-500 shrink-0">{lesson.duration ?? ''}</span>
                 </Link>
               )
             })}

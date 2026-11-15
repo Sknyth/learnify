@@ -26,6 +26,21 @@ public class AuthController {
         return ResponseEntity.ok(authService.me(userId));
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        ResponseCookie cookie = ResponseCookie.from("token", "")
+                .httpOnly(true)
+                .secure(false)
+                .path("/")
+                .maxAge(0)
+                .sameSite("Strict")
+                .build();
+
+        return ResponseEntity.noContent()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .build();
+    }
+
     @PostMapping("/signUp")
     public ResponseEntity<UserDto> createUser(
             @RequestBody Map<String, String> request,

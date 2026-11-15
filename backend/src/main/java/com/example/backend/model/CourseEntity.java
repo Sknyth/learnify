@@ -54,7 +54,7 @@ public class CourseEntity {
     private List<String> learningPoints;
 
     @OneToMany(mappedBy = "courseEntity", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Module> modules;
+    private List<ModuleEntity> moduleEntities;
 
     @OneToMany(mappedBy = "course", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EnrollmentEntity> enrollmentEntities;
