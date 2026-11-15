@@ -1,0 +1,82 @@
+import AsideDashboard from '@/features/dashboard/components/AsideDashboard'
+import InfoBoxDashboard from '@/features/dashboard/components/InfoBoxDashboard'
+import InfoCourseDashboard from '@/features/dashboard/components/InfoCourseDashboard'
+import { getCurrentUser } from '@/lib/getCurrentUser'
+import { serverFetch } from '@/lib/serverApi'
+import { MyEnrollmentDto } from '@/types'
+import { BookOpen, Clock, Medal } from 'lucide-react'
+import { redirect } from 'next/navigation'
+
+async function getEnrollments(): Promise<MyEnrollmentDto[]> {
+  try {
+    const res = await serverFetch('/api/enrollments/my')
+    if (!res.ok) throw new Error(`Failed to fetch enrollments: ${res.status}`)
+    return res.json()
+  } catch (error) {
+    console.error('Error fetching enrollments:', error)
+    return []
+  }
+}
+export default async function Page() {
+  const user = await getCurrentUser()
+
+  if (!user) redirect('/')
+
+  const enrollments = await getEnrollments()
+
+
+  const completedCourses = enrollments.reduce((count, enrollment) => {
+    if (enrollment.progress === 100) return count + 1
+    return count
+  }, 0)
+
+  return (
+    <div className="flex min-h-screen">
+      <AsideDashboard />
+      <div className="py-8 sm:py-12 px-4 sm:px-8 lg:px-16 xl:px-24 flex flex-col mx-auto w-full gap-6 sm:gap-10">
+        <div className="flex flex-col justify-start items-start">
+          <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+          <h2 className="text-gray-500 text-sm sm:text-base">
+            You have {enrollments.length} active course{enrollments.length !== 1 ? 's' : ''}.
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <InfoBoxDashboard Icon={BookOpen} count={enrollments.length} desc="Courses" />
+          <InfoBoxDashboard Icon={Clock} count={0} desc="Hours watched" />
+          <InfoBoxDashboard Icon={Medal} count={completedCourses} desc="Certificates" />
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {enrollments.length === 0 ? (
+            <p className="text-gray-500 text-sm">You haven&apos;t enrolled in any courses yet.</p>
+          ) : (
+            enrollments.map((enrollment) => {
+              const allLessons = enrollment.course.modules.flatMap((m) => m.lessons)
+              
+              const nextLesson = allLessons.find(
+                (lesson) => !enrollment.completedLessons.includes(lesson.id)
+              )
+
+              const targetLesson = nextLesson || allLessons[allLessons.length - 1]
+              const lessonId = targetLesson?.id || ''
+              const lastLessonTitle = targetLesson?.title || 'No lessons'
+
+              return (
+                <InfoCourseDashboard
+                  key={enrollment.id}
+                  title={enrollment.course.title}
+                  imageUrl={enrollment.course.imageUrl}
+                  lastLesson={lastLessonTitle}
+                  progress={enrollment.progress}
+                  courseId={enrollment.course.id}
+                  lessonId={lessonId}
+                />
+              )
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
