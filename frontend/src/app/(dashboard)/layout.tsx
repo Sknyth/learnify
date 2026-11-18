@@ -1,13 +1,11 @@
-import Header from "@/components/layout/Header"
-import { getCurrentUser } from "@/lib/getCurrentUser"
+import DashboardHeader from '@/components/layout/DashboardHeader'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser()
 
   return (
     <>
-      <Header user={user} />
-      <main className="flex-1 pt-16 sm:pt-20 bg-[#f8f9fc]">
+      <DashboardHeader />
+      <main className="flex-1 bg-[#f8f9fc] pt-8">
         {children}
       </main>
     </>

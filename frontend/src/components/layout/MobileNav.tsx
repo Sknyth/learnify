@@ -10,6 +10,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet"
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 import Logo from './Logo'
 import { useState } from 'react'
 import { adminNavItems, dashboardNavItems, primaryNavItems, type NavItem } from './navigation'
@@ -18,7 +19,7 @@ type MobileNavUser = {
 	id: string
 	name: string
 	email: string
-	role: 'USER' | 'ADMIN'
+	role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'
 } | null
 
 function MobileNavLink({
@@ -58,9 +59,18 @@ export default function MobileNav({ user }: { user: MobileNavUser }) {
 
 	async function handleLogout() {
 		setOpen(false)
-		await fetch("/api/auth/logout", { method: "POST" })
-		router.push("/")
-		router.refresh()
+		try {
+			const response = await fetch('/api/auth/logout', { method: 'POST' })
+			if (!response.ok) {
+				toast.error('Не удалось выйти из аккаунта')
+				return
+			}
+
+			router.push('/')
+			router.refresh()
+		} catch {
+			toast.error('Не удалось выполнить запрос. Попробуйте ещё раз.')
+		}
 	}
 
 	return (

@@ -62,7 +62,7 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 		try {
 			await enrollInCourse(courseId)
 			toast.success("Enrolled successfully")
-			router.push("/dashboard/myCourses")
+			router.push("/dashboard/overview")
 			router.refresh()
 		} catch (error) {
 			toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.")

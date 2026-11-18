@@ -88,4 +88,11 @@ public class EnrollmentService {
 
         return EnrollmentDto.fromEntity(enrollmentRepository.save(enrollment));
     }
+
+    @Transactional(readOnly = true)
+    public List<OrderEnrollmentDto> findMyOrdersEnrollments(String userId) {
+        return enrollmentRepository.findByUserIdOrderByEnrolledAtDesc(userId).stream()
+                .map(OrderEnrollmentDto::fromEntity)
+                .toList();
+    }
 }

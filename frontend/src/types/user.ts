@@ -1,4 +1,4 @@
-export type Role = 'USER' | 'ADMIN'
+export type Role = 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'
 
 export interface UserDto {
   id: string

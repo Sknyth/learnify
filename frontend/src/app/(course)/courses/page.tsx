@@ -1,6 +1,10 @@
+import Header from '@/components/layout/Header'
 import CoursesBrowser from "@/features/courses/components/CoursesBrowser"
+import { getCurrentUser } from '@/lib/getCurrentUser'
 import { serverFetch } from '@/lib/serverApi'
 import { CourseDto } from '@/types'
+
+export const dynamic = 'force-dynamic'
 
 async function getCourses(): Promise<CourseDto[]> {
 	try {
@@ -15,8 +19,13 @@ async function getCourses(): Promise<CourseDto[]> {
 
 export default async function Page() {
 	const courses = await getCourses()
+	const user = await getCurrentUser()
 
 	return (
-		<CoursesBrowser courses={courses} />
+		<div>
+
+			<Header user={user} />
+			<CoursesBrowser courses={courses} />
+		</div>
 	)
 }

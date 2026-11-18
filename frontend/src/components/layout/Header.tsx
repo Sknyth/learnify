@@ -5,7 +5,7 @@ type HeaderUser = {
 	id: string
 	name: string
 	email: string
-	role: 'USER' | 'ADMIN'
+	role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'
 } | null
 
 export default function Header({ user }: { user: HeaderUser }) {

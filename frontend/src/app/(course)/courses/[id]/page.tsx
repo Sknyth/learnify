@@ -11,9 +11,11 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
 	if (!id) return notFound()
 
-	const response = await serverFetch(`/api/courses/${encodeURIComponent(id)}`)
+	const response = await serverFetch(`/api/courses/${encodeURIComponent(id)}`, {}, { auth: false })
 	if (response.status === 404) return notFound()
-	if (!response.ok) throw new Error('Failed to load course')
+	if (!response.ok) {
+		throw new Error(`Failed to load course: ${response.status} ${response.statusText}`)
+	}
 	const course: CourseDto = await response.json()
 
 	const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0)

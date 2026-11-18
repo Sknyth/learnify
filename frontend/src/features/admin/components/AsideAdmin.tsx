@@ -1,20 +1,31 @@
-import { Shield } from 'lucide-react'
+import { getCurrentUser } from '@/lib/getCurrentUser'
+import Logo from '@/components/layout/Logo'
+import LogoutButton from '@/features/auth/components/LogoutButton'
 import AdminNav from './AdminNav'
+import { WorkspaceSwitcher } from '@/features/dashboard/components/WorkspaceSwitcher'
+import SettingsLink from '@/features/dashboard/components/SettingsLink'
 
-export default function AsideAdmin() {
+export default async function AsideAdmin() {
+	const user = await getCurrentUser()
+
 	return (
-		<aside className="hidden md:flex md:flex-col w-64 shrink-0 gap-6 bg-white border-r border-gray-200 sticky top-16 sm:top-20 h-[calc(100vh-4rem)] sm:h-[calc(100vh-5rem)] self-start overflow-y-auto">
-			<div className="flex items-center gap-2 px-4 pt-6">
-				<div className="w-12 h-12 rounded-full bg-[#4f46e5] text-white flex items-center justify-center font-bold text-lg shrink-0">
-					<Shield className="w-6 h-6" />
-				</div>
-				<div className="flex flex-col items-start gap-1 min-w-0">
-					<span className="text font-bold text-gray-600 truncate">Admin Panel</span>
-				</div>
+		<aside className="hidden md:flex md:flex-col md:fixed md:top-0 md:left-0 w-64 shrink-0 bg-white border-r border-gray-200 h-screen">
+			<div className="border-b border-gray-200 h-16 sm:h-20 flex items-center px-4">
+				<Logo />
 			</div>
 
-			<hr className="w-full" />
-			<AdminNav />
+			<div className="w-full px-4 pt-5 pb-4">
+        {user && <WorkspaceSwitcher user={user} />}
+      </div>
+
+			<div className="flex-1 overflow-y-auto">
+				<AdminNav />
+			</div>
+
+			<div className="mt-auto flex flex-col gap-2">
+        <SettingsLink />
+        <LogoutButton user={user} />
+      </div>
 		</aside>
 	)
 }

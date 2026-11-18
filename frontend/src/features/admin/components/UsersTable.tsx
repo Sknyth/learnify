@@ -1,55 +1,50 @@
 'use client'
 
 import { deleteUser, updateUserRole } from '@/features/admin/actions/user-actions'
+import { UserDto } from '@/types'
 import { Users } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-type UserRow = {
-	id: string
-	name: string | null
-	email: string
-	createdAt: Date
-	enrollments: { id: string }[]
-	role: 'USER' | 'ADMIN'
-}
+function RoleSelect({ user, disabled }: { user: UserDto; disabled: boolean }) {
+  const [role, setRole] = useState(user.role)
 
-function RoleSelect({ user, disabled }: { user: UserRow; disabled: boolean }) {
-	const [role, setRole] = useState(user.role)
+  const handleChange = (newRole: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN') => {
+    const previous = role
+    setRole(newRole)
 
-	const handleChange = (newRole: 'USER' | 'ADMIN') => {
-		const previous = role
-		setRole(newRole)
+    updateUserRole(user.id, newRole).then((result) => {
+      if (result.success) {
+        toast.success('User role updated')
+      } else {
+        setRole(previous)
+        toast.error(result?.error ?? 'Error updating user role')
+      }
+    })
+  }
 
-		updateUserRole(user.id, newRole).then((result) => {
-			if (result.success) {
-				toast.success('User role updated')
-			} else {
-				setRole(previous)
-				toast.error(result?.error ?? 'Error updating user role')
-			}
-		})
-	}
+  const roleStyles = {
+    ADMIN: 'bg-red-50 text-red-600 border-red-200 focus:ring-red-300 hover:bg-red-100',
+    INSTRUCTOR: 'bg-[#4338ca]/10 text-[#4338ca] border-[#4338ca]/20 focus:ring-[#4338ca]/40 hover:bg-[#4338ca]/15',
+    STUDENT: 'bg-[#ECFDF5] text-[#047857] border-[#A7F3D0] focus:ring-[#047857]/30 hover:bg-[#D1FAE5]',
+  }
 
-	return (
-		<select
-			className={`appearance-none cursor-pointer text-center px-4 py-1.5 rounded-full text-xs font-semibold border transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed ${
-				role === 'ADMIN'
-					? 'bg-red-50 text-red-600 border-red-200 focus:ring-red-300 hover:bg-red-100'
-					: 'bg-[#4338ca]/10 text-[#4338ca] border-[#4338ca]/20 focus:ring-[#4338ca]/40 hover:bg-[#4338ca]/15'
-			}`}
-			value={role}
-			onChange={(e) => handleChange(e.target.value as 'USER' | 'ADMIN')}
-			disabled={disabled}
-		>
-			<option value="USER">User</option>
-			<option value="ADMIN">Admin</option>
-		</select>
-	)
+  return (
+    <select
+      className={`appearance-none cursor-pointer text-center px-4 py-1.5 rounded-full text-xs font-semibold border transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed ${roleStyles[role]}`}
+      value={role}
+      onChange={(e) => handleChange(e.target.value as 'STUDENT' | 'INSTRUCTOR' | 'ADMIN')}
+      disabled={disabled}
+    >
+      <option value="STUDENT">Student</option>
+      <option value="INSTRUCTOR">Instructor</option>
+      <option value="ADMIN">Admin</option>
+    </select>
+  )
 }
 
 type Props = {
-	users: UserRow[]
+	users: UserDto[]
 }
 
 export default function UsersTable({ users }: Props) {

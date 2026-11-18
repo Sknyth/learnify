@@ -1,14 +1,13 @@
 'use client'
 
-import { BookOpen, Settings, Users } from 'lucide-react'
+import { LayoutDashboard, Package } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 const links = [
-	{ href: '/dashboard/myCourses', label: 'My Courses', icon: BookOpen },
-	{ href: '/dashboard/profile', label: 'Profile', icon: Users },
-	{ href: '/dashboard/settings', label: 'Settings', icon: Settings },
+	{ href: '/dashboard/overview', label: 'Overview', icon: LayoutDashboard },
+	{ href: '/dashboard/orders', label: 'Orders', icon: Package },
 ]
 
 export default function DashboardNav() {
@@ -16,6 +15,7 @@ export default function DashboardNav() {
 
 	return (
 		<nav className="flex flex-col gap-2 px-4">
+			<p className="px-3 text-[10px] font-bold uppercase tracking-[.14em] text-muted-foreground">Menu</p>
 			{links.map(({ href, label, icon: Icon }) => {
 				const isActive = pathname === href
 				return (

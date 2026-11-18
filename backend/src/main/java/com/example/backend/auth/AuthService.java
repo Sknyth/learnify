@@ -41,7 +41,7 @@ public class AuthService {
         user.setEmail(email);
         user.setPassword(bcrypt.encode(password));
         user.setName(name);
-        user.setRole(com.example.backend.model.enums.Role.ADMIN);
+        user.setRole(com.example.backend.model.enums.Role.STUDENT);
         user.setCreatedAt(java.time.LocalDateTime.now());
 
         UserDto created = UserDto.fromEntity(userRepository.save(user));

@@ -17,6 +17,7 @@ export default function AdminNav() {
 
 	return (
 		<div className="flex flex-col gap-2 px-4">
+			<p className="px-3 text-[10px] font-bold uppercase tracking-[.14em] text-muted-foreground">Menu</p>
 			{items.map((item) => {
 				const Icon = item.icon
 				const isActive = pathname === item.href

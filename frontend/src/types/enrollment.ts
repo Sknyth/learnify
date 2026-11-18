@@ -30,3 +30,16 @@ export interface MyEnrollmentDto {
     }[]
   }
 }
+
+export interface OrderEnrollmentDto {
+  id: string
+	course: { id: string, title: string, price: number }
+	enrolledAt: Date
+	status: Status
+}
+
+export enum Status {
+  Paid = 'Paid',
+  Refunded = 'Refunded',
+  Failed = 'Failed',
+}
