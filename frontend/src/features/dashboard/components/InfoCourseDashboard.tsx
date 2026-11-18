@@ -1,6 +1,8 @@
-import { CircleCheck, Play } from 'lucide-react'
+import { Category } from '@/generated/prisma/enums'
+import { ArrowRight, CircleCheck } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 type Props = {
   title: string
@@ -9,52 +11,48 @@ type Props = {
   progress: number
   courseId: string
   lessonId: string
+  category?: Category
+  isPrimary?: boolean
 }
 
-export default function InfoCourseDashboard({ 
-  title, 
-  imageUrl, 
-  lastLesson, 
-  progress, 
+export default function InfoCourseDashboard({
+  title,
+  imageUrl,
+  lastLesson,
+  progress,
   courseId,
-  lessonId 
+  lessonId,
+  category,
+  isPrimary = false,
 }: Props) {
-
   const isCompleted = progress === 100
+
   return (
-    <div className="flex flex-col gap-5 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:flex-row sm:p-6">
+    <div className="group flex flex-col gap-4 py-5 transition-colors first:pt-2 last:pb-2 sm:flex-row sm:items-center sm:gap-5">
       <Image
         src={imageUrl}
-        className="h-40 w-full rounded-xl bg-gray-100 object-cover sm:h-24 sm:w-36 sm:shrink-0"
+        className="h-36 w-full rounded-xl bg-gray-100 object-cover sm:h-20 sm:w-32 sm:shrink-0"
         width={600}
         height={340}
         alt={title}
       />
 
       <div className="min-w-0 flex-1">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <h2 className="truncate text-lg font-semibold text-gray-950">
-              {title}
-            </h2>
-            <p className="mt-1 truncate text-sm text-gray-500">
-              Last lesson: {lastLesson}
-            </p>
-          </div>
-
-          <span className="inline-flex h-7 shrink-0 items-center rounded-full bg-indigo-50 px-3 text-sm font-semibold text-indigo-600">
-            {progress}%
+        {category && (
+          <span className="block text-[11px] font-semibold uppercase tracking-wider text-indigo-600">
+            {category}
           </span>
-        </div>
+        )}
+        <h3
+          title={lastLesson ? `Next: ${lastLesson}` : undefined}
+          className="mt-0.5 truncate text-base font-bold text-gray-900"
+        >
+          {title}
+        </h3>
 
-        <div className="mt-5">
-          <div className="mb-2 flex items-center justify-between text-sm">
-            <span className="font-medium text-gray-700">Progress</span>
-            <span className="text-gray-500">{progress}% completed</span>
-          </div>
-
+        <div className="mt-3">
           <div
-            className="h-2 overflow-hidden rounded-full bg-gray-100"
+            className="h-1.5 overflow-hidden rounded-full bg-gray-100"
             role="progressbar"
             aria-valuenow={progress}
             aria-valuemin={0}
@@ -65,19 +63,38 @@ export default function InfoCourseDashboard({
               style={{ width: `${progress}%` }}
             />
           </div>
-        </div>
 
-        {!isCompleted ? <Link
-          className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2 sm:w-auto"
-          href={`/courses/${courseId}/lessons/${lessonId}`}
-        >
-          <Play className="h-4 w-4" />
-          Continue Learning
-        </Link>
-        : <button className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 px-4 py-2.5 text-sm font-semibold text-white transition sm:w-auto" disabled>
-          <CircleCheck className="h-4 w-4" />
-          Completed
-          </button>}
+          <div className="mt-1.5 flex items-center justify-between text-xs">
+            <span className="truncate text-gray-400">
+              {lastLesson}
+            </span>
+            <span className="shrink-0 font-semibold text-gray-600">
+              {progress}%
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="sm:shrink-0">
+        {!isCompleted ? (
+          <Link
+            href={`/courses/${courseId}/lessons/${lessonId}`}
+            className={cn(
+              'inline-flex w-full items-center justify-center gap-1.5 rounded-[10px] px-4 py-2 text-xs font-semibold transition sm:w-auto',
+              isPrimary
+                ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                : 'border border-gray-200 bg-white text-gray-700 hover:border-indigo-600 hover:bg-indigo-600 hover:text-white'
+            )}
+          >
+            Continue
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        ) : (
+          <span className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-emerald-50 px-4 py-2 text-xs font-semibold text-emerald-600 sm:w-auto">
+            <CircleCheck className="h-3.5 w-3.5" />
+            Completed
+          </span>
+        )}
       </div>
     </div>
   )

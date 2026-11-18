@@ -1,5 +1,5 @@
 import { getCurrentUser } from '@/lib/getCurrentUser'
-import DashboardNav from './DashboardNav'
+import DashboardNav from './NavDashboard'
 import Logo from '@/components/layout/Logo'
 import SettingsLink from './SettingsLink'
 import { WorkspaceSwitcher } from './WorkspaceSwitcher'

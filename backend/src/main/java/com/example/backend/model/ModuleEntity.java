@@ -1,6 +1,7 @@
 package com.example.backend.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.BatchSize;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,5 +33,6 @@ public class ModuleEntity {
     private CourseEntity courseEntity;
 
     @OneToMany(mappedBy = "moduleEntity", cascade = CascadeType.ALL, orphanRemoval = true)
+    @BatchSize(size = 50)
     private List<LessonEntity> lessonEntities;
 }

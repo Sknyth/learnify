@@ -27,6 +27,9 @@ public class CourseEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(nullable = false)
+    private String instructor;
+
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 

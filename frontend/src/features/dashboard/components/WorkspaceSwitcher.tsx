@@ -29,7 +29,7 @@ const WORKSPACES = [
     name: 'Instructor',
     description: 'Courses, students and sales',
     basePath: '/instructor',
-    href: '/instructor',
+    href: '/instructor/overview',
     icon: BookOpen,
     roles: ['INSTRUCTOR', 'ADMIN'],
   },

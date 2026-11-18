@@ -5,6 +5,7 @@ import { getCurrentUser } from '@/lib/getCurrentUser'
 import { serverFetch } from '@/lib/serverApi'
 import { MyEnrollmentDto } from '@/types'
 import { BookOpen, Clock, Medal } from 'lucide-react'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 async function getEnrollments(): Promise<MyEnrollmentDto[]> {
@@ -47,35 +48,57 @@ export default async function Page() {
           <InfoBoxDashboard Icon={Medal} count={completedCourses} desc="Certificates" />
         </div>
 
-        <div className="flex flex-col gap-4">
+        <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-bold text-gray-900">Continue learning</h2>
+              <p className="mt-0.5 text-xs text-gray-400">
+                Pick up right where you left off
+              </p>
+            </div>
+
+            <Link
+              href="/dashboard/myLearning"
+              className="text-xs font-semibold text-indigo-600 transition hover:text-indigo-700"
+            >
+              View all
+            </Link>
+          </div>
+
           {enrollments.length === 0 ? (
-            <p className="text-gray-500 text-sm">You haven&apos;t enrolled in any courses yet.</p>
+            <p className="py-6 text-sm text-gray-500">
+              You haven&apos;t enrolled in any courses yet.
+            </p>
           ) : (
-            enrollments.map((enrollment) => {
-              const allLessons = enrollment.course.modules.flatMap((m) => m.lessons)
-              
-              const nextLesson = allLessons.find(
-                (lesson) => !enrollment.completedLessons.includes(lesson.id)
-              )
+            <div className="divide-y divide-gray-100">
+              {enrollments.slice(0, 3).map((enrollment, index) => {
+                const allLessons = enrollment.course?.modules.flatMap((m) => m.lessons) ?? []
 
-              const targetLesson = nextLesson || allLessons[allLessons.length - 1]
-              const lessonId = targetLesson?.id || ''
-              const lastLessonTitle = targetLesson?.title || 'No lessons'
+                const nextLesson = allLessons.find(
+                  (lesson) => !enrollment.completedLessons.includes(lesson.id)
+                )
 
-              return (
-                <InfoCourseDashboard
-                  key={enrollment.id}
-                  title={enrollment.course.title}
-                  imageUrl={enrollment.course.imageUrl}
-                  lastLesson={lastLessonTitle}
-                  progress={enrollment.progress}
-                  courseId={enrollment.course.id}
-                  lessonId={lessonId}
-                />
-              )
-            })
+                const targetLesson = nextLesson || allLessons[allLessons.length - 1]
+                const lessonId = targetLesson?.id || ''
+                const lastLessonTitle = targetLesson?.title || 'No lessons'
+
+                return (
+                  <InfoCourseDashboard
+                    key={enrollment.id}
+                    title={enrollment.course?.title ?? ''}
+                    imageUrl={enrollment.course?.imageUrl ?? ''}
+                    category={enrollment.course?.category}
+                    lastLesson={lastLessonTitle}
+                    progress={enrollment.progress}
+                    courseId={enrollment.course?.id ?? ''}
+                    lessonId={lessonId}
+                    isPrimary={index === 0}
+                  />
+                )
+              })}
+            </div>
           )}
-        </div>
+        </section>
       </div>
     </div>
   )

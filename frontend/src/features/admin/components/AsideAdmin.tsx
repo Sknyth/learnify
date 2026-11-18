@@ -1,7 +1,7 @@
 import { getCurrentUser } from '@/lib/getCurrentUser'
 import Logo from '@/components/layout/Logo'
 import LogoutButton from '@/features/auth/components/LogoutButton'
-import AdminNav from './AdminNav'
+import AdminNav from './NavAdmin'
 import { WorkspaceSwitcher } from '@/features/dashboard/components/WorkspaceSwitcher'
 import SettingsLink from '@/features/dashboard/components/SettingsLink'
 

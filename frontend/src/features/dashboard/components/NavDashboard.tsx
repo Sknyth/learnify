@@ -1,12 +1,13 @@
 'use client'
 
-import { LayoutDashboard, Package } from 'lucide-react'
+import { BookOpen, LayoutDashboard, Package } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 
 const links = [
 	{ href: '/dashboard/overview', label: 'Overview', icon: LayoutDashboard },
+	{ href: '/dashboard/myLearning', label: 'My Learning', icon: BookOpen },
 	{ href: '/dashboard/orders', label: 'Orders', icon: Package },
 ]
 
