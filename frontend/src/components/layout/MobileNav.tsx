@@ -1,18 +1,15 @@
 "use client"
 
-import { Menu, LogOut } from 'lucide-react'
+import { LayoutDashboard, LogOut, Menu } from 'lucide-react'
 import Link from 'next/link'
-import { useRouter, usePathname } from 'next/navigation'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTrigger,
-} from "@/components/ui/sheet"
-import { cn } from '@/lib/utils'
-import { toast } from 'sonner'
-import Logo from './Logo'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
+import { WorkspaceSwitcher } from '@/features/dashboard/components/WorkspaceSwitcher'
+import type { UserDto } from '@/types'
+import { cn } from '@/lib/utils'
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet'
+import Logo from './Logo'
 import { adminNavItems, dashboardNavItems, primaryNavItems, type NavItem } from './navigation'
 
 type MobileNavUser = {
@@ -40,14 +37,14 @@ function MobileNavLink({
 		<Link
 			href={item.href}
 			className={cn(
-				"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2",
-				!withIcon && "py-3",
-				isActive && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
+				'flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-gray-600 transition-colors hover:bg-gray-50 hover:text-gray-900',
+				!withIcon && 'py-2.5',
+				isActive && 'bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]'
 			)}
 			onClick={onNavigate}
 		>
-			{withIcon && Icon && <Icon className="w-4 h-4" />}
-			{item.label}
+			{withIcon && Icon && <Icon className="h-5 w-5 shrink-0" />}
+			<span>{item.label}</span>
 		</Link>
 	)
 }
@@ -56,6 +53,11 @@ export default function MobileNav({ user }: { user: MobileNavUser }) {
 	const router = useRouter()
 	const pathname = usePathname()
 	const [open, setOpen] = useState(false)
+	const activeWorkspace = pathname.startsWith('/admin')
+		? 'admin'
+		: pathname.startsWith('/instructor')
+			? 'instructor'
+			: 'student'
 
 	async function handleLogout() {
 		setOpen(false)
@@ -77,88 +79,79 @@ export default function MobileNav({ user }: { user: MobileNavUser }) {
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger
 				render={
-					<button className="md:hidden p-2 -mr-2 rounded-lg hover:bg-gray-50 transition-colors" aria-label="Toggle menu">
-						<Menu className="w-6 h-6" />
+					<button className="-mr-2 rounded-lg p-2 transition-colors hover:bg-gray-50 md:hidden" aria-label="Toggle menu">
+						<Menu className="h-6 w-6" />
 					</button>
 				}
 			/>
-			<SheetContent side="right" className="w-72">
-				<SheetHeader>
+			<SheetContent side="right" className="w-[min(88vw,24rem)] gap-0 overflow-hidden p-0">
+				<SheetHeader className="shrink-0 border-b border-gray-100 px-5 py-5">
 					<Logo />
 				</SheetHeader>
 
-				<div className="flex flex-col gap-1 px-4">
-					{primaryNavItems.map((item) => (
-						<MobileNavLink key={item.href} item={item} pathname={pathname} onNavigate={() => setOpen(false)} />
-					))}
-
-					<div className="h-px bg-gray-200 my-2" />
-
-					{user ? (
-						<>
-							<div className="flex items-center gap-2 px-4 py-2">
-								<div className="w-8 h-8 rounded-full bg-[#4f46e5] text-white flex items-center justify-center font-bold shrink-0">
-									{user.name?.[0]?.toUpperCase() ?? "?"}
-								</div>
-								<span className="text-sm font-bold text-gray-700 truncate">{user.name}</span>
-							</div>
-
-							<span className="text-xs font-semibold text-gray-400 uppercase tracking-wide px-4 pb-1">
-								Dashboard
-							</span>
-							{dashboardNavItems.map((item) => (
-								<MobileNavLink
-									key={item.href}
-									item={item}
-									pathname={pathname}
-									onNavigate={() => setOpen(false)}
-									withIcon
-								/>
+				<div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+					<div className="flex flex-col gap-5 px-5 py-5">
+						<nav aria-label="Main navigation" className="flex flex-col gap-1">
+							{primaryNavItems.map((item) => (
+								<MobileNavLink key={item.href} item={item} pathname={pathname} onNavigate={() => setOpen(false)} />
 							))}
+						</nav>
 
-							{user.role === 'ADMIN' && (
-								<>
-									<div className="h-px bg-gray-200 my-2" />
-									<span className="text-xs font-semibold text-gray-400 uppercase tracking-wide px-4 pb-1">
-										Admin
+						{user ? (
+							<>
+								<div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">
+									<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#4f46e5] font-bold text-white">
+										{user.name?.[0]?.toUpperCase() ?? '?'}
+									</div>
+									<div className="min-w-0">
+										<p className="truncate text-sm font-bold text-gray-900">{user.name}</p>
+										<p className="truncate text-xs text-gray-500">{user.email}</p>
+									</div>
+								</div>
+
+								{user.role !== 'STUDENT' && <WorkspaceSwitcher user={user as UserDto} />}
+
+								<nav aria-label="Workspace navigation" className="flex flex-col gap-2">
+									<span className="px-3 text-[11px] font-bold uppercase tracking-[0.12em] text-gray-400">
+										{activeWorkspace === 'instructor' ? 'Instructor' : activeWorkspace === 'admin' ? 'Admin' : 'Student'}
 									</span>
-									{adminNavItems.map((item) => (
+									{activeWorkspace === 'student' && dashboardNavItems.map((item) => (
+										<MobileNavLink key={item.href} item={item} pathname={pathname} onNavigate={() => setOpen(false)} withIcon />
+									))}
+									{activeWorkspace === 'instructor' && (
 										<MobileNavLink
-											key={item.href}
-											item={item}
+											item={{ href: '/instructor/overview', label: 'Overview', icon: LayoutDashboard }}
 											pathname={pathname}
 											onNavigate={() => setOpen(false)}
 											withIcon
 										/>
+									)}
+									{activeWorkspace === 'admin' && user.role === 'ADMIN' && adminNavItems.map((item) => (
+										<MobileNavLink key={item.href} item={item} pathname={pathname} onNavigate={() => setOpen(false)} withIcon />
 									))}
-								</>
-							)}
-
-							<div className="h-px bg-gray-200 my-2" />
-
-							<button
-								onClick={handleLogout}
-								className="text-sm font-bold text-red-600 hover:bg-red-50 transition-colors rounded-lg px-4 py-2 flex items-center gap-2 text-left"
-							>
-								<LogOut className="w-4 h-4" />
-								Log Out
-							</button>
-						</>
-					) : (
-						<div className="flex flex-col gap-2">
-							<Link
-							 href="/signIn" className="text-sm font-bold text-center text-gray-600 border border-gray-300 hover:border-gray-400 transition-colors rounded-lg px-4 py-3"
-							 onClick={() => setOpen(false)}>
-								Sign In
-							</Link>
-							<Link 
-							href="/signUp" className="text-sm font-bold text-center text-white bg-[#4f46e5] hover:bg-[#4338ca] transition-colors rounded-lg px-4 py-3"
-							onClick={() => setOpen(false)}>
-								Sign Up
-							</Link>
-						</div>
-					)}
+								</nav>
+							</>
+						) : (
+							<div className="flex flex-col gap-2 pt-1">
+								<Link href="/signIn" className="rounded-xl border border-gray-200 px-4 py-3 text-center text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50" onClick={() => setOpen(false)}>
+									Sign In
+								</Link>
+								<Link href="/signUp" className="rounded-xl bg-[#4f46e5] px-4 py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#4338ca]" onClick={() => setOpen(false)}>
+									Sign Up
+								</Link>
+							</div>
+						)}
+					</div>
 				</div>
+
+				{user && (
+					<div className="shrink-0 border-t border-gray-100 bg-white p-4">
+						<button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold text-red-600 transition-colors hover:bg-red-50">
+							<LogOut className="h-4 w-4" />
+							Log Out
+						</button>
+					</div>
+				)}
 			</SheetContent>
 		</Sheet>
 	)
