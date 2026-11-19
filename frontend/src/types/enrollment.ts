@@ -1,4 +1,4 @@
-import { Category } from '@/generated/prisma/enums'
+import { Category } from './course'
 
 export interface EnrollmentDto {
   id: string

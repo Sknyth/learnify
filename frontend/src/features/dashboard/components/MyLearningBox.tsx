@@ -1,4 +1,4 @@
-import { Category } from '@/generated/prisma/enums'
+import type { Category } from '@/types/course'
 import { ArrowRight, CircleCheck } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
