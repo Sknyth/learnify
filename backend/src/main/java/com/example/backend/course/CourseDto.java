@@ -10,6 +10,7 @@ import java.util.List;
 public record CourseDto(
         String id,
         String title,
+        String instructor,
         String description,
         Category category,
         Level level,
@@ -31,6 +32,7 @@ public record CourseDto(
         return new CourseDto(
                 course.getId(),
                 course.getTitle(),
+                course.getInstructor(),
                 course.getDescription(),
                 course.getCategory(),
                 course.getLevel(),

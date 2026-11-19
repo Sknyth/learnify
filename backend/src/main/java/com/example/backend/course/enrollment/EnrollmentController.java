@@ -44,4 +44,9 @@ public class EnrollmentController {
         return ResponseEntity.ok(
                 enrollmentService.completeLesson(userId, request.get("courseId"), request.get("lessonId")));
     }
+
+    @GetMapping("/orders")
+    public List<OrderEnrollmentDto> getMyOrdersEnrollments(Authentication auth) {
+        return enrollmentService.findMyOrdersEnrollments((String) auth.getPrincipal());
+    }
 }

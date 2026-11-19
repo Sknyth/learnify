@@ -17,7 +17,7 @@ export async function deleteUser(userId: string) {
   return { success: true }
 }
 
-export async function updateUserRole(userId: string, newRole: 'USER' | 'ADMIN') {
+export async function updateUserRole(userId: string, newRole: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN') {
   const res = await serverFetch('/api/users/update/role', {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },

@@ -9,6 +9,6 @@ export async function deleteUser(userId: string) {
   return deleteUserAction(userId)
 }
 
-export async function updateUserRole(userId: string, newRole: 'USER' | 'ADMIN') {
+export async function updateUserRole(userId: string, newRole: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN') {
   return updateUserRoleAction(userId, newRole)
 }

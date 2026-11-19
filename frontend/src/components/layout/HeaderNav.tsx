@@ -9,7 +9,7 @@ type HeaderUser = {
 	id: string
 	name: string
 	email: string
-	role: 'USER' | 'ADMIN'
+	role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'
 } | null
 
 export default function HeaderNav({ user }: { user: HeaderUser }) {
@@ -29,7 +29,7 @@ export default function HeaderNav({ user }: { user: HeaderUser }) {
 					Courses
 				</Link>
 				{user && (
-					<Link href="/dashboard/myCourses" className={cn(
+					<Link href="/dashboard/overview" className={cn(
 						"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2",
 						isDashboard && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
 					)}>

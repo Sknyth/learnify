@@ -1,7 +1,8 @@
 import {
   BookOpen,
   ChartNoAxesColumn,
-  Settings,
+  LayoutDashboard,
+  Package,
   TrendingUp,
   Users,
   type LucideIcon,
@@ -18,9 +19,13 @@ export const primaryNavItems: NavItem[] = [
 ]
 
 export const dashboardNavItems: NavItem[] = [
-  { href: '/dashboard/myCourses', label: 'My Courses', icon: BookOpen },
-  { href: '/dashboard/profile', label: 'Profile', icon: Users },
-  { href: '/dashboard/settings', label: 'Settings', icon: Settings },
+  { href: '/dashboard/overview', label: 'Overview', icon: LayoutDashboard },
+	{ href: '/dashboard/myLearning', label: 'My Learning', icon: BookOpen },
+	{ href: '/dashboard/orders', label: 'Orders', icon: Package },
+]
+
+export const instructorNavItems: NavItem[] = [
+  { href: '/instructor/overview', label: 'Overview', icon: LayoutDashboard },
 ]
 
 export const adminNavItems: NavItem[] = [
@@ -29,3 +34,9 @@ export const adminNavItems: NavItem[] = [
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/sales', label: 'Sales', icon: TrendingUp },
 ]
+
+export const workspaceNavItems = {
+  student: dashboardNavItems,
+  instructor: instructorNavItems,
+  admin: adminNavItems,
+}

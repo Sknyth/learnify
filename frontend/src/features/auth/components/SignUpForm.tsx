@@ -29,7 +29,7 @@ export default function SignUpForm() {
 				return
 			}
 
-			router.push("/dashboard/myCourses")
+			router.push("/dashboard/overview")
 			router.refresh()
 		} catch {
 			toast.error("Something went wrong. Please try again.")

@@ -1,3 +1,5 @@
+import { Category } from './course'
+
 export interface EnrollmentDto {
   id: string
   userId: string
@@ -16,17 +18,35 @@ export interface MyEnrollmentDto {
   id: string
   progress: number
   completedLessons: string[]
-  enrolledAt: Date
+  enrolledAt: string
   course: {
     id: string
     title: string
     imageUrl: string
     price: number
+    category: Category
     modules: {
       id: string
       title: string
       order: number
-      lessons: { id: string; title: string; order: number }[]
+      lessons: {
+        id: string
+        title: string
+        order: number
+      }[]
     }[]
   }
+}
+
+export interface OrderEnrollmentDto {
+  id: string
+	course: { id: string, title: string, price: number }
+	enrolledAt: Date
+	status: Status
+}
+
+export enum Status {
+  Paid = 'Paid',
+  Refunded = 'Refunded',
+  Failed = 'Failed',
 }
