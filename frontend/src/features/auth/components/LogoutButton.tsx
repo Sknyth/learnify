@@ -1,14 +1,19 @@
 'use client'
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { LogOut } from 'lucide-react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import type { UserDto } from '@/types'
 
 export default function LogoutButton({ user }: { user: UserDto }) {
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
   async function handleLogout() {
+    if (loading) return
+    setLoading(true)
     try {
       const res = await fetch('/api/auth/logout', { method: 'POST' })
 
@@ -22,6 +27,8 @@ export default function LogoutButton({ user }: { user: UserDto }) {
       router.refresh()
     } catch {
       toast.error('Something went wrong. Please try again.')
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -38,7 +45,10 @@ export default function LogoutButton({ user }: { user: UserDto }) {
           {user?.email ?? ''}
         </span>
       </div>
-      <button
+      <PendingButton
+        pending={loading}
+        pendingLabel="Logging out…"
+        iconOnly
         type="button"
         onClick={handleLogout}
         aria-label="Log out"
@@ -46,7 +56,7 @@ export default function LogoutButton({ user }: { user: UserDto }) {
         className="grid h-10 w-10 shrink-0 place-items-center rounded-lg text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 cursor-pointer"
       >
         <LogOut className="h-5 w-5" />
-      </button>
+      </PendingButton>
     </div>
   )
 }

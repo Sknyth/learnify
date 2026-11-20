@@ -2,19 +2,20 @@ import { CourseDto } from '@/types'
 import CourseCard from '@/features/courses/components/CourseCard'
 import { serverFetch } from '@/lib/server-api'
 
-async function getCourses(): Promise<CourseDto[]> {
+async function getCourses(): Promise<CourseDto[] | null> {
 	try {
-		const res = await serverFetch('/api/courses?limit=6', {}, { auth: false })
+		const res = await serverFetch('/api/courses?limit=6', { signal: AbortSignal.timeout(10_000) }, { auth: false })
 		if (!res.ok) throw new Error('Failed to fetch courses')
-		return res.json()
+		return await res.json()
 	} catch (error) {
 		console.error('Error fetching courses:', error)
-		return []
+		return null
 	}
 }
 
 export default async function FeaturedCourses() {
 	const courses = await getCourses()
+	if (!courses) return <p className="text-sm text-gray-600">Courses are temporarily unavailable.</p>
 
 	const sorted = [...courses].sort(
 		(a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()

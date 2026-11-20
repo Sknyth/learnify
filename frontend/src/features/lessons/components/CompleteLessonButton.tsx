@@ -1,5 +1,6 @@
 'use client'
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { CheckCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -17,7 +18,7 @@ export default function CompleteLessonButton({ lessonId, courseId, isCompleted, 
 	const router = useRouter()
 
 	async function handleComplete() {
-		if (completed) return
+		if (loading || completed) return
 		setLoading(true)
 
 		try {
@@ -41,9 +42,11 @@ export default function CompleteLessonButton({ lessonId, courseId, isCompleted, 
 	}
 
 	return (
-		<button
+		<PendingButton
+			pending={loading}
+			pendingLabel="Saving…"
 			onClick={handleComplete}
-			disabled={loading || completed}
+			disabled={completed}
 			className={`flex items-center gap-2 font-bold px-5 py-2.5 rounded-xl text-sm transition-colors ${
 				completed
 					? 'bg-green-500 text-white cursor-default'
@@ -51,7 +54,7 @@ export default function CompleteLessonButton({ lessonId, courseId, isCompleted, 
 			}`}
 		>
 			<CheckCircle className="w-4 h-4" />
-			{completed ? 'Completed' : loading ? 'Saving...' : 'Mark as completed'}
-		</button>
+			{completed ? 'Completed' : 'Mark as completed'}
+		</PendingButton>
 	)
 }

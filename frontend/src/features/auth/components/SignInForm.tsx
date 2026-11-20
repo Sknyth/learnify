@@ -1,5 +1,6 @@
 "use client"
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -9,9 +10,12 @@ export default function SignInForm() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const router = useRouter()
+	const [loading, setLoading] = useState(false)
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
+		if (loading) return
+		setLoading(true)
 
 		try {
 			const res = await fetch("/api/auth/signIn", {
@@ -36,6 +40,8 @@ export default function SignInForm() {
 			router.refresh()
 		} catch {
 			toast.error("Something went wrong. Please try again.")
+		} finally {
+			setLoading(false)
 		}
 	}
 
@@ -60,9 +66,14 @@ export default function SignInForm() {
 					<input type="password" id="password" name="password" placeholder="Enter your password" className="bg-gray-100 border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:ring-1 focus:ring-[#4f46e5] focus:border-transparent transition-all" value={password} onChange={(e) => setPassword(e.target.value)} />
 				</div>
 
-				<button type="submit" className="bg-[#4f46e5] text-white font-bold py-2 px-4 rounded-xl hover:bg-[#4338ca] transition-colors mt-1 cursor-pointer">
+				<PendingButton
+					pending={loading}
+					pendingLabel="Signing in…"
+					type="submit"
+					className="bg-[#4f46e5] text-white font-bold py-2 px-4 rounded-xl hover:bg-[#4338ca] transition-colors mt-1 cursor-pointer"
+				>
 					Sign In
-				</button>
+				</PendingButton>
 			</div>
 
 			<div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0 text-sm text-gray-500">

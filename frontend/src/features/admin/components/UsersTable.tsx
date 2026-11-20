@@ -1,5 +1,6 @@
 'use client'
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { deleteUser, updateUserRole } from '@/features/admin/actions/user-actions'
 import { UserDto } from '@/types'
 import { Users } from 'lucide-react'
@@ -9,18 +10,28 @@ import { toast } from 'sonner'
 function RoleSelect({ user, disabled }: { user: UserDto; disabled: boolean }) {
   const [role, setRole] = useState(user.role)
 
-  const handleChange = (newRole: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN') => {
+  const [saving, setSaving] = useState(false)
+
+  async function handleChange(newRole: UserDto['role']) {
+    if (disabled || saving || newRole === role) return
     const previous = role
     setRole(newRole)
+    setSaving(true)
 
-    updateUserRole(user.id, newRole).then((result) => {
+    try {
+      const result = await updateUserRole(user.id, newRole)
       if (result.success) {
         toast.success('User role updated')
       } else {
         setRole(previous)
-        toast.error(result?.error ?? 'Error updating user role')
+        toast.error(result.error ?? 'Error updating user role')
       }
-    })
+    } catch {
+      setRole(previous)
+      toast.error('Error updating user role')
+    } finally {
+      setSaving(false)
+    }
   }
 
   const roleStyles = {
@@ -32,10 +43,12 @@ function RoleSelect({ user, disabled }: { user: UserDto; disabled: boolean }) {
   return (
     <select
       className={`appearance-none cursor-pointer text-center px-4 py-1.5 rounded-full text-xs font-semibold border transition-all focus:outline-none focus:ring-2 focus:ring-offset-1 disabled:opacity-50 disabled:cursor-not-allowed ${roleStyles[role]}`}
-      value={role}
+      value={saving ? 'saving' : role}
       onChange={(e) => handleChange(e.target.value as 'STUDENT' | 'INSTRUCTOR' | 'ADMIN')}
-      disabled={disabled}
+      disabled={disabled || saving}
+      aria-busy={saving || undefined}
     >
+      {saving && <option value="saving">Saving…</option>}
       <option value="STUDENT">Student</option>
       <option value="INSTRUCTOR">Instructor</option>
       <option value="ADMIN">Admin</option>
@@ -49,19 +62,26 @@ type Props = {
 
 export default function UsersTable({ users }: Props) {
 	const [isPending, startTransition] = useTransition()
+	const [deletingId, setDeletingId] = useState<string>()
 
 	const handleDelete = (userId: string, userName: string | null) => {
 		toast('Delete this user?', {
+			id: 'confirm-delete-user',
 			description: `${userName ?? 'This user'} will be permanently removed.`,
 			action: {
 				label: 'Delete',
 				onClick: () => {
+					setDeletingId(userId)
 					startTransition(async () => {
-						const result = await deleteUser(userId)
-						if (result?.success) {
-							toast.success('User deleted')
-						} else {
-							toast.error(result?.error ?? 'Error deleting user')
+						try {
+							const result = await deleteUser(userId)
+							if (result?.success) {
+								toast.success('User deleted')
+							} else {
+								toast.error(result?.error ?? 'Error deleting user')
+							}
+						} catch {
+							toast.error('Error deleting user')
 						}
 					})
 				}
@@ -131,14 +151,16 @@ export default function UsersTable({ users }: Props) {
 									</td>
 									<td className="px-4 sm:px-6 py-4">
 										<div className="flex items-center justify-end">
-											<button
+											<PendingButton
+												pending={isPending && deletingId === u.id}
+												pendingLabel="Deleting…"
 												type="button"
 												className="text-white hover:bg-[#b91c1c] font-medium text-sm transition-colors bg-[#dc2626] cursor-pointer px-2.5 py-1 rounded-md disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
 												onClick={() => handleDelete(u.id, u.name)}
 												disabled={isPending}
 											>
 												Delete
-											</button>
+											</PendingButton>
 										</div>
 									</td>
 								</tr>

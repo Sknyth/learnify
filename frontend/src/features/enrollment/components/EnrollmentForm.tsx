@@ -1,5 +1,6 @@
 'use client'
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { Shield } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -51,6 +52,7 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
+		if (loading) return
 
 		const result = validatePayment(values)
 		setErrors(result.errors)
@@ -152,14 +154,15 @@ export default function EnrollmentForm({ courseId, price }: Props) {
 				</p>
 			</span>
 
-			<button
+			<PendingButton
+				pending={loading}
+				pendingLabel="Processing…"
 				type="submit"
-				disabled={loading}
 				className="w-full bg-[#4338ca] hover:bg-[#3730a3] disabled:opacity-60 disabled:cursor-not-allowed transition-colors text-white font-bold flex items-center justify-center gap-2 rounded-2xl p-4 sm:p-5 text-base sm:text-lg cursor-pointer"
 			>
 				<Shield className="w-5 h-5 shrink-0" />
-				{loading ? "Processing..." : `Pay $${price} · Enroll Now`}
-			</button>
+				{`Pay $${price} · Enroll Now`}
+			</PendingButton>
 
 			<p className="text-xs text-gray-400 text-center">
 				By enrolling you agree to our <a href="#" className="text-[#4f46e5] hover:underline">Terms of Service</a>

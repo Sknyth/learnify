@@ -1,5 +1,6 @@
 'use client'
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { UserDto } from '@/types'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -11,9 +12,12 @@ export default function ProfileForm({ user }: { user: UserDto }) {
   const [phone, setPhone] = useState(user.phone ?? "")
   const [jobTitle, setJobTitle] = useState(user.jobTitle ?? "")
   const router = useRouter()
+  const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (loading) return
+    setLoading(true)
 
     try {
       const res = await fetch("/api/users/update", {
@@ -33,6 +37,8 @@ export default function ProfileForm({ user }: { user: UserDto }) {
       router.refresh()
     } catch {
       toast.error("Something went wrong. Please try again.")
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -111,9 +117,14 @@ export default function ProfileForm({ user }: { user: UserDto }) {
         </div>
       </div>
 
-      <button type="submit" className="w-full sm:w-fit bg-[#4f46e5] hover:bg-[#4338ca] transition-colors text-white font-bold px-6 py-3 rounded-xl cursor-pointer">
+      <PendingButton
+        pending={loading}
+        pendingLabel="Saving changes…"
+        type="submit"
+        className="w-full sm:w-fit bg-[#4f46e5] hover:bg-[#4338ca] transition-colors text-white font-bold px-6 py-3 rounded-xl cursor-pointer"
+      >
         Save Changes
-      </button>
+      </PendingButton>
     </form>
   )
 }

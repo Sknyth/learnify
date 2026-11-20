@@ -1,12 +1,13 @@
 'use client'
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { BookOpen, Trash } from 'lucide-react'
 import Image from 'next/image'
 import EditCourseButton from '@/features/courses/components/EditCourseButton'
 
 import { deleteCourse } from '@/features/courses/actions/course-actions'
 import { toast } from 'sonner'
-import { startTransition } from 'react'
+import { useState, useTransition } from 'react'
 import { CourseDto } from '@/types'
 
 type Props = {
@@ -14,18 +15,27 @@ type Props = {
 }
 
 export default function InstructorCoursesTable({ courses }: Props) {
+	const [isPending, startTransition] = useTransition()
+	const [deletingId, setDeletingId] = useState<string>()
+
 	const handleDelete = (courseId: string, courseTitle: string | null) => {
 		toast('Delete this course?', {
+			id: 'confirm-delete-course',
 			description: `${courseTitle ?? 'This course'} will be permanently removed.`,
 			action: {
 				label: 'Delete',
 				onClick: () => {
+					setDeletingId(courseId)
 					startTransition(async () => {
-						const result = await deleteCourse(courseId)
-						if (result?.success) {
-							toast.success('Course deleted')
-						} else {
-							toast.error(result?.error ?? 'Error deleting course')
+						try {
+							const result = await deleteCourse(courseId)
+							if (result?.success) {
+								toast.success('Course deleted')
+							} else {
+								toast.error(result?.error ?? 'Error deleting course')
+							}
+						} catch {
+							toast.error('Error deleting course')
 						}
 					})
 				},
@@ -93,14 +103,17 @@ export default function InstructorCoursesTable({ courses }: Props) {
 									<td className="px-4 sm:px-6 py-4">
 										<div className="flex items-center justify-end gap-1">
 											<EditCourseButton course={c} />
-											<button
-												type="button"
+											<PendingButton
+												pending={isPending && deletingId === c.id}
+												pendingLabel="Deleting…"
+												iconOnly
+												disabled={isPending}
 												aria-label="Delete"
 												className="group inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-xl transition-colors hover:bg-red-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
 												onClick={() => handleDelete(c.id, c.title)}
 											>
 												<Trash className="h-4 w-4 text-gray-400 transition-colors group-hover:text-red-500" />
-											</button>
+											</PendingButton>
 										</div>
 									</td>
 								</tr>

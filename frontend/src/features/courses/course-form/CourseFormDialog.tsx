@@ -43,6 +43,7 @@ export default function CourseFormDialog({ course, trigger }: Props) {
       setForm(toCourseForm(c))
     } catch {
       toast.error('Failed to load course')
+      setOpen(false)
     } finally {
       setLoading(false)
     }
@@ -50,23 +51,28 @@ export default function CourseFormDialog({ course, trigger }: Props) {
 
   function handleOpenChange(next: boolean) {
     setOpen(next)
-    if (next) loadCourse()
+    if (next && !loading && !isPending) loadCourse()
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
+    if (loading || isPending) return
 
     startTransition(async () => {
-      const res = courseId ? await editCourse(form, courseId) : await addCourse(form)
+      try {
+        const res = courseId ? await editCourse(form, courseId) : await addCourse(form)
 
-      if (!res.success) {
-        toast.error(res.error ?? 'Something went wrong')
-        return
+        if (!res.success) {
+          toast.error(res.error ?? 'Something went wrong')
+          return
+        }
+
+        toast.success(courseId ? 'Course updated' : 'Course added')
+        setOpen(false)
+        if (!courseId) setForm(emptyCourseForm)
+      } catch {
+        toast.error('Something went wrong')
       }
-
-      toast.success(courseId ? 'Course updated' : 'Course added')
-      setOpen(false)
-      if (!courseId) setForm(emptyCourseForm)
     })
   }
 
@@ -97,6 +103,7 @@ export default function CourseFormDialog({ course, trigger }: Props) {
         <CourseFormFooter
           isEditing={isEditing}
           isPending={isPending || loading}
+          isLoading={loading}
           lessonsTotal={lessonsTotal}
           modulesTotal={form.modules.length}
         />
