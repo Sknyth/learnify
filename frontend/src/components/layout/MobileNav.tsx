@@ -1,6 +1,6 @@
 "use client"
 
-import { LayoutDashboard, LogOut, Menu } from 'lucide-react'
+import { LogOut, Menu, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -8,16 +8,9 @@ import { toast } from 'sonner'
 import { WorkspaceSwitcher } from '@/features/dashboard/components/WorkspaceSwitcher'
 import type { UserDto } from '@/types'
 import { cn } from '@/lib/utils'
-import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet'
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
 import Logo from './Logo'
-import { adminNavItems, dashboardNavItems, primaryNavItems, type NavItem } from './navigation'
-
-type MobileNavUser = {
-	id: string
-	name: string
-	email: string
-	role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'
-} | null
+import { primaryNavItems, workspaceNavItems, type NavItem } from './navigation'
 
 function MobileNavLink({
 	item,
@@ -42,6 +35,7 @@ function MobileNavLink({
 				isActive && 'bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]'
 			)}
 			onClick={onNavigate}
+			aria-current={isActive ? 'page' : undefined}
 		>
 			{withIcon && Icon && <Icon className="h-5 w-5 shrink-0" />}
 			<span>{item.label}</span>
@@ -49,13 +43,13 @@ function MobileNavLink({
 	)
 }
 
-export default function MobileNav({ user }: { user: MobileNavUser }) {
+export default function MobileNav({ user }: { user: UserDto | null }) {
 	const router = useRouter()
 	const pathname = usePathname()
 	const [open, setOpen] = useState(false)
-	const activeWorkspace = pathname.startsWith('/admin')
+	const activeWorkspace = user?.role === 'ADMIN' && pathname.startsWith('/admin')
 		? 'admin'
-		: pathname.startsWith('/instructor')
+		: user && user.role !== 'STUDENT' && pathname.startsWith('/instructor')
 			? 'instructor'
 			: 'student'
 
@@ -79,13 +73,14 @@ export default function MobileNav({ user }: { user: MobileNavUser }) {
 		<Sheet open={open} onOpenChange={setOpen}>
 			<SheetTrigger
 				render={
-					<button className="-mr-2 rounded-lg p-2 transition-colors hover:bg-gray-50 md:hidden" aria-label="Toggle menu">
+					<button className="-mr-2 rounded-lg p-2 transition-colors hover:bg-gray-50 md:hidden" aria-label="Open navigation menu">
 						<Menu className="h-6 w-6" />
 					</button>
 				}
 			/>
 			<SheetContent side="right" className="w-[min(88vw,24rem)] gap-0 overflow-hidden p-0">
 				<SheetHeader className="shrink-0 border-b border-gray-100 px-5 py-5">
+					<SheetTitle className="sr-only">Navigation</SheetTitle>
 					<Logo />
 				</SheetHeader>
 
@@ -99,36 +94,18 @@ export default function MobileNav({ user }: { user: MobileNavUser }) {
 
 						{user ? (
 							<>
-								<div className="flex items-center gap-3 rounded-2xl border border-gray-100 bg-gray-50 p-3">
-									<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#4f46e5] font-bold text-white">
-										{user.name?.[0]?.toUpperCase() ?? '?'}
-									</div>
-									<div className="min-w-0">
-										<p className="truncate text-sm font-bold text-gray-900">{user.name}</p>
-										<p className="truncate text-xs text-gray-500">{user.email}</p>
-									</div>
-								</div>
+								{user.role !== 'STUDENT' && <WorkspaceSwitcher user={user} />}
 
-								{user.role !== 'STUDENT' && <WorkspaceSwitcher user={user as UserDto} />}
-
-								<nav aria-label="Workspace navigation" className="flex flex-col gap-2">
-									<span className="px-3 text-[11px] font-bold uppercase tracking-[0.12em] text-gray-400">
-										{activeWorkspace === 'instructor' ? 'Instructor' : activeWorkspace === 'admin' ? 'Admin' : 'Student'}
-									</span>
-									{activeWorkspace === 'student' && dashboardNavItems.map((item) => (
+								<nav aria-label="Workspace navigation" className="flex flex-col gap-1">
+									{workspaceNavItems[activeWorkspace].map((item) => (
 										<MobileNavLink key={item.href} item={item} pathname={pathname} onNavigate={() => setOpen(false)} withIcon />
 									))}
-									{activeWorkspace === 'instructor' && (
-										<MobileNavLink
-											item={{ href: '/instructor/overview', label: 'Overview', icon: LayoutDashboard }}
-											pathname={pathname}
-											onNavigate={() => setOpen(false)}
-											withIcon
-										/>
-									)}
-									{activeWorkspace === 'admin' && user.role === 'ADMIN' && adminNavItems.map((item) => (
-										<MobileNavLink key={item.href} item={item} pathname={pathname} onNavigate={() => setOpen(false)} withIcon />
-									))}
+									<MobileNavLink
+										item={{ href: '/dashboard/settings', label: 'Settings', icon: Settings }}
+										pathname={pathname}
+										onNavigate={() => setOpen(false)}
+										withIcon
+									/>
 								</nav>
 							</>
 						) : (

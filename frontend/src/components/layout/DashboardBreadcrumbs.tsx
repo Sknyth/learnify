@@ -11,7 +11,7 @@ function formatSegment(segment: string) {
 		.replace(/^\w/, (c) => c.toUpperCase())
 }
 
-export default function BreadCrumb() {
+export default function DashboardBreadcrumbs() {
 
 	const pathname = usePathname()
 	const segments = pathname.split('/').filter(Boolean)

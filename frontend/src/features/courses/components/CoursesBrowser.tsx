@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import Course, { type CourseCardData } from "@/features/courses/components/Course"
+import CourseCard, { type CourseCardData } from "@/features/courses/components/CourseCard"
 
 const categories = ["All", "WebDev", "Design", "DataScience", "DevOps", "Mobile"]
 const categoryLabels: Record<string, string> = {
@@ -92,7 +92,7 @@ export default function CoursesBrowser({ courses }: { courses: CourseCardData[] 
 					) : (
 						<div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6 w-full">
 							{filteredCourses.map((course) => (
-								<Course key={course.id} course={course} />
+								<CourseCard key={course.id} course={course} />
 							))}
 						</div>
 					)}

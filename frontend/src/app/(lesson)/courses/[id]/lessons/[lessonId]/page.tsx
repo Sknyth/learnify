@@ -1,13 +1,13 @@
 import LessonHeader from '@/features/lessons/components/LessonHeader'
-import ButtonCompleteLesson from '@/features/lessons/components/ButtonCompleteLesson'
+import CompleteLessonButton from '@/features/lessons/components/CompleteLessonButton'
 import LessonPlayer from '@/features/lessons/components/LessonPlayer'
 import LessonSidebar from '@/features/lessons/components/LessonSidebar'
-import { getCurrentUser } from '@/lib/getCurrentUser'
-import { serverFetch } from '@/lib/serverApi'
+import { getCurrentUser } from '@/lib/get-current-user'
+import { serverFetch } from '@/lib/server-api'
 import type { LessonPageDto } from '@/types'
 import { notFound, redirect } from 'next/navigation'
 
-export default async function Page({
+export default async function LessonPage({
   params,
 }: {
   params: Promise<{ id: string; lessonId: string }>
@@ -56,7 +56,7 @@ export default async function Page({
                 {data.moduleTitle} · Lesson {lessonNumber} of {totalLessons}
               </p>
             </div>
-            <ButtonCompleteLesson
+            <CompleteLessonButton
               lessonId={lessonId}
               courseId={id}
               isCompleted={isCompleted}

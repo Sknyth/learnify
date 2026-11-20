@@ -1,6 +1,6 @@
 'use client'
 
-import CourseFormDialog from './CourseFormDialog'
+import CourseFormDialog from '@/features/courses/course-form/CourseFormDialog'
 
 export default function AddCourseButton() {
   return (

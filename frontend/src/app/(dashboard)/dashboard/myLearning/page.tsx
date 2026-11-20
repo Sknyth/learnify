@@ -1,6 +1,6 @@
-import MyLearningBox from '@/features/dashboard/components/MyLearningBox'
-import { getCurrentUser } from '@/lib/getCurrentUser'
-import { serverFetch } from '@/lib/serverApi'
+import EnrolledCourseCard from '@/features/dashboard/components/EnrolledCourseCard'
+import { getCurrentUser } from '@/lib/get-current-user'
+import { serverFetch } from '@/lib/server-api'
 import { MyEnrollmentDto } from '@/types'
 import { redirect } from 'next/navigation'
 
@@ -15,7 +15,7 @@ async function getEnrollments(): Promise<MyEnrollmentDto[]> {
   }
 }
 
-export default async function Page() {
+export default async function MyLearningPage() {
   const user = await getCurrentUser()
   if (!user) redirect('/signIn')
 	
@@ -44,7 +44,7 @@ export default async function Page() {
               const lastLessonTitle = targetLesson?.title || 'No lessons'
 
               return (
-                <MyLearningBox
+                <EnrolledCourseCard
 									key={enrollment.id}
 									title={enrollment.course.title}
 									imageUrl={enrollment.course.imageUrl}

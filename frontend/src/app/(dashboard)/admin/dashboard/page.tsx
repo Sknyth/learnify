@@ -1,7 +1,7 @@
-import InfoBoxDashboard from '@/features/dashboard/components/InfoBoxDashboard'
-import MonthsCharts from '@/features/dashboard/components/MonthsCharts'
-import { getCurrentUser } from '@/lib/getCurrentUser'
-import { serverFetch } from '@/lib/serverApi'
+import DashboardMetricCard from '@/features/dashboard/components/DashboardMetricCard'
+import MonthlyRevenueChart from '@/features/admin/components/MonthlyRevenueChart'
+import { getCurrentUser } from '@/lib/get-current-user'
+import { serverFetch } from '@/lib/server-api'
 import { CourseDto, EnrollmentDto, UserDto } from '@/types'
 import { BookOpen, Star, TrendingUp, Users } from 'lucide-react'
 import { redirect } from 'next/navigation'
@@ -39,7 +39,7 @@ async function getEnrollments(): Promise<EnrollmentDto[]> {
   }
 }
 
-export default async function Page() {
+export default async function AdminDashboardPage() {
   const user = await getCurrentUser()
   if (!user || user.role !== 'ADMIN') redirect('/dashboard/overview')
 
@@ -87,16 +87,16 @@ export default async function Page() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <InfoBoxDashboard Icon={TrendingUp} count={monthlyRevenue} desc="Monthly Revenue" isMoney={true} />
-          <InfoBoxDashboard Icon={Users} count={users.length} desc="Total Users" />
-          <InfoBoxDashboard Icon={BookOpen} count={courses.length} desc="Active Courses" />
-          <InfoBoxDashboard Icon={Star} count={avgRating} desc="Avg. Rating" />
+          <DashboardMetricCard Icon={TrendingUp} count={monthlyRevenue} desc="Monthly Revenue" isMoney={true} />
+          <DashboardMetricCard Icon={Users} count={users.length} desc="Total Users" />
+          <DashboardMetricCard Icon={BookOpen} count={courses.length} desc="Active Courses" />
+          <DashboardMetricCard Icon={Star} count={avgRating} desc="Avg. Rating" />
         </div>
 
         <div className="bg-white border rounded-2xl p-6 gap-5 flex flex-col">
 					<h1 className="font-bold text-xl">Revenue (last 6 months)</h1>
 					<div className="flex justify-between items-center gap-4">
-						<MonthsCharts data={months} />
+						<MonthlyRevenueChart data={months} />
 					</div>
 				</div>
       </div>

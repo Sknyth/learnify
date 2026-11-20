@@ -15,7 +15,7 @@ type Props = {
   isPrimary?: boolean
 }
 
-export default function InfoCourseDashboard({
+export default function ContinueLearningRow({
   title,
   imageUrl,
   lastLesson,

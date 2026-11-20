@@ -16,7 +16,7 @@ export type CourseCardData = {
 	studentsCount: number
 }
 
-export default function Course({ course }: { course: CourseCardData }) {
+export default function CourseCard({ course }: { course: CourseCardData }) {
 	return (
 		<Link
 			href={`/courses/${course.id}`}

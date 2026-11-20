@@ -1,8 +1,8 @@
 import ProfileForm from '@/features/profile/components/ProfileForm'
-import { getCurrentUser } from '@/lib/getCurrentUser'
+import { getCurrentUser } from '@/lib/get-current-user'
 import { redirect } from 'next/navigation'
 
-export default async function Page() {
+export default async function SettingsPage() {
   const user = await getCurrentUser()
 
   if (!user) redirect('/')

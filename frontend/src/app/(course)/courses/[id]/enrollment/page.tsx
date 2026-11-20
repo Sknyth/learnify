@@ -1,10 +1,10 @@
-import { serverFetch } from '@/lib/serverApi'
+import { serverFetch } from '@/lib/server-api'
 import { Shield, Star } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import EnrrollmentForm from '@/features/enrollment/components/EnrollmentForm'
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function CourseEnrollmentPage({ params }: { params: Promise<{ id: string }> }) {
 	
 	const { id } = await params
 

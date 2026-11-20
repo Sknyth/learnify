@@ -1,7 +1,7 @@
-import InfoBoxDashboard from '@/features/dashboard/components/InfoBoxDashboard'
-import InfoCourseDashboard from '@/features/dashboard/components/InfoCourseDashboard'
-import { getCurrentUser } from '@/lib/getCurrentUser'
-import { serverFetch } from '@/lib/serverApi'
+import DashboardMetricCard from '@/features/dashboard/components/DashboardMetricCard'
+import ContinueLearningRow from '@/features/dashboard/components/ContinueLearningRow'
+import { getCurrentUser } from '@/lib/get-current-user'
+import { serverFetch } from '@/lib/server-api'
 import { MyEnrollmentDto } from '@/types'
 import { BookOpen, Clock, Medal } from 'lucide-react'
 import Link from 'next/link'
@@ -17,7 +17,7 @@ async function getEnrollments(): Promise<MyEnrollmentDto[]> {
     return []
   }
 }
-export default async function Page() {
+export default async function StudentOverviewPage() {
   const user = await getCurrentUser()
 
   if (!user) redirect('/')
@@ -41,9 +41,9 @@ export default async function Page() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
-          <InfoBoxDashboard Icon={BookOpen} count={enrollments.length} desc="Courses" />
-          <InfoBoxDashboard Icon={Clock} count={0} desc="Hours watched" />
-          <InfoBoxDashboard Icon={Medal} count={completedCourses} desc="Certificates" />
+          <DashboardMetricCard Icon={BookOpen} count={enrollments.length} desc="Courses" />
+          <DashboardMetricCard Icon={Clock} count={0} desc="Hours watched" />
+          <DashboardMetricCard Icon={Medal} count={completedCourses} desc="Certificates" />
         </div>
 
         <section className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
@@ -81,7 +81,7 @@ export default async function Page() {
                 const lastLessonTitle = targetLesson?.title || 'No lessons'
 
                 return (
-                  <InfoCourseDashboard
+                  <ContinueLearningRow
                     key={enrollment.id}
                     title={enrollment.course?.title ?? ''}
                     imageUrl={enrollment.course?.imageUrl ?? ''}

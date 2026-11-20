@@ -26,11 +26,12 @@ export const dashboardNavItems: NavItem[] = [
 
 export const instructorNavItems: NavItem[] = [
   { href: '/instructor/overview', label: 'Overview', icon: LayoutDashboard },
+  { href: '/instructor/myCourses', label: 'My courses', icon: BookOpen },
+  { href: '/instructor/students', label: 'Students', icon: Users },
 ]
 
 export const adminNavItems: NavItem[] = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: ChartNoAxesColumn },
-  { href: '/admin/courses', label: 'Courses', icon: BookOpen },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/sales', label: 'Sales', icon: TrendingUp },
 ]

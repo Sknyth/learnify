@@ -1,6 +1,6 @@
 import Header from "@/components/layout/Header"
 import Footer from "@/components/layout/Footer"
-import { getCurrentUser } from "@/lib/getCurrentUser"
+import { getCurrentUser } from "@/lib/get-current-user"
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const user = await getCurrentUser()
@@ -8,7 +8,7 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   return (
     <>
       <Header user={user} />
-      <main className="flex-1 pt-16 sm:pt-20">
+      <main className="flex-1 pt-16">
         {children}
       </main>
       <Footer />

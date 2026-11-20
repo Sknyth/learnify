@@ -7,7 +7,7 @@ type Props = {
 	courses: CourseSalesDto[]
 }
 
-export default function SalesTable({ courses }: Props) {
+export default function CourseSalesTable({ courses }: Props) {
 	const sorted = [...courses].sort((a, b) => b.enrollmentsCount - a.enrollmentsCount)
 	const maxSales = Math.max(...courses.map((c) => c.enrollmentsCount), 1)
 

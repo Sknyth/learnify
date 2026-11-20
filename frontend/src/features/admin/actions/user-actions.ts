@@ -1,6 +1,6 @@
 'use server'
 
-import { serverFetch } from '@/lib/serverApi'
+import { serverFetch } from '@/lib/server-api'
 import { revalidatePath } from 'next/cache'
 
 export async function deleteUser(userId: string) {
