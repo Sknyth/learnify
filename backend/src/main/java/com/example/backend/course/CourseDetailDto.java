@@ -11,6 +11,8 @@ import java.util.List;
 public record CourseDetailDto(
         String id,
         String title,
+        String instructor,
+        String instructorId,
         String description,
         Category category,
         Level level,
@@ -19,7 +21,7 @@ public record CourseDetailDto(
         String imageUrl,
         Double rating,
         Integer reviewsCount,
-        Integer studentsCount,
+        Long studentsCount,
         List<String> learningPoints,
         List<ModuleDto> modules
 ) {
@@ -35,6 +37,8 @@ public record CourseDetailDto(
         return new CourseDetailDto(
                 c.getId(),
                 c.getTitle(),
+                c.getInstructor() == null ? null : c.getInstructor().getName(),
+                c.getInstructor() == null ? null : c.getInstructor().getId(),
                 c.getDescription(),
                 c.getCategory(),
                 c.getLevel(),
@@ -44,7 +48,7 @@ public record CourseDetailDto(
                 c.getRating(),
                 c.getReviewsCount(),
                 c.getStudentsCount(),
-                c.getLearningPoints(),
+                c.getLearningPoints() == null ? List.of() : c.getLearningPoints(),
                 modules
         );
     }

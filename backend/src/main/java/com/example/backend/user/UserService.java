@@ -2,6 +2,7 @@ package com.example.backend.user;
 
 import com.example.backend.model.UserEntity;
 import com.example.backend.model.enums.Role;
+import com.example.backend.course.CourseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.Objects;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
 
     public List<UserDto> findAllUsers() {
         return userRepository.findAll().stream()
@@ -54,6 +56,11 @@ public class UserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
+        if (user.getRole() == Role.INSTRUCTOR && role != Role.INSTRUCTOR
+                && courseRepository.existsByInstructor_Id(userId)) {
+            throw new AccessDeniedException("Cannot remove instructor role while the user owns courses");
+        }
+
         user.setRole(role);
         return UserDto.fromEntity(userRepository.save(user));
     }
@@ -67,6 +74,10 @@ public class UserService {
 
         UserEntity user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        if (user.getRole() == Role.INSTRUCTOR && courseRepository.existsByInstructor_Id(id)) {
+            throw new AccessDeniedException("Cannot delete an instructor who owns courses");
+        }
 
         userRepository.delete(user);
     }

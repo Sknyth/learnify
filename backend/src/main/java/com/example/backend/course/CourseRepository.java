@@ -2,6 +2,7 @@ package com.example.backend.course;
 
 import com.example.backend.model.CourseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -11,6 +12,14 @@ import java.util.Optional;
 @Repository
 public interface CourseRepository extends JpaRepository<CourseEntity, String> {
     Optional<CourseEntity> findById(String id);
+
+    @EntityGraph(attributePaths = "instructor")
+    List<CourseEntity> findAllByInstructor_Id(String instructorId);
+
+    boolean existsByInstructor_Id(String instructorId);
+
+    @EntityGraph(attributePaths = "instructor")
+    List<CourseEntity> findAll();
 
     @Query("select e.courseId, count(e) from EnrollmentEntity e group by e.courseId")
     List<Object[]> countEnrollmentsPerCourse();

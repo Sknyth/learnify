@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.annotations.Formula;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
@@ -27,8 +28,9 @@ public class CourseEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private String instructor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "\"instructorId\"")
+    private UserEntity instructor;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
@@ -54,8 +56,8 @@ public class CourseEntity {
     @Column(name = "\"reviewsCount\"")
     private Integer reviewsCount = 0;
 
-    @Column(name = "\"studentsCount\"")
-    private Integer studentsCount = 0;
+    @Formula("(select count(*) from \"Enrollment\" e where e.\"courseId\" = {alias}.id)")
+    private Long studentsCount;
 
     @Column(name = "\"learningPoints\"", columnDefinition = "TEXT[]")
     private List<String> learningPoints;

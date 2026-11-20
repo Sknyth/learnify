@@ -49,4 +49,9 @@ public class EnrollmentController {
     public List<OrderEnrollmentDto> getMyOrdersEnrollments(Authentication auth) {
         return enrollmentService.findMyOrdersEnrollments((String) auth.getPrincipal());
     }
+
+    @GetMapping("/students")
+    public List<StudentEnrollmentDto> getMyStudentsEnrollments(Authentication auth) {
+        return enrollmentService.findMyStudentsEnrollments((String) auth.getPrincipal());
+    }
 }
