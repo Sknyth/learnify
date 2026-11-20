@@ -1,9 +1,9 @@
-import SalesTable from '@/features/admin/components/SalesTable'
-import InfoBoxSales from '@/features/admin/components/InfoBoxSales'
-import { getCurrentUser } from '@/lib/getCurrentUser'
+import CourseSalesTable from '@/features/admin/components/CourseSalesTable'
+import SalesMetricCard from '@/features/admin/components/SalesMetricCard'
+import { getCurrentUser } from '@/lib/get-current-user'
 import { redirect } from 'next/navigation'
 import { CourseSalesDto, MyEnrollmentDto } from '@/types'
-import { serverFetch } from '@/lib/serverApi'
+import { serverFetch } from '@/lib/server-api'
 import { serverGet } from './actions'
 
 async function getEnrollments(): Promise<MyEnrollmentDto[]> {
@@ -17,7 +17,7 @@ async function getEnrollments(): Promise<MyEnrollmentDto[]> {
 	}
 }
 
-export default async function Page() {
+export default async function AdminSalesPage() {
 	const user = await getCurrentUser()
 	if (!user || user.role !== 'ADMIN') redirect('/dashboard/overview')
 
@@ -47,15 +47,15 @@ export default async function Page() {
 				</div>
 
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-10">
-					<InfoBoxSales title={"Total Revenue"} count={totalRevenue} desc={"all time"} />
-					<InfoBoxSales title={"This Month"} count={monthlyRevenue} desc={new Date().toLocaleDateString('en-US', {
+					<SalesMetricCard title={"Total Revenue"} count={totalRevenue} desc={"all time"} />
+					<SalesMetricCard title={"This Month"} count={monthlyRevenue} desc={new Date().toLocaleDateString('en-US', {
 						month: 'short',
 						year: 'numeric'
 					})} />
-					<InfoBoxSales title={"Avg. Order"} count={avgOrder} desc={"all time"} />
+					<SalesMetricCard title={"Avg. Order"} count={avgOrder} desc={"all time"} />
 				</div>
 
-				<SalesTable courses={courses} />
+				<CourseSalesTable courses={courses} />
 			</div>
 		</div>
 	)

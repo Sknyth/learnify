@@ -1,7 +1,5 @@
-import Header from '@/components/layout/Header'
 import CoursesBrowser from "@/features/courses/components/CoursesBrowser"
-import { getCurrentUser } from '@/lib/getCurrentUser'
-import { serverFetch } from '@/lib/serverApi'
+import { serverFetch } from '@/lib/server-api'
 import { CourseDto } from '@/types'
 
 export const dynamic = 'force-dynamic'
@@ -17,15 +15,7 @@ async function getCourses(): Promise<CourseDto[]> {
 	}
 }
 
-export default async function Page() {
+export default async function CourseCatalogPage() {
 	const courses = await getCourses()
-	const user = await getCurrentUser()
-
-	return (
-		<div>
-
-			<Header user={user} />
-			<CoursesBrowser courses={courses} />
-		</div>
-	)
+	return <CoursesBrowser courses={courses} />
 }

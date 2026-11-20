@@ -10,7 +10,7 @@ import LogoutButton from '@/features/auth/components/LogoutButton'
 import { WorkspaceSwitcher } from '@/features/dashboard/components/WorkspaceSwitcher'
 import { workspaceNavItems } from '@/components/layout/navigation'
 
-export default function Aside({ user }: { user: UserDto | null }) {
+export default function DashboardSidebar({ user }: { user: UserDto | null }) {
 	const pathname = usePathname()
 	const workspace = pathname.startsWith('/admin')
 		? 'admin'

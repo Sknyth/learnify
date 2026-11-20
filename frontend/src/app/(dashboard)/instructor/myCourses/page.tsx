@@ -1,9 +1,9 @@
-import CoursesTable from '@/features/instructor/components/CoursesTable'
-import { getCurrentUser } from '@/lib/getCurrentUser'
+import InstructorCoursesTable from '@/features/instructor/components/InstructorCoursesTable'
+import { getCurrentUser } from '@/lib/get-current-user'
 import { redirect } from 'next/navigation'
 import { CourseDto } from '@/types'
-import { serverFetch } from '@/lib/serverApi'
-import AddCourseButton from '@/features/instructor/components/AddCourseButton'
+import { serverFetch } from '@/lib/server-api'
+import AddCourseButton from '@/features/courses/components/AddCourseButton'
 
 async function getCourses(): Promise<CourseDto[]> {
 	try {
@@ -16,7 +16,7 @@ async function getCourses(): Promise<CourseDto[]> {
 	}
 }
 
-export default async function Page() {
+export default async function InstructorCoursesPage() {
 	const user = await getCurrentUser()
 	if (!user || (user.role !== 'INSTRUCTOR' && user.role !== 'ADMIN')) redirect('/')
 
@@ -30,7 +30,7 @@ export default async function Page() {
 					<AddCourseButton />
 				</div>
 
-				<CoursesTable courses={courses} />
+				<InstructorCoursesTable courses={courses} />
 			</div>
 		</div>
 	)

@@ -1,6 +1,6 @@
 'use server'
 
-import { serverFetch } from '@/lib/serverApi'
+import { serverFetch } from '@/lib/server-api'
 
 export async function serverGet<T>(path: string, fallback: T): Promise<T> {
   try {

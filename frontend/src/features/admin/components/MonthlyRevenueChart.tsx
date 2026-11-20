@@ -11,7 +11,7 @@ type Props = {
 	data: MonthData[]
 }
 
-export default function MonthsCharts({ data }: Props) {
+export default function MonthlyRevenueChart({ data }: Props) {
 	const [mounted, setMounted] = useState(false)
 	const max = Math.max(...data.map(d => d.value), 100)
 

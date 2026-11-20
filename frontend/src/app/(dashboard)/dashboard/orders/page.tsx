@@ -1,6 +1,6 @@
-import { getCurrentUser } from '@/lib/getCurrentUser'
+import { getCurrentUser } from '@/lib/get-current-user'
 import { redirect } from 'next/navigation'
-import { serverFetch } from '@/lib/serverApi'
+import { serverFetch } from '@/lib/server-api'
 import OrdersTable from '@/features/dashboard/components/OrdersTable'
 import { OrderEnrollmentDto } from '@/types'
 
@@ -15,7 +15,7 @@ async function getOrders(): Promise<OrderEnrollmentDto[]> {
 	}
 }
 
-export default async function Page() {
+export default async function OrdersPage() {
 	const user = await getCurrentUser()
 	if (!user) redirect('/signIn')
 

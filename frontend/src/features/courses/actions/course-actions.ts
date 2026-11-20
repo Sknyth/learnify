@@ -1,7 +1,7 @@
 'use server'
 
-import type { CourseForm } from '@/features/courses/course-form/types'
-import { serverFetch } from '@/lib/serverApi'
+import type { CourseForm } from '@/features/courses/course-form/course-form-types'
+import { serverFetch } from '@/lib/server-api'
 import { revalidatePath } from 'next/cache'
 
 async function send(path: string, method: string, body?: unknown) {

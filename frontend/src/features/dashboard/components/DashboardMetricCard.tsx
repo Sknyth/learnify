@@ -7,7 +7,7 @@ type Props = {
   isMoney?: boolean
 }
 
-export default function InfoBoxDashboard({ Icon, count, desc, isMoney }: Props) {
+export default function DashboardMetricCard({ Icon, count, desc, isMoney }: Props) {
   return (
     <div className="bg-white border rounded-2xl p-6 gap-5 flex flex-col">
       <div className="rounded-3xl bg-[#4f46e5]/10 w-9 h-9 items-center flex justify-center">

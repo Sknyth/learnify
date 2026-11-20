@@ -1,7 +1,7 @@
 import { Star } from 'lucide-react'
 import Image from 'next/image'
 
-export default function Review() {
+export default function TestimonialCard() {
 	return (
 		<div className="flex flex-col items-start bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-lg w-full h-full transition-all duration-200 ease-in-out p-4 sm:p-6 gap-3 sm:gap-4">
 			<div className="flex items-center gap-0.5">

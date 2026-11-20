@@ -1,70 +1,52 @@
-"use client"
+'use client'
 
+import { BookOpen, LayoutDashboard } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import type { UserDto } from '@/types'
 import { cn } from '@/lib/utils'
+import HeaderAccountMenu from './HeaderAccountMenu'
 import MobileNav from './MobileNav'
 
-type HeaderUser = {
-	id: string
-	name: string
-	email: string
-	role: 'STUDENT' | 'INSTRUCTOR' | 'ADMIN'
-} | null
+const navLinkClass = 'inline-flex min-h-10 items-center gap-2 whitespace-nowrap rounded-lg px-3 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900'
 
-export default function HeaderNav({ user }: { user: HeaderUser }) {
-	const pathname = usePathname()
+export default function HeaderNav({ user }: { user: UserDto | null }) {
+  const pathname = usePathname()
+  const isCourseSection = pathname === '/courses' || pathname.startsWith('/courses/')
 
-	const isActiveCourses = pathname === "/courses"
-	const isDashboard = pathname.startsWith('/dashboard')
-	const isAdmin = pathname.startsWith('/admin')
+  return (
+    <>
+      <nav aria-label="Main navigation" className="hidden items-center gap-1 md:flex">
+        <Link
+          href="/courses"
+          aria-current={pathname === '/courses' ? 'page' : undefined}
+          className={cn(navLinkClass, isCourseSection && 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800')}
+        >
+          <BookOpen aria-hidden="true" className="size-4" />
+          Courses
+        </Link>
+        {user && (
+          <Link href="/dashboard/overview" className={navLinkClass}>
+            <LayoutDashboard aria-hidden="true" className="size-4" />
+            Dashboard
+          </Link>
+        )}
+      </nav>
 
-	return (
-		<>
-			<div className="hidden md:flex items-center gap-2">
-				<Link href="/courses" className={cn(
-					"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2",
-					isActiveCourses && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
-				)}>
-					Courses
-				</Link>
-				{user && (
-					<Link href="/dashboard/overview" className={cn(
-						"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2",
-						isDashboard && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
-					)}>
-						Dashboard
-					</Link>
-				)}
-				{user?.role === 'ADMIN' && (
-					<Link href="/admin/dashboard" className={cn(
-						"text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2",
-						isAdmin && "bg-[#4338ca]/10 text-[#4338ca] hover:bg-[#4338ca]/10 hover:text-[#4338ca]"
-					)}>
-						Admin
-					</Link>
-				)}
-			</div>
+      <div className="hidden min-w-0 items-center justify-end gap-2 md:flex">
+        {user ? (
+          <HeaderAccountMenu user={user} />
+        ) : (
+          <>
+            <Link href="/signIn" className={navLinkClass}>Sign In</Link>
+            <Link href="/signUp" className="inline-flex min-h-10 items-center whitespace-nowrap rounded-lg bg-indigo-600 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700">
+              Sign Up
+            </Link>
+          </>
+        )}
+      </div>
 
-			<div className="hidden md:flex items-center gap-2 lg:gap-4 min-w-0">
-				{!user ? (
-					<Link href="/signIn" className="text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors rounded-lg px-4 py-2">Sign In</Link>
-				) : (
-					<div className="flex items-center gap-2 min-w-0">
-						<div className="w-8 h-8 rounded-full bg-[#4f46e5] text-white flex items-center justify-center font-bold shrink-0">
-							{user.name?.[0]?.toUpperCase() ?? "?"}
-						</div>
-						<span className="text-sm font-bold text-gray-600 truncate max-w-25 lg:max-w-none">
-							{user.name}
-						</span>
-					</div>
-				)}
-				{!user && (
-					<Link href="/signUp" className="text-sm font-bold text-white bg-[#4f46e5] hover:bg-[#4338ca] transition-colors rounded-lg px-4 py-2 shrink-0">Sign Up</Link>
-				)}
-			</div>
-
-			<MobileNav user={user} />
-		</>
-	)
+      <MobileNav user={user} />
+    </>
+  )
 }

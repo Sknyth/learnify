@@ -13,7 +13,7 @@ type Props = {
   category: Category
 }
 
-export default function MyLearningBox({
+export default function EnrolledCourseCard({
   title,
   imageUrl,
   lastLesson,

@@ -1,8 +1,8 @@
-import { getCurrentUser } from '@/lib/getCurrentUser'
+import { getCurrentUser } from '@/lib/get-current-user'
 import { redirect } from 'next/navigation'
 import { StudentEnrollmentDto } from '@/types'
-import { serverFetch } from '@/lib/serverApi'
-import StudentsTable from '@/features/instructor/components/StudentsTable'
+import { serverFetch } from '@/lib/server-api'
+import StudentEnrollmentsTable from '@/features/instructor/components/StudentEnrollmentsTable'
 
 async function getEnrollments(): Promise<StudentEnrollmentDto[]> {
 	try {
@@ -10,12 +10,12 @@ async function getEnrollments(): Promise<StudentEnrollmentDto[]> {
 		if (!res.ok) throw new Error('Failed to fetch students')
 		return res.json()
 	} catch (error) {
-		console.error('Error students orders:', error)
+		console.error('Error students:', error)
 		return []
 	}
 }
 
-export default async function Page() {
+export default async function InstructorStudentsPage() {
 	const user = await getCurrentUser()
 	if (!user || (user.role !== 'INSTRUCTOR' && user.role !== 'ADMIN')) redirect('/')
 
@@ -29,7 +29,7 @@ export default async function Page() {
 				</div>
 
 
-				<StudentsTable enrollments={enrollments} />
+				<StudentEnrollmentsTable enrollments={enrollments} />
 			</div>
 		</div>
 	)

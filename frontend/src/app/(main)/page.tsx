@@ -1,6 +1,6 @@
-import CoursesList from '@/features/courses/components/CoursesList'
+import FeaturedCourses from '@/features/courses/components/FeaturedCourses'
 import HowItWorks from '@/components/HowItWorks'
-import Review from '@/components/Review'
+import TestimonialCard from '@/components/TestimonialCard'
 import { Star, Zap } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -98,7 +98,7 @@ export default async function Home() {
           </div>
         </div>
 
-        <CoursesList />
+        <FeaturedCourses />
 
       </section>
 
@@ -115,9 +115,9 @@ export default async function Home() {
           <h2 className="uppercase text-[#4f46e5] font-bold">Testimonials</h2>
           <h1 className="text-3xl sm:text-4xl font-bold">From learners like you</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12 lg:gap-16 w-full mt-8">
-            <Review />
-            <Review />
-            <Review />
+            <TestimonialCard />
+            <TestimonialCard />
+            <TestimonialCard />
           </div>
         </div>
 

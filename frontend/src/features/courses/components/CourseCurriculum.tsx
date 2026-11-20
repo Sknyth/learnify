@@ -4,8 +4,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { getCurrentUser } from '@/lib/getCurrentUser'
-import { serverFetch } from '@/lib/serverApi'
+import { getCurrentUser } from '@/lib/get-current-user'
+import { serverFetch } from '@/lib/server-api'
 import { Play, Lock } from "lucide-react"
 import Link from 'next/link'
 
@@ -21,7 +21,7 @@ type Module = {
   lessons: Lesson[]
 }
 
-export default async function Curriculum({ courseId, modules }: { courseId: string; modules: Module[] }) {
+export default async function CourseCurriculum({ courseId, modules }: { courseId: string; modules: Module[] }) {
   const user = await getCurrentUser()
 
   let isEnrolled = false

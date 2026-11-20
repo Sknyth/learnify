@@ -14,50 +14,15 @@ import { BasicInfoSection } from "@/features/courses/course-form/BasicInfoSectio
 import { CourseFormFooter } from "@/features/courses/course-form/CourseFormFooter"
 import { CurriculumSection } from "@/features/courses/course-form/CurriculumSection"
 import { LearningPointsSection } from "@/features/courses/course-form/LearningPointsSection"
-import type { CourseForm, CourseWithModules } from "@/features/courses/course-form/types"
-import { Category, Level } from "@/types/course"
+import type { CourseForm, CourseWithModules } from "@/features/courses/course-form/course-form-types"
+import { emptyCourseForm, toCourseForm } from "./course-form-data"
 import { toast } from 'sonner'
 
-export type { CourseForm, CourseWithModules } from "@/features/courses/course-form/types"
+export type { CourseForm, CourseWithModules } from "@/features/courses/course-form/course-form-types"
 
 type Props = {
   trigger: React.ReactElement
   course?: { id: string }
-}
-
-const emptyForm: CourseForm = {
-  title: "",
-  description: "",
-  category: Category.WebDev,
-  level: Level.Beginner,
-  price: 0,
-  duration: "",
-  imageUrl: "",
-  learningPoints: [],
-  modules: [],
-}
-
-function toForm(c: CourseWithModules): CourseForm {
-  return {
-    title: c.title,
-    description: c.description,
-    category: c.category,
-    level: c.level,
-    price: c.price,
-    duration: c.duration,
-    imageUrl: c.imageUrl,
-    learningPoints: c.learningPoints,
-    modules: c.modules.map((m) => ({
-      tempId: m.id,
-      title: m.title,
-      lessons: m.lessons.map((l) => ({
-        tempId: l.id,
-        title: l.title,
-        duration: l.duration ?? '',
-        videoUrl: l.videoUrl ?? '',
-      })),
-    })),
-  }
 }
 
 export default function CourseFormDialog({ course, trigger }: Props) {
@@ -65,7 +30,7 @@ export default function CourseFormDialog({ course, trigger }: Props) {
   const isEditing = !!courseId
   const [open, setOpen] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
-  const [form, setForm] = React.useState<CourseForm>(emptyForm)
+  const [form, setForm] = React.useState<CourseForm>(emptyCourseForm)
   const [isPending, startTransition] = React.useTransition()
 
   async function loadCourse() {
@@ -75,7 +40,7 @@ export default function CourseFormDialog({ course, trigger }: Props) {
       const r = await fetch(`/api/courses/${courseId}`)
       if (!r.ok) throw new Error()
       const c: CourseWithModules = await r.json()
-      setForm(toForm(c))
+      setForm(toCourseForm(c))
     } catch {
       toast.error('Failed to load course')
     } finally {
@@ -101,7 +66,7 @@ export default function CourseFormDialog({ course, trigger }: Props) {
 
       toast.success(courseId ? 'Course updated' : 'Course added')
       setOpen(false)
-      if (!courseId) setForm(emptyForm)
+      if (!courseId) setForm(emptyCourseForm)
     })
   }
 

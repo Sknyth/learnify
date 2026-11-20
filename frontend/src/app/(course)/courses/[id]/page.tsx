@@ -1,12 +1,12 @@
-import Curriculum from '@/features/courses/components/Curriculum'
-import { serverFetch } from '@/lib/serverApi'
+import CourseCurriculum from '@/features/courses/components/CourseCurriculum'
+import { serverFetch } from '@/lib/server-api'
 import { CheckCircle, CirclePlay, Clock, Globe, Star, Shield, Award, Infinity as InfinityIcon } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import type { CourseDto } from '@/types/course'
 
-export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+export default async function CourseDetailsPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params
 
 	if (!id) return notFound()
@@ -83,7 +83,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 						</div>
 					</div>
 
-					<Curriculum courseId={id} modules={modules} />
+					<CourseCurriculum courseId={id} modules={modules} />
 				</div>
 
 				<aside className="w-full lg:w-1/3 lg:sticky lg:top-24 flex flex-col gap-4">

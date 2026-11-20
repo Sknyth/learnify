@@ -1,5 +1,5 @@
 import { cache } from "react"
-import { serverFetch } from "@/lib/serverApi"
+import { serverFetch } from "@/lib/server-api"
 
 export const getCurrentUser = cache(async () => {
   try {
