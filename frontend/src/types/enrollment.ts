@@ -38,6 +38,14 @@ export interface MyEnrollmentDto {
   }
 }
 
+export interface StudentEnrollmentDto {
+  id: string
+  user: { id: string, name: string }
+	course: { id: string, title: string }
+	enrolledAt: Date
+	progress: number
+}
+
 export interface OrderEnrollmentDto {
   id: string
 	course: { id: string, title: string, price: number }

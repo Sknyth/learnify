@@ -16,7 +16,7 @@ async function send(path: string, method: string, body?: unknown) {
 		return { success: false, error: data?.error ?? `Request failed (${res.status})` }
 	}
 
-	revalidatePath('/admin/courses')
+	revalidatePath('/instructor/myCourses')
 	return { success: true }
 }
 

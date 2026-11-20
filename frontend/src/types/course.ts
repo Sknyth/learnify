@@ -15,7 +15,8 @@ export enum Level {
 export interface CourseDto {
   id: string
   title: string
-  instructor: string
+  instructor: string | null
+  instructorId: string | null
   description: string
   category: Category
   level: Level

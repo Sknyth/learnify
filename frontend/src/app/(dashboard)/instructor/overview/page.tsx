@@ -1,12 +1,12 @@
 import InfoBoxDashboard from '@/features/dashboard/components/InfoBoxDashboard'
 import { getCurrentUser } from '@/lib/getCurrentUser'
-import { BookOpen, Clock, Medal } from 'lucide-react'
+import { Clock } from 'lucide-react'
 import { redirect } from 'next/navigation'
 
 export default async function Page() {
   const user = await getCurrentUser()
 
-  if (!user) redirect('/')
+  if (!user && (user.role !== 'ADMIN' || user.role !== 'INSTRUCTOR')) redirect('/')
 
   return (
     <div className="flex">

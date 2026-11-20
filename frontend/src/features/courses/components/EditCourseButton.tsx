@@ -1,7 +1,7 @@
 'use client'
 
 import { PenLine } from 'lucide-react'
-import CourseFormDialog from './CourseFormDialog'
+import CourseFormDialog from '../../instructor/components/CourseFormDialog'
 import { CourseDto } from '@/types'
 
 type Props = {

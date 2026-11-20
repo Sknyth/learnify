@@ -17,8 +17,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 		throw new Error(`Failed to load course: ${response.status} ${response.statusText}`)
 	}
 	const course: CourseDto = await response.json()
+	const modules = course.modules ?? []
+	const learningPoints = course.learningPoints ?? []
+	const rating = course.rating ?? 0
+	const reviewsCount = course.reviewsCount ?? 0
 
-	const totalLessons = course.modules.reduce((sum, m) => sum + m.lessons.length, 0)
+	const totalLessons = modules.reduce((sum, m) => sum + m.lessons.length, 0)
 
 	return (
 		<div className="min-h-screen">
@@ -55,12 +59,12 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 							{Array.from({ length: 5 }).map((_, i) => (
 								<Star
 									key={i}
-									className={`w-4 h-4 ${i < Math.round(course.rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-200"}`}
+									className={`w-4 h-4 ${i < Math.round(rating) ? "text-yellow-400 fill-yellow-400" : "text-gray-200 fill-gray-200"}`}
 								/>
 							))}
 						</div>
-						<span className="font-bold text-sm">{course.rating.toFixed(1)}/5</span>
-						<span className="text-gray-400 text-sm">({course.reviewsCount.toLocaleString()})</span>
+						<span className="font-bold text-sm">{rating.toFixed(1)}/5</span>
+						<span className="text-gray-400 text-sm">({reviewsCount.toLocaleString()})</span>
 					</div>
 				</div>
 			</section>
@@ -70,7 +74,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 					<div className="border py-6 p-4 rounded-2xl flex flex-col gap-4">
 						<h1 className="text-lg font-bold">What you will learn</h1>
 						<div className="grid sm:grid-cols-2 gap-3">
-							{course.learningPoints.map((point, i) => (
+							{learningPoints.map((point, i) => (
 								<div key={i} className="flex items-start gap-2">
 									<CheckCircle className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
 									<span>{point}</span>
@@ -79,7 +83,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 						</div>
 					</div>
 
-					<Curriculum courseId={id} modules={course.modules} />
+					<Curriculum courseId={id} modules={modules} />
 				</div>
 
 				<aside className="w-full lg:w-1/3 lg:sticky lg:top-24 flex flex-col gap-4">

@@ -50,7 +50,7 @@ export default function CoursesTable({ courses }: Props) {
 					<tbody className="divide-y divide-gray-100">
 						{courses.length === 0 ? (
 							<tr>
-								<td colSpan={5} className="px-4 sm:px-6 py-16">
+								<td className="px-4 sm:px-6 py-16">
 									<div className="flex flex-col items-center justify-center text-center">
 										<div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#4338ca]/10">
 											<BookOpen className="h-6 w-6 text-[#4338ca]" />
