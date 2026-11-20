@@ -3,11 +3,9 @@ package com.example.backend.course;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,6 +20,11 @@ public class CourseController {
         return courseService.findAllCourses();
     }
 
+    @GetMapping("/mine")
+    public List<CourseDto> getMyCourses(Authentication auth) {
+        return courseService.findMyCourses((String) auth.getPrincipal());
+    }
+
     @GetMapping("/sales")
     @PreAuthorize("hasRole('ADMIN')")
     public List<CourseSalesDto> sales() {
@@ -30,11 +33,7 @@ public class CourseController {
 
     @GetMapping("/{id}")
     public CourseDetailDto getCourse(@PathVariable String id) {
-        try {
-            return courseService.findDetail(id);
-        } catch (RuntimeException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found");
-        }
+        return courseService.findDetail(id);
     }
 
     @PostMapping

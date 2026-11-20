@@ -11,6 +11,7 @@ public record CourseDto(
         String id,
         String title,
         String instructor,
+        String instructorId,
         String description,
         Category category,
         Level level,
@@ -19,7 +20,7 @@ public record CourseDto(
         String imageUrl,
         Double rating,
         Integer reviewsCount,
-        Integer studentsCount,
+        Long studentsCount,
         List<String> learningPoints,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
@@ -32,7 +33,8 @@ public record CourseDto(
         return new CourseDto(
                 course.getId(),
                 course.getTitle(),
-                course.getInstructor(),
+                course.getInstructor() == null ? null : course.getInstructor().getName(),
+                course.getInstructor() == null ? null : course.getInstructor().getId(),
                 course.getDescription(),
                 course.getCategory(),
                 course.getLevel(),

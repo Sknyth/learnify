@@ -2,7 +2,7 @@ package com.example.backend.user;
 
 import java.time.LocalDateTime;
 
-public record EnrollmentDto(
+public record UserEnrollmentSummaryDto(
         String id,
         String courseId,
         Integer progress,

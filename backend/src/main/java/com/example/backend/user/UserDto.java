@@ -14,12 +14,12 @@ public record UserDto(
         String jobTitle,
         Role role,
         LocalDateTime createdAt,
-        List<EnrollmentDto> enrollments
+        List<UserEnrollmentSummaryDto> enrollments
 ) {
     public static UserDto fromEntity(UserEntity user) {
-        List<EnrollmentDto> enrollmentDtos = user.getEnrollmentEntities() != null
+        List<UserEnrollmentSummaryDto> enrollmentDtos = user.getEnrollmentEntities() != null
                 ? user.getEnrollmentEntities().stream()
-                .map(e -> new EnrollmentDto(
+                .map(e -> new UserEnrollmentSummaryDto(
                         e.getId(),
                         e.getCourseId(),
                         e.getProgress(),

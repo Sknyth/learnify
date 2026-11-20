@@ -95,4 +95,11 @@ public class EnrollmentService {
                 .map(OrderEnrollmentDto::fromEntity)
                 .toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<StudentEnrollmentDto> findMyStudentsEnrollments(String instructorId) {
+        return enrollmentRepository.findStudentsByInstructorId(instructorId).stream()
+                .map(StudentEnrollmentDto::fromEntity)
+                .toList();
+    }
 }
