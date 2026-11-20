@@ -1,5 +1,6 @@
 "use client"
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { LogOut, Menu, Settings } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
@@ -47,6 +48,7 @@ export default function MobileNav({ user }: { user: UserDto | null }) {
 	const router = useRouter()
 	const pathname = usePathname()
 	const [open, setOpen] = useState(false)
+	const [loading, setLoading] = useState(false)
 	const activeWorkspace = user?.role === 'ADMIN' && pathname.startsWith('/admin')
 		? 'admin'
 		: user && user.role !== 'STUDENT' && pathname.startsWith('/instructor')
@@ -54,7 +56,8 @@ export default function MobileNav({ user }: { user: UserDto | null }) {
 			: 'student'
 
 	async function handleLogout() {
-		setOpen(false)
+		if (loading) return
+		setLoading(true)
 		try {
 			const response = await fetch('/api/auth/logout', { method: 'POST' })
 			if (!response.ok) {
@@ -62,10 +65,13 @@ export default function MobileNav({ user }: { user: UserDto | null }) {
 				return
 			}
 
+			setOpen(false)
 			router.push('/')
 			router.refresh()
 		} catch {
 			toast.error('Не удалось выполнить запрос. Попробуйте ещё раз.')
+		} finally {
+			setLoading(false)
 		}
 	}
 
@@ -123,10 +129,15 @@ export default function MobileNav({ user }: { user: UserDto | null }) {
 
 				{user && (
 					<div className="shrink-0 border-t border-gray-100 bg-white p-4">
-						<button onClick={handleLogout} className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold text-red-600 transition-colors hover:bg-red-50">
+						<PendingButton
+							pending={loading}
+							pendingLabel="Logging out…"
+							onClick={handleLogout}
+							className="flex w-full items-center justify-start gap-3 rounded-xl px-4 py-3 text-left text-sm font-semibold text-red-600 transition-colors hover:bg-red-50"
+						>
 							<LogOut className="h-4 w-4" />
 							Log Out
-						</button>
+						</PendingButton>
 					</div>
 				)}
 			</SheetContent>

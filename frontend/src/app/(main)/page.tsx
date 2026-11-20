@@ -4,6 +4,7 @@ import TestimonialCard from '@/components/TestimonialCard'
 import { Star, Zap } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Suspense } from 'react'
 
 export const dynamic = 'force-dynamic'
 
@@ -98,7 +99,9 @@ export default async function Home() {
           </div>
         </div>
 
-        <FeaturedCourses />
+        <Suspense fallback={<p role="status" className="text-sm text-gray-600">Loading courses…</p>}>
+          <FeaturedCourses />
+        </Suspense>
 
       </section>
 

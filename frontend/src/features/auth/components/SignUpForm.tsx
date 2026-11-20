@@ -1,5 +1,6 @@
 "use client"
 
+import { PendingButton } from '@/components/ui/pending-button'
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -10,9 +11,12 @@ export default function SignUpForm() {
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const router = useRouter()
+	const [loading, setLoading] = useState(false)
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault()
+		if (loading) return
+		setLoading(true)
 
 		try {
 			const res = await fetch("/api/auth/signUp", {
@@ -33,6 +37,8 @@ export default function SignUpForm() {
 			router.refresh()
 		} catch {
 			toast.error("Something went wrong. Please try again.")
+		} finally {
+			setLoading(false)
 		}
 	}
 
@@ -88,9 +94,14 @@ export default function SignUpForm() {
 					/>
 				</div>
 
-				<button type="submit" className="bg-[#4f46e5] text-white font-bold py-2 px-4 rounded-xl hover:bg-[#4338ca] transition-colors mt-1 cursor-pointer">
+				<PendingButton
+					pending={loading}
+					pendingLabel="Creating account…"
+					type="submit"
+					className="bg-[#4f46e5] text-white font-bold py-2 px-4 rounded-xl hover:bg-[#4338ca] transition-colors mt-1 cursor-pointer"
+				>
 					Create account
-				</button>
+				</PendingButton>
 			</div>
 
 			<div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0 text-sm text-gray-500">

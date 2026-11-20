@@ -1,13 +1,20 @@
 import Header from "@/components/layout/Header"
 import Footer from "@/components/layout/Footer"
+import { Suspense } from "react"
 import { getCurrentUser } from "@/lib/get-current-user"
 
-export default async function MainLayout({ children }: { children: React.ReactNode }) {
+async function MainHeader() {
   const user = await getCurrentUser()
+  return <Header user={user} />
+}
+
+export default function MainLayout({ children }: { children: React.ReactNode }) {
 
   return (
     <>
-      <Header user={user} />
+      <Suspense>
+        <MainHeader />
+      </Suspense>
       <main className="flex-1 pt-16">
         {children}
       </main>
