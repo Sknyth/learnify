@@ -40,13 +40,15 @@ public class EnrollmentService {
                 .toList();
     }
 
+    @Transactional
     public EnrollmentDto enroll(String userId, String courseId) {
 
         if (userId == null || userId.isBlank() || courseId == null || courseId.isBlank())
             throw new IllegalArgumentException("UserId and courseId are required");
 
-        if (!courseRepository.existsById(courseId))
-            throw new IllegalArgumentException("Course not found");
+        courseRepository.findForEnrollment(courseId)
+                .filter(course -> course.getStatus() == StatusCourse.Published)
+                .orElseThrow(() -> new IllegalArgumentException("Course is unavailable for enrollment"));
 
         if (enrollmentRepository.existsByUserIdAndCourseId(userId, courseId))
             throw new IllegalStateException("Already enrolled");

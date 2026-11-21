@@ -1,5 +1,4 @@
-import type { CourseDto } from "@/types/course"
-import type { Category, Level } from "@/types/course"
+import type { Category, CourseEditDto, Level } from "@/types/course"
 
 type LessonForm = { title: string; duration: string; videoUrl: string; tempId: string }
 
@@ -9,9 +8,7 @@ type ModuleForm = {
   lessons: LessonForm[]
 }
 
-export type CourseWithModules = CourseDto & {
-  modules: (ModuleForm & { id: string; order: number; lessons: (LessonForm & { id: string; order: number })[] })[]
-}
+export type CourseWithModules = CourseEditDto
 
 export type CourseForm = {
   title: string

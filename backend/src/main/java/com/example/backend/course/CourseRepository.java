@@ -2,7 +2,9 @@ package com.example.backend.course;
 
 import com.example.backend.model.CourseEntity;
 import com.example.backend.model.enums.StatusCourse;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,10 @@ public interface CourseRepository extends JpaRepository<CourseEntity, String> {
     Optional<CourseEntity> findById(String id);
 
     Optional<CourseEntity> findByIdAndStatus(String id, StatusCourse status);
+
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    @Query("select c from CourseEntity c where c.id = :id")
+    Optional<CourseEntity> findForEnrollment(String id);
 
     @EntityGraph(attributePaths = "instructor")
     List<CourseEntity> findAllByStatus(StatusCourse status);

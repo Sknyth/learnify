@@ -1,5 +1,7 @@
 package com.example.backend.course;
 
+import com.example.backend.course.lesson.LessonDto;
+import com.example.backend.course.lesson.LessonEditDto;
 import com.example.backend.model.enums.StatusCourse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -38,12 +40,12 @@ public class CourseController {
     }
 
     @GetMapping("/{id}")
-    public CourseDetailDto getCourse(@PathVariable String id) {
+    public CourseDetailDto<LessonDto> getCourse(@PathVariable String id) {
         return courseService.findPublishedDetail(id);
     }
 
     @GetMapping("/{id}/edit")
-    public CourseDetailDto getCourseForEditing(@PathVariable String id, Authentication auth) {
+    public CourseDetailDto<LessonEditDto> getCourseForEditing(@PathVariable String id, Authentication auth) {
         return courseService.findDetailForEditing((String) auth.getPrincipal(), id);
     }
 

@@ -24,19 +24,21 @@ public class UserService {
                 .toList();
     }
 
-    public UserDto findById(String id) {
-        UserEntity user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
-        return UserDto.fromEntity(user);
-    }
-
     @Transactional
     public UserDto updateUser(String userId, String name, String email, String phone, String jobTitle) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        user.setName(name);
-        user.setEmail(email);
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Name is required");
+        }
+        String normalizedEmail = EmailAddress.normalize(email);
+        userRepository.findByEmail(normalizedEmail)
+                .filter(existing -> !existing.getId().equals(userId))
+                .ifPresent(existing -> { throw new IllegalStateException("This email is already in use"); });
+
+        user.setName(name.trim());
+        user.setEmail(normalizedEmail);
         user.setPhone(phone);
         user.setJobTitle(jobTitle);
 

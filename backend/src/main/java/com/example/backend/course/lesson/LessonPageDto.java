@@ -10,7 +10,7 @@ public record LessonPageDto(
         String moduleTitle,
         Integer progress,
         List<String> completedLessons,
-        List<ModuleDto> modules
+        List<ModuleDto<LessonDto>> modules
 ) {
     public record LessonInfo(String id, String title, String videoUrl) {}
 }

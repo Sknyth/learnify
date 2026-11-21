@@ -47,10 +47,4 @@ public class UserController {
         userService.deleteUser((String) auth.getPrincipal(), id);
         return ResponseEntity.noContent().build();
     }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserDto> findById(@PathVariable String id) {
-        UserDto user = userService.findById(id);
-        return ResponseEntity.ok(user);
-    }
 }

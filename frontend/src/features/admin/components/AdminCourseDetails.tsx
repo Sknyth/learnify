@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import CourseTitleLink from '@/features/courses/components/CourseTitleLink'
-import { CourseStatus, courseStatusLabels, type AdminCourseSummaryDto, type CourseDto } from '@/types/course'
+import { CourseStatus, courseStatusLabels, type AdminCourseSummaryDto, type CourseEditDto, type CourseDto } from '@/types/course'
 
 const priceFormat = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
 
@@ -64,7 +64,7 @@ function CourseCover({ imageUrl, title, status }: Pick<CourseDto, 'imageUrl' | '
 }
 
 function CourseDetailsBody({ courseId }: { courseId: string }) {
-  const [details, setDetails] = useState<CourseDto | 'error' | null>(null)
+  const [details, setDetails] = useState<CourseEditDto | 'error' | null>(null)
   const [attempt, setAttempt] = useState(0)
 
   useEffect(() => {
@@ -77,7 +77,7 @@ function CourseDetailsBody({ courseId }: { courseId: string }) {
           signal: controller.signal,
         })
         if (!response.ok) throw new Error('Failed to load course details')
-        const course: CourseDto = await response.json()
+        const course: CourseEditDto = await response.json()
         if (!controller.signal.aborted) setDetails(course)
       } catch {
         if (!controller.signal.aborted) setDetails('error')

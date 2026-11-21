@@ -46,15 +46,23 @@ export interface CourseDto {
   reviewsCount: number
   studentsCount: number
   learningPoints: string[]
-  modules: {
-		id: string
-		title: string
-		order: number
-		lessons: { id: string; title: string; order: number; duration: string | null; videoUrl: string | null }[]
-	}[]
   createdAt: Date
   updatedAt: Date
 }
+
+export interface CourseLessonDto {
+  id: string
+  title: string
+  order: number
+  duration: string | null
+}
+
+export type CourseDetailDto<Lesson extends CourseLessonDto = CourseLessonDto> =
+  Omit<CourseDto, 'createdAt' | 'updatedAt'> & {
+    modules: { id: string; title: string; order: number; lessons: Lesson[] }[]
+  }
+
+export type CourseEditDto = CourseDetailDto<CourseLessonDto & { videoUrl: string | null }>
 
 export interface AdminCourseSummaryDto {
   id: string
