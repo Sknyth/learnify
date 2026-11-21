@@ -6,7 +6,7 @@ import { CheckCircle, CirclePlay, Clock, Globe, Star, Shield, Award, Infinity as
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { CourseDto } from '@/types/course'
+import type { CourseDetailDto } from '@/types/course'
 
 export default async function CourseDetailsPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params
@@ -22,7 +22,7 @@ export default async function CourseDetailsPage({ params }: { params: Promise<{ 
 	if (!response.ok) {
 		throw new Error(`Failed to load course: ${response.status} ${response.statusText}`)
 	}
-	const [course, isEnrolled]: [CourseDto, boolean] = await Promise.all([
+	const [course, isEnrolled]: [CourseDetailDto, boolean] = await Promise.all([
 		response.json(),
 		user ? getEnrollmentStatus(id) : false,
 	])

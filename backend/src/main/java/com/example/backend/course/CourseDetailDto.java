@@ -1,6 +1,7 @@
 package com.example.backend.course;
 
 import com.example.backend.model.CourseEntity;
+import com.example.backend.model.LessonEntity;
 import com.example.backend.model.ModuleEntity;
 import com.example.backend.model.enums.Category;
 import com.example.backend.model.enums.Level;
@@ -8,8 +9,9 @@ import com.example.backend.model.enums.StatusCourse;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 
-public record CourseDetailDto(
+public record CourseDetailDto<T>(
         String id,
         String title,
         String instructor,
@@ -24,19 +26,19 @@ public record CourseDetailDto(
         Integer reviewsCount,
         Long studentsCount,
         List<String> learningPoints,
-        List<ModuleDto> modules,
+        List<ModuleDto<T>> modules,
         StatusCourse status
 ) {
-    public static CourseDetailDto fromEntity(CourseEntity c) {
-        List<ModuleDto> modules = c.getModuleEntities() == null
+    public static <T> CourseDetailDto<T> fromEntity(CourseEntity c, Function<LessonEntity, T> lessonMapper) {
+        List<ModuleDto<T>> modules = c.getModuleEntities() == null
                 ? List.of()
                 : c.getModuleEntities().stream()
                 .sorted(Comparator.comparing(ModuleEntity::getOrder,
                         Comparator.nullsLast(Comparator.naturalOrder())))
-                .map(ModuleDto::fromEntity)
+                .map(module -> ModuleDto.fromEntity(module, lessonMapper))
                 .toList();
 
-        return new CourseDetailDto(
+        return new CourseDetailDto<>(
                 c.getId(),
                 c.getTitle(),
                 c.getInstructor() == null ? null : c.getInstructor().getName(),

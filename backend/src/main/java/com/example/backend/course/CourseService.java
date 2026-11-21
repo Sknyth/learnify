@@ -1,5 +1,7 @@
 package com.example.backend.course;
 
+import com.example.backend.course.lesson.LessonDto;
+import com.example.backend.course.lesson.LessonEditDto;
 import com.example.backend.model.CourseEntity;
 import com.example.backend.model.UserEntity;
 import com.example.backend.model.enums.Role;
@@ -63,19 +65,19 @@ public class CourseService {
     }
 
     @Transactional(readOnly = true)
-    public CourseDetailDto findPublishedDetail(String id) {
+    public CourseDetailDto<LessonDto> findPublishedDetail(String id) {
         CourseEntity course = courseRepository.findByIdAndStatus(id, StatusCourse.Published)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
-        return CourseDetailDto.fromEntity(course);
+        return CourseDetailDto.fromEntity(course, LessonDto::fromEntity);
     }
 
     @Transactional(readOnly = true)
-    public CourseDetailDto findDetailForEditing(String currentUserId, String id) {
+    public CourseDetailDto<LessonEditDto> findDetailForEditing(String currentUserId, String id) {
         UserEntity actor = findUser(currentUserId);
         CourseEntity course = courseRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Course not found"));
         requireCourseEditor(actor, course);
-        return CourseDetailDto.fromEntity(course);
+        return CourseDetailDto.fromEntity(course, LessonEditDto::fromEntity);
     }
 
     @Transactional

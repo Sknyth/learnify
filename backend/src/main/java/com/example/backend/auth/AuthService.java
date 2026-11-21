@@ -2,6 +2,7 @@ package com.example.backend.auth;
 
 import com.example.backend.model.UserEntity;
 import com.example.backend.security.JwtService;
+import com.example.backend.user.EmailAddress;
 import com.example.backend.user.UserDto;
 import com.example.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,11 @@ public class AuthService {
             throw new IllegalArgumentException("Fields cannot be empty");
         }
 
-        email = email.trim().toLowerCase(java.util.Locale.ROOT);
+        email = EmailAddress.normalize(email);
         name = name.trim();
 
         if (userRepository.existsByEmail(email)) {
-            throw new RuntimeException("User with this email already exists");
+            throw new IllegalStateException("User with this email already exists");
         }
 
         UserEntity user = new UserEntity();
@@ -55,9 +56,9 @@ public class AuthService {
             throw new IllegalArgumentException("Email and password are required");
         }
 
-        email = email.trim().toLowerCase(java.util.Locale.ROOT);
+        email = EmailAddress.normalize(email);
 
-        UserEntity user = userRepository.findByEmailIgnoreCase(email)
+        UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
         if (!bcrypt.matches(password, user.getPassword())) {

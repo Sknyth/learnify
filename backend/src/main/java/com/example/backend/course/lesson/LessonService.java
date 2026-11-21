@@ -39,9 +39,9 @@ public class LessonService {
         CourseEntity course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new RuntimeException("Course not found"));
 
-        List<ModuleDto> modules = course.getModuleEntities().stream()
+        List<ModuleDto<LessonDto>> modules = course.getModuleEntities().stream()
                 .sorted(Comparator.comparing(ModuleEntity::getOrder, Comparator.nullsLast(Comparator.naturalOrder())))
-                .map(ModuleDto::fromEntity)
+                .map(moduleEntity -> ModuleDto.fromEntity(moduleEntity, LessonDto::fromEntity))
                 .toList();
 
         return new LessonPageDto(

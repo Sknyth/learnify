@@ -39,7 +39,7 @@ public class UserEntity {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", columnDefinition = "Role", nullable = false)
+    @Column(nullable = false)
     private Role role;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
