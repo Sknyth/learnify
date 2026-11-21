@@ -1,6 +1,8 @@
 import CourseCurriculum from '@/features/courses/components/CourseCurriculum'
+import { getEnrollmentStatus } from '@/features/enrollment/lib/get-enrollment-status'
+import { getCurrentUser } from '@/lib/get-current-user'
 import { serverFetch } from '@/lib/server-api'
-import { CheckCircle, CirclePlay, Clock, Globe, Star, Shield, Award, Infinity as InfinityIcon } from 'lucide-react'
+import { CheckCircle, CirclePlay, Clock, Globe, Star, Shield, Award, Infinity as InfinityIcon, UserRound } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,12 +13,19 @@ export default async function CourseDetailsPage({ params }: { params: Promise<{ 
 
 	if (!id) return notFound()
 
-	const response = await serverFetch(`/api/courses/${encodeURIComponent(id)}`, {}, { auth: false })
+	const coursePath = `/courses/${encodeURIComponent(id)}`
+	const [response, user] = await Promise.all([
+		serverFetch(`/api${coursePath}`, {}, { auth: false }),
+		getCurrentUser(),
+	])
 	if (response.status === 404) return notFound()
 	if (!response.ok) {
 		throw new Error(`Failed to load course: ${response.status} ${response.statusText}`)
 	}
-	const course: CourseDto = await response.json()
+	const [course, isEnrolled]: [CourseDto, boolean] = await Promise.all([
+		response.json(),
+		user ? getEnrollmentStatus(id) : false,
+	])
 	const modules = course.modules ?? []
 	const learningPoints = course.learningPoints ?? []
 	const rating = course.rating ?? 0
@@ -36,6 +45,12 @@ export default async function CourseDetailsPage({ params }: { params: Promise<{ 
 					</span>
 				</div>
 				<h1 className="font-bold text-3xl sm:text-4xl">{course.title}</h1>
+				{course.instructor && (
+					<p className="flex items-start gap-2 text-sm text-gray-300">
+						<UserRound aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-indigo-300" />
+						<span>Taught by <span className="font-semibold text-white">{course.instructor}</span></span>
+					</p>
+				)}
 				<p className="text-gray-400 text-base sm:text-lg w-full sm:w-2/3">{course.description}</p>
 
 				<div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
@@ -83,7 +98,7 @@ export default async function CourseDetailsPage({ params }: { params: Promise<{ 
 						</div>
 					</div>
 
-					<CourseCurriculum courseId={id} modules={modules} />
+					<CourseCurriculum courseId={id} modules={modules} isEnrolled={isEnrolled} />
 				</div>
 
 				<aside className="w-full lg:w-1/3 lg:sticky lg:top-24 flex flex-col gap-4">
@@ -102,12 +117,16 @@ export default async function CourseDetailsPage({ params }: { params: Promise<{ 
 								<span className="text-3xl font-bold">${course.price}</span>
 							</div>
 
-							<Link href={`/courses/${id}/enrollment`} className="w-full bg-[#4f46e5] hover:bg-[#4338ca] transition-colors text-white font-bold py-3 rounded-xl text-center">
-								Enroll Now
-							</Link>
-							<button className="w-full border border-gray-300 hover:border-gray-400 transition-colors font-bold py-3 rounded-xl">
-								Try Free Preview
-							</button>
+							{isEnrolled ? (
+								<div className="flex items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-emerald-50 py-3 font-semibold text-emerald-700">
+									<CheckCircle aria-hidden="true" className="size-5" />
+									Already purchased
+								</div>
+							) : (
+								<Link href={user ? `${coursePath}/enrollment` : '/signIn'} className="w-full bg-[#4f46e5] hover:bg-[#4338ca] transition-colors text-white font-bold py-3 rounded-xl text-center">
+									Enroll Now
+								</Link>
+							)}
 
 							<div className="flex flex-col gap-3 pt-2 text-sm text-gray-600">
 								<span className="flex items-center gap-2">

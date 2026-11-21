@@ -3,6 +3,7 @@ package com.example.backend.course.enrollment;
 import com.example.backend.course.CourseRepository;
 import com.example.backend.course.lesson.LessonRepository;
 import com.example.backend.model.EnrollmentEntity;
+import com.example.backend.model.enums.StatusCourse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class EnrollmentService {
 
     @Transactional(readOnly = true)
     public List<MyEnrollmentDto> findMyEnrollments(String userId) {
-        return enrollmentRepository.findByUserIdOrderByEnrolledAtDesc(userId).stream()
+        return enrollmentRepository.findByUserIdAndCourse_StatusOrderByEnrolledAtDesc(userId, StatusCourse.Published).stream()
                 .map(MyEnrollmentDto::fromEntity)
                 .toList();
     }

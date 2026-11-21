@@ -1,8 +1,7 @@
 import EnrolledCourseCard from '@/features/dashboard/components/EnrolledCourseCard'
-import { getCurrentUser } from '@/lib/get-current-user'
+import { requireUser } from '@/lib/get-current-user'
 import { serverFetch } from '@/lib/server-api'
 import { MyEnrollmentDto } from '@/types'
-import { redirect } from 'next/navigation'
 
 async function getEnrollments(): Promise<MyEnrollmentDto[]> {
   try {
@@ -16,8 +15,7 @@ async function getEnrollments(): Promise<MyEnrollmentDto[]> {
 }
 
 export default async function MyLearningPage() {
-  const user = await getCurrentUser()
-  if (!user) redirect('/signIn')
+  await requireUser()
 	
 	const enrollments = await getEnrollments()
 
@@ -30,7 +28,7 @@ export default async function MyLearningPage() {
 
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {enrollments.length === 0 ? (
-            <p className="text-gray-500 text-sm">You haven&apos;t enrolled in any courses yet.</p>
+            <p className="text-gray-500 text-sm">You have no courses available to continue right now.</p>
           ) : (
             enrollments.map((enrollment) => {
               const allLessons = enrollment.course.modules.flatMap((m) => m.lessons)

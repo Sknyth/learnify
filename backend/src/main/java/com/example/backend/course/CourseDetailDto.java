@@ -4,6 +4,7 @@ import com.example.backend.model.CourseEntity;
 import com.example.backend.model.ModuleEntity;
 import com.example.backend.model.enums.Category;
 import com.example.backend.model.enums.Level;
+import com.example.backend.model.enums.StatusCourse;
 
 import java.util.Comparator;
 import java.util.List;
@@ -23,7 +24,8 @@ public record CourseDetailDto(
         Integer reviewsCount,
         Long studentsCount,
         List<String> learningPoints,
-        List<ModuleDto> modules
+        List<ModuleDto> modules,
+        StatusCourse status
 ) {
     public static CourseDetailDto fromEntity(CourseEntity c) {
         List<ModuleDto> modules = c.getModuleEntities() == null
@@ -49,7 +51,8 @@ public record CourseDetailDto(
                 c.getReviewsCount(),
                 c.getStudentsCount(),
                 c.getLearningPoints() == null ? List.of() : c.getLearningPoints(),
-                modules
+                modules,
+                c.getStatus()
         );
     }
 }

@@ -2,11 +2,13 @@ package com.example.backend.model;
 
 import com.example.backend.model.enums.Category;
 import com.example.backend.model.enums.Level;
+import com.example.backend.model.enums.StatusCourse;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Formula;
 import org.hibernate.type.SqlTypes;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "\"Course\"")
+@DynamicUpdate
 @Getter
 @Setter
 @NoArgsConstructor
@@ -44,6 +47,11 @@ public class CourseEntity {
     @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     @Column(nullable = false)
     private Level level;
+
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(nullable = false)
+    private StatusCourse status = StatusCourse.PendingReview;
 
     private Integer price;
     private String duration;

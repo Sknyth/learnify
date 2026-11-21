@@ -1,5 +1,6 @@
 'use client'
 
+import CourseTitleLink from '@/features/courses/components/CourseTitleLink'
 import { CourseSalesDto } from '@/types'
 import { BarChart3 } from 'lucide-react'
 
@@ -52,7 +53,7 @@ export default function CourseSalesTable({ courses }: Props) {
 									<tr key={c.id} className="transition-colors hover:bg-gray-50/70">
 										<td className="px-4 sm:px-6 py-4">
 											<div className="flex flex-col min-w-0">
-												<span className="text-sm font-semibold text-gray-800 truncate">{c.title}</span>
+												<CourseTitleLink course={c} className="min-w-0 truncate text-sm font-semibold" />
 											</div>
 										</td>
 										<td className="px-4 sm:px-6 py-4 whitespace-nowrap">

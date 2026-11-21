@@ -1,11 +1,10 @@
 import DashboardMetricCard from '@/features/dashboard/components/DashboardMetricCard'
 import ContinueLearningRow from '@/features/dashboard/components/ContinueLearningRow'
-import { getCurrentUser } from '@/lib/get-current-user'
+import { requireUser } from '@/lib/get-current-user'
 import { serverFetch } from '@/lib/server-api'
 import { MyEnrollmentDto } from '@/types'
-import { BookOpen, Clock, Medal } from 'lucide-react'
+import { BookOpen, CirclePlay, Medal } from 'lucide-react'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
 async function getEnrollments(): Promise<MyEnrollmentDto[]> {
   try {
@@ -18,12 +17,13 @@ async function getEnrollments(): Promise<MyEnrollmentDto[]> {
   }
 }
 export default async function StudentOverviewPage() {
-  const user = await getCurrentUser()
-
-  if (!user) redirect('/')
+  await requireUser()
 
   const enrollments = await getEnrollments()
 
+  const inProgressCourses = enrollments.filter(({ progress, completedLessons }) => (
+    progress < 100 && (progress > 0 || completedLessons.length > 0)
+  )).length
 
   const completedCourses = enrollments.reduce((count, enrollment) => {
     if (enrollment.progress === 100) return count + 1
@@ -42,7 +42,7 @@ export default async function StudentOverviewPage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
           <DashboardMetricCard Icon={BookOpen} count={enrollments.length} desc="Courses" />
-          <DashboardMetricCard Icon={Clock} count={0} desc="Hours watched" />
+          <DashboardMetricCard Icon={CirclePlay} count={inProgressCourses} desc="In progress" />
           <DashboardMetricCard Icon={Medal} count={completedCourses} desc="Certificates" />
         </div>
 
@@ -65,7 +65,7 @@ export default async function StudentOverviewPage() {
 
           {enrollments.length === 0 ? (
             <p className="py-6 text-sm text-gray-500">
-              You haven&apos;t enrolled in any courses yet.
+              You have no courses available to continue right now.
             </p>
           ) : (
             <div className="divide-y divide-gray-100">

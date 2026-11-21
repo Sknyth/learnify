@@ -22,11 +22,10 @@ export type { CourseForm, CourseWithModules } from "@/features/courses/course-fo
 
 type Props = {
   trigger: React.ReactElement
-  course?: { id: string }
+  courseId?: string
 }
 
-export default function CourseFormDialog({ course, trigger }: Props) {
-  const courseId = course?.id
+export default function CourseFormDialog({ courseId, trigger }: Props) {
   const isEditing = !!courseId
   const [open, setOpen] = React.useState(false)
   const [loading, setLoading] = React.useState(false)
@@ -37,7 +36,7 @@ export default function CourseFormDialog({ course, trigger }: Props) {
     if (!courseId) return
     setLoading(true)
     try {
-      const r = await fetch(`/api/courses/${courseId}`)
+      const r = await fetch(`/api/courses/${encodeURIComponent(courseId)}/edit`, { cache: 'no-store' })
       if (!r.ok) throw new Error()
       const c: CourseWithModules = await r.json()
       setForm(toCourseForm(c))

@@ -1,6 +1,7 @@
 package com.example.backend.security;
 
-import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,9 +15,11 @@ import java.util.Date;
 public class JwtService {
 
     private final SecretKey key;
+    private final JwtParser parser;
 
     public JwtService(@Value("${jwt.secret}") String secret) {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
+        this.parser = Jwts.parser().verifyWith(key).build();
     }
 
     public String generateToken(String userId, String role) {
@@ -29,24 +32,13 @@ public class JwtService {
                 .compact();
     }
 
-    private Claims parse(String token) {
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
-    }
-
-    public boolean isValid(String token) {
+    public String verifyAndGetUserId(String token) {
         try {
-            parse(token);
-            return true;
-        } catch (Exception e) {
-            return false;
+            var claims = parser.parseSignedClaims(token).getPayload();
+            String userId = claims.getSubject();
+            return claims.getExpiration() != null && userId != null && !userId.isBlank() ? userId : null;
+        } catch (JwtException | IllegalArgumentException e) {
+            return null;
         }
-    }
-
-    public String getUserId(String token) {
-        return parse(token).getSubject();
-    }
-
-    public String getRole(String token) {
-        return parse(token).get("role", String.class);
     }
 }

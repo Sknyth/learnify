@@ -1,10 +1,9 @@
 import DashboardMetricCard from '@/features/dashboard/components/DashboardMetricCard'
 import MonthlyRevenueChart from '@/features/admin/components/MonthlyRevenueChart'
-import { getCurrentUser } from '@/lib/get-current-user'
+import { requireUser } from '@/lib/get-current-user'
 import { serverFetch } from '@/lib/server-api'
 import { CourseDto, EnrollmentDto, UserDto } from '@/types'
 import { BookOpen, Star, TrendingUp, Users } from 'lucide-react'
-import { redirect } from 'next/navigation'
 
 async function getCourses(): Promise<CourseDto[]> {
 	try {
@@ -40,8 +39,7 @@ async function getEnrollments(): Promise<EnrollmentDto[]> {
 }
 
 export default async function AdminDashboardPage() {
-  const user = await getCurrentUser()
-  if (!user || user.role !== 'ADMIN') redirect('/dashboard/overview')
+  await requireUser('ADMIN')
 
   const [users, courses, enrollments] = await Promise.all([
     getUsers(),
@@ -80,7 +78,7 @@ export default async function AdminDashboardPage() {
     <div className="flex">
       <div className="min-w-0 flex-1 md:ml-64 py-8 sm:py-12 px-4 sm:px-8 lg:px-12 xl:px-16 flex flex-col gap-6 sm:gap-10 pt-16 sm:pt-20">
         <div className="flex flex-col justify-start items-start gap-1">
-          <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold">Overview</h1>
           <h2 className="text-gray-500 text-sm sm:text-base">
 						Welcome back, Admin. Here&apos;s what&apos;s happening.
           </h2>

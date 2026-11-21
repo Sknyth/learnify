@@ -3,6 +3,7 @@
 import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { adminNavItems } from '@/components/layout/navigation'
 
 function formatSegment(segment: string) {
 	return decodeURIComponent(segment)
@@ -16,10 +17,11 @@ export default function DashboardBreadcrumbs() {
 	const pathname = usePathname()
 	const segments = pathname.split('/').filter(Boolean)
 
-	const crumbs = segments.map((segment, index) => ({
-		label: formatSegment(segment),
-		href: '/' + segments.slice(0, index + 1).join('/'),
-	}))
+	const crumbs = segments.map((segment, index) => {
+		const href = '/' + segments.slice(0, index + 1).join('/')
+		const label = adminNavItems.find((item) => item.href === href)?.label ?? formatSegment(segment)
+		return { href, label }
+	})
 
 	return (
 			<nav aria-label="Breadcrumb">

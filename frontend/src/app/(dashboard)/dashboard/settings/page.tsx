@@ -1,11 +1,8 @@
 import ProfileForm from '@/features/profile/components/ProfileForm'
-import { getCurrentUser } from '@/lib/get-current-user'
-import { redirect } from 'next/navigation'
+import { requireUser } from '@/lib/get-current-user'
 
 export default async function SettingsPage() {
-  const user = await getCurrentUser()
-
-  if (!user) redirect('/')
+  const user = await requireUser()
 
   return (
     <div className="flex">

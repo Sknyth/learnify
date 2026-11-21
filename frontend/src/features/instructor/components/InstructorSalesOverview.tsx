@@ -1,5 +1,5 @@
 import type { summarizeInstructorSales } from '@/features/instructor/lib/summarize-instructor-sales'
-import Link from 'next/link'
+import CourseTitleLink from '@/features/courses/components/CourseTitleLink'
 
 const currency = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -68,9 +68,7 @@ export default function InstructorSalesOverview({ months, topCourses }: Pick<Ret
                   {index + 1}
                 </span>
                 <div className="min-w-0">
-                  <Link href={`/courses/${course.id}`} className="wrap-break-word text-sm font-medium hover:text-indigo-700 hover:underline">
-                    {course.title}
-                  </Link>
+                  <CourseTitleLink course={course} className="wrap-break-word text-sm font-medium" />
                   <p className="mt-0.5 text-xs text-gray-500">
                     {course.sales} {course.sales === 1 ? 'enrollment' : 'enrollments'}
                   </p>

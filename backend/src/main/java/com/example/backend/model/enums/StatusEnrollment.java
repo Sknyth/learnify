@@ -1,5 +1,5 @@
 package com.example.backend.model.enums;
 
-public enum Status {
+public enum StatusEnrollment {
         Paid, Refunded, Failed
 }

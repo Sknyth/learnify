@@ -1,9 +1,9 @@
 import DashboardHeader from '@/components/layout/DashboardHeader'
 import DashboardSidebar from '@/components/layout/DashboardSidebar'
-import { getCurrentUser } from '@/lib/get-current-user'
+import { requireUser } from '@/lib/get-current-user'
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const user = await getCurrentUser()
+  const user = await requireUser()
 
   return (
     <>

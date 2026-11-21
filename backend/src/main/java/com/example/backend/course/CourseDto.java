@@ -3,6 +3,7 @@ package com.example.backend.course;
 import com.example.backend.model.CourseEntity;
 import com.example.backend.model.enums.Category;
 import com.example.backend.model.enums.Level;
+import com.example.backend.model.enums.StatusCourse;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,7 +24,8 @@ public record CourseDto(
         Long studentsCount,
         List<String> learningPoints,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        StatusCourse status
 ) {
     public static CourseDto fromEntity(CourseEntity course) {
         if (course == null) {
@@ -46,7 +48,8 @@ public record CourseDto(
                 course.getStudentsCount(),
                 course.getLearningPoints(),
                 course.getCreatedAt(),
-                course.getUpdatedAt()
+                course.getUpdatedAt(),
+                course.getStatus()
         );
     }
 }

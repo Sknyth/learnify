@@ -1,9 +1,11 @@
 package com.example.backend.course;
 
+import com.example.backend.model.enums.StatusCourse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +18,8 @@ public class CourseController {
     private final CourseService courseService;
 
     @GetMapping
-    public List<CourseDto> getAllCourses() {
-        return courseService.findAllCourses();
+    public List<CourseDto> getPublishedCourses() {
+        return courseService.findPublishedCourses();
     }
 
     @GetMapping("/mine")
@@ -25,15 +27,24 @@ public class CourseController {
         return courseService.findMyCourses((String) auth.getPrincipal());
     }
 
+    @GetMapping("/admin/summary")
+    public List<AdminCourseSummaryDto> getAdminCourseSummaries(Authentication auth) {
+        return courseService.findAdminCourseSummaries((String) auth.getPrincipal());
+    }
+
     @GetMapping("/sales")
-    @PreAuthorize("hasRole('ADMIN')")
     public List<CourseSalesDto> sales() {
         return courseService.findSales();
     }
 
     @GetMapping("/{id}")
     public CourseDetailDto getCourse(@PathVariable String id) {
-        return courseService.findDetail(id);
+        return courseService.findPublishedDetail(id);
+    }
+
+    @GetMapping("/{id}/edit")
+    public CourseDetailDto getCourseForEditing(@PathVariable String id, Authentication auth) {
+        return courseService.findDetailForEditing((String) auth.getPrincipal(), id);
     }
 
     @PostMapping
@@ -46,6 +57,15 @@ public class CourseController {
     public CourseDto update(@PathVariable String id, @RequestBody CourseFormRequest req, Authentication auth) {
         return courseService.update((String) auth.getPrincipal(), id, req);
     }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<Void> updateStatus(@PathVariable String id,
+                                             @Valid @RequestBody StatusRequest request, Authentication auth) {
+        courseService.updateStatus((String) auth.getPrincipal(), id, StatusCourse.valueOf(request.status()));
+        return ResponseEntity.noContent().build();
+    }
+
+    public record StatusRequest(@NotNull String status) {}
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable String id, Authentication auth) {
