@@ -1,12 +1,11 @@
 import AdminCoursesTable from '@/features/admin/components/AdminCoursesTable'
-import { getCurrentUser } from '@/lib/get-current-user'
+import { requireUser } from '@/lib/get-current-user'
 import { serverFetch } from '@/lib/server-api'
-import { CourseDto } from '@/types'
-import { redirect } from 'next/navigation'
+import type { AdminCourseSummaryDto } from '@/types'
 
-async function getCourses(): Promise<CourseDto[]> {
+async function getCourses(): Promise<AdminCourseSummaryDto[]> {
 	try {
-		const res = await serverFetch('/api/courses/mine')
+		const res = await serverFetch('/api/courses/admin/summary')
 		if (!res.ok) throw new Error('Failed to fetch courses')
 		return res.json()
 	} catch (error) {
@@ -16,8 +15,7 @@ async function getCourses(): Promise<CourseDto[]> {
 }
 
 export default async function AdminCoursesPage() {
-  const user = await getCurrentUser()
-  if (!user || user.role !== 'ADMIN') redirect('/')
+  await requireUser('ADMIN')
   const courses = await getCourses()
 
   return (

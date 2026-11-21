@@ -1,6 +1,7 @@
 package com.example.backend.course.enrollment;
 
 import com.example.backend.model.EnrollmentEntity;
+import com.example.backend.model.enums.StatusCourse;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +17,9 @@ public interface EnrollmentRepository extends JpaRepository<EnrollmentEntity, St
 
     @EntityGraph(attributePaths = {"course", "course.moduleEntities"})
     List<EnrollmentEntity> findByUserIdOrderByEnrolledAtDesc(String userId);
+
+    @EntityGraph(attributePaths = {"course", "course.moduleEntities"})
+    List<EnrollmentEntity> findByUserIdAndCourse_StatusOrderByEnrolledAtDesc(String userId, StatusCourse status);
 
     @Query("select e from EnrollmentEntity e " +
             "join fetch e.course c " +

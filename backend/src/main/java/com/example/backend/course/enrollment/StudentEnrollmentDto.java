@@ -1,7 +1,7 @@
 package com.example.backend.course.enrollment;
 
 import com.example.backend.model.EnrollmentEntity;
-import com.example.backend.model.enums.Status;
+import com.example.backend.model.enums.StatusCourse;
 
 import java.time.LocalDateTime;
 
@@ -12,7 +12,7 @@ public record StudentEnrollmentDto(
         LocalDateTime enrolledAt,
         Integer progress
 ) {
-    public record CourseSummary(String id, String title, Integer price) {}
+    public record CourseSummary(String id, String title, Integer price, StatusCourse status) {}
     public record UserSummary(String id,String name) {}
 
     public static StudentEnrollmentDto fromEntity(EnrollmentEntity e) {
@@ -20,7 +20,8 @@ public record StudentEnrollmentDto(
                 : new CourseSummary(
                         e.getCourse().getId(),
                         e.getCourse().getTitle(),
-                        e.getCourse().getPrice()
+                        e.getCourse().getPrice(),
+                        e.getCourse().getStatus()
                 );
 
         UserSummary user = e.getUserEntity() == null ? null

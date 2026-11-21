@@ -1,6 +1,5 @@
 import InstructorCoursesTable from '@/features/instructor/components/InstructorCoursesTable'
-import { getCurrentUser } from '@/lib/get-current-user'
-import { redirect } from 'next/navigation'
+import { requireUser } from '@/lib/get-current-user'
 import { CourseDto } from '@/types'
 import { serverFetch } from '@/lib/server-api'
 import AddCourseButton from '@/features/courses/components/AddCourseButton'
@@ -17,8 +16,7 @@ async function getCourses(): Promise<CourseDto[]> {
 }
 
 export default async function InstructorCoursesPage() {
-	const user = await getCurrentUser()
-	if (!user || (user.role !== 'INSTRUCTOR' && user.role !== 'ADMIN')) redirect('/')
+	await requireUser('ADMIN', 'INSTRUCTOR')
 
 	const courses = await getCourses()
 

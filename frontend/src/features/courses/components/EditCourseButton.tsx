@@ -2,16 +2,15 @@
 
 import { PenLine } from 'lucide-react'
 import CourseFormDialog from '@/features/courses/course-form/CourseFormDialog'
-import { CourseDto } from '@/types'
 
 type Props = {
-  course: CourseDto
+  courseId: string
 }
 
-export default function EditCourseButton({ course }: Props) {
+export default function EditCourseButton({ courseId }: Props) {
   return (
     <CourseFormDialog
-      course={course}
+      courseId={courseId}
       trigger={
         <button
           type="button"

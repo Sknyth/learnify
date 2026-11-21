@@ -1,12 +1,11 @@
 import DashboardMetricCard from '@/features/dashboard/components/DashboardMetricCard'
 import InstructorSalesOverview from '@/features/instructor/components/InstructorSalesOverview'
 import { summarizeInstructorSales } from '@/features/instructor/lib/summarize-instructor-sales'
-import { getCurrentUser } from '@/lib/get-current-user'
+import { requireUser } from '@/lib/get-current-user'
 import { serverFetch } from '@/lib/server-api'
 import type { CourseDto, StudentEnrollmentDto } from '@/types'
 import { ArrowRight, BookOpen, CircleDollarSign, Users } from 'lucide-react'
 import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
 async function fetchOverviewData<T>(path: string): Promise<T> {
   const response = await serverFetch(path)
@@ -15,9 +14,7 @@ async function fetchOverviewData<T>(path: string): Promise<T> {
 }
 
 export default async function InstructorOverviewPage() {
-  const user = await getCurrentUser()
-
-  if (!user || (user.role !== 'ADMIN' && user.role !== 'INSTRUCTOR')) redirect('/')
+  await requireUser('ADMIN', 'INSTRUCTOR')
 
   const [enrollments, courses] = await Promise.allSettled([
     fetchOverviewData<StudentEnrollmentDto[]>('/api/enrollments/students'),

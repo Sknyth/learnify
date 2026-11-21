@@ -1,4 +1,4 @@
-import { Category } from './course'
+import type { Category, CourseStatus } from './course'
 
 export interface EnrollmentDto {
   id: string
@@ -41,14 +41,14 @@ export interface MyEnrollmentDto {
 export interface StudentEnrollmentDto {
   id: string
   user: { id: string, name: string }
-	course: { id: string, title: string, price: number }
+	course: { id: string, title: string, price: number, status: CourseStatus }
 	enrolledAt: string
 	progress: number
 }
 
 export interface OrderEnrollmentDto {
   id: string
-	course: { id: string, title: string, price: number }
+	course: { id: string, title: string, price: number, status: CourseStatus }
 	enrolledAt: Date
 	status: Status
 }

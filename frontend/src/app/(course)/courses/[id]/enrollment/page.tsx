@@ -1,6 +1,8 @@
+import { getEnrollmentStatus } from '@/features/enrollment/lib/get-enrollment-status'
+import { getCurrentUser } from '@/lib/get-current-user'
 import { serverFetch } from '@/lib/server-api'
 import { Shield, Star } from 'lucide-react'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Image from 'next/image'
 import EnrrollmentForm from '@/features/enrollment/components/EnrollmentForm'
 
@@ -9,10 +11,13 @@ export default async function CourseEnrollmentPage({ params }: { params: Promise
 	const { id } = await params
 
 	if (!id) return notFound()
+	if (!(await getCurrentUser())) redirect('/signIn')
 
-	const response = await serverFetch(`/api/courses/${encodeURIComponent(id)}`)
+	const coursePath = `/courses/${encodeURIComponent(id)}`
+	const response = await serverFetch(`/api${coursePath}`)
 	if (response.status === 404) return notFound()
 	if (!response.ok) throw new Error('Failed to load course')
+	if (await getEnrollmentStatus(id)) redirect(coursePath)
 	const course = await response.json()
 
 	const originalPrice = Math.round(course.price / 0.45)

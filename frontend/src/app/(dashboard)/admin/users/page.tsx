@@ -1,8 +1,7 @@
 import UsersTable from '@/features/admin/components/UsersTable'
-import { getCurrentUser } from '@/lib/get-current-user'
+import { requireUser } from '@/lib/get-current-user'
 import { serverFetch } from '@/lib/server-api'
 import { UserDto } from '@/types'
-import { redirect } from 'next/navigation'
 
 async function getUsers(): Promise<UserDto[]> {
   try {
@@ -16,8 +15,7 @@ async function getUsers(): Promise<UserDto[]> {
 }
 
 export default async function AdminUsersPage() {
-  const user = await getCurrentUser()
-  if (!user || user.role !== 'ADMIN') redirect('/dashboard/overview')
+  await requireUser('ADMIN')
   const users = await getUsers()
 
   return (

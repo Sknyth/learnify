@@ -6,7 +6,7 @@ export function summarizeInstructorSales(enrollments: StudentEnrollmentDto[], no
     return { key: date.toISOString().slice(0, 7), date, revenue: 0 }
   })
   const monthsByKey = new Map(months.map(month => [month.key, month]))
-  const paidCourses = new Map<string, { id: string; title: string; sales: number; revenue: number }>()
+  const paidCourses = new Map<string, Pick<StudentEnrollmentDto['course'], 'id' | 'title' | 'status'> & { sales: number; revenue: number }>()
   let totalRevenue = 0
 
   for (const enrollment of enrollments) {
@@ -21,6 +21,7 @@ export function summarizeInstructorSales(enrollments: StudentEnrollmentDto[], no
     const sales = paidCourses.get(course.id) ?? {
       id: course.id,
       title: course.title,
+      status: course.status,
       sales: 0,
       revenue: 0,
     }

@@ -40,7 +40,6 @@ export default async function LessonPage({
   return (
     <div className="flex flex-col h-screen bg-[#0f0f1a]">
       <LessonHeader
-        courseId={data.courseId}
         lessonTitle={lesson.title}
         progress={data.progress}
       />

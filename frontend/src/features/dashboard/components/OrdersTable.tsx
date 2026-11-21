@@ -1,6 +1,7 @@
 'use client'
 
-import { OrderEnrollmentDto } from '@/types'
+import CourseTitleLink from '@/features/courses/components/CourseTitleLink'
+import { Status, type OrderEnrollmentDto } from '@/types/enrollment'
 import { BarChart3 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -8,10 +9,10 @@ type Props = {
   orders: OrderEnrollmentDto[]
 }
 
-const STATUS_STYLES: Record<string, string> = {
-  Paid: 'bg-emerald-50 text-emerald-600',
-  Failed: 'bg-red-50 text-red-600',
-  Refunded: 'bg-purple-50 text-purple-600',
+const STATUS_STYLES: Record<Status, string> = {
+  [Status.Paid]: 'border-emerald-200 bg-emerald-50 text-emerald-700',
+  [Status.Failed]: 'border-red-200 bg-red-50 text-red-700',
+  [Status.Refunded]: 'border-purple-200 bg-purple-50 text-purple-700',
 }
 
 export default function OrdersTable({ orders }: Props) {
@@ -51,7 +52,7 @@ export default function OrdersTable({ orders }: Props) {
                     <span className="font-mono text-xs text-gray-500">{o.id.slice(0,8)}</span>
                   </td>
                   <td className="px-4 sm:px-6 py-4">
-                    <span className="text-sm font-semibold text-gray-900">{o.course.title}</span>
+                    <CourseTitleLink course={o.course} className="text-sm font-semibold" />
                   </td>
                   <td className="px-4 sm:px-6 py-4 text-sm text-gray-400 whitespace-nowrap">
                     {new Date(o.enrolledAt).toLocaleDateString('en-US', {
@@ -68,8 +69,8 @@ export default function OrdersTable({ orders }: Props) {
                   <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                     <span
                       className={cn(
-                        'inline-flex rounded-md px-2 py-0.5 text-xs font-semibold capitalize',
-                        STATUS_STYLES[o.status] ?? 'bg-gray-100 text-gray-600'
+                        'inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold',
+                        STATUS_STYLES[o.status] ?? 'border-gray-200 bg-gray-50 text-gray-700'
                       )}
                     >
                       {o.status}

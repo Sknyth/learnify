@@ -1,10 +1,19 @@
 import CourseSalesTable from '@/features/admin/components/CourseSalesTable'
 import SalesMetricCard from '@/features/admin/components/SalesMetricCard'
-import { getCurrentUser } from '@/lib/get-current-user'
-import { redirect } from 'next/navigation'
+import { requireUser } from '@/lib/get-current-user'
 import { CourseSalesDto, MyEnrollmentDto } from '@/types'
 import { serverFetch } from '@/lib/server-api'
-import { serverGet } from './actions'
+
+async function getCourseSales(): Promise<CourseSalesDto[]> {
+	try {
+		const res = await serverFetch('/api/courses/sales')
+		if (!res.ok) throw new Error(`Failed to fetch course sales: ${res.status}`)
+		return await res.json()
+	} catch (error) {
+		console.error('Error fetching course sales:', error)
+		return []
+	}
+}
 
 async function getEnrollments(): Promise<MyEnrollmentDto[]> {
 	try {
@@ -18,10 +27,9 @@ async function getEnrollments(): Promise<MyEnrollmentDto[]> {
 }
 
 export default async function AdminSalesPage() {
-	const user = await getCurrentUser()
-	if (!user || user.role !== 'ADMIN') redirect('/dashboard/overview')
+	await requireUser('ADMIN')
 
-	const courses = await serverGet<CourseSalesDto[]>('/api/courses/sales', [])
+	const courses = await getCourseSales()
 
 	const enrollments = await getEnrollments()
 

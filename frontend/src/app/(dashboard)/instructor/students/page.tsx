@@ -1,5 +1,4 @@
-import { getCurrentUser } from '@/lib/get-current-user'
-import { redirect } from 'next/navigation'
+import { requireUser } from '@/lib/get-current-user'
 import { StudentEnrollmentDto } from '@/types'
 import { serverFetch } from '@/lib/server-api'
 import StudentEnrollmentsTable from '@/features/instructor/components/StudentEnrollmentsTable'
@@ -16,8 +15,7 @@ async function getEnrollments(): Promise<StudentEnrollmentDto[]> {
 }
 
 export default async function InstructorStudentsPage() {
-	const user = await getCurrentUser()
-	if (!user || (user.role !== 'INSTRUCTOR' && user.role !== 'ADMIN')) redirect('/')
+	await requireUser('ADMIN', 'INSTRUCTOR')
 
 	const enrollments = await getEnrollments()
 

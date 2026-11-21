@@ -1,5 +1,6 @@
 'use client'
 
+import CourseTitleLink from '@/features/courses/components/CourseTitleLink'
 import { StudentEnrollmentDto } from '@/types'
 import { BarChart3 } from 'lucide-react'
 
@@ -42,7 +43,7 @@ export default function StudentEnrollmentsTable({ enrollments }: Props) {
                     <span className="text-sm">{e.user.name}</span>
                   </td>
                   <td className="px-4 sm:px-6 py-4">
-                    <span className="text-sm font-semibold text-gray-900">{e.course.title}</span>
+                    <CourseTitleLink course={e.course} className="text-sm font-semibold" />
                   </td>
                   <td className="px-4 sm:px-6 py-4 text-sm text-gray-400 whitespace-nowrap">
                     {new Date(e.enrolledAt).toLocaleDateString('en-US', {

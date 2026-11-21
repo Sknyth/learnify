@@ -4,8 +4,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { getCurrentUser } from '@/lib/get-current-user'
-import { serverFetch } from '@/lib/server-api'
 import { Play, Lock } from "lucide-react"
 import Link from 'next/link'
 
@@ -21,16 +19,7 @@ type Module = {
   lessons: Lesson[]
 }
 
-export default async function CourseCurriculum({ courseId, modules }: { courseId: string; modules: Module[] }) {
-  const user = await getCurrentUser()
-
-  let isEnrolled = false
-
-  if (user && user.id) {
-    const response = await serverFetch(`/api/enrollments/courses/${encodeURIComponent(courseId)}/status`)
-    if (response.ok) isEnrolled = await response.json()
-  }
-
+export default function CourseCurriculum({ courseId, modules, isEnrolled }: { courseId: string; modules: Module[]; isEnrolled: boolean }) {
   return (
     <div className="bg-white border border-gray-200 rounded-2xl p-6">
       <h2 className="text-2xl font-bold mb-6">Curriculum</h2>
@@ -42,7 +31,7 @@ export default async function CourseCurriculum({ courseId, modules }: { courseId
             value={module.id}
             className="border border-gray-200 rounded-xl px-4"
           >
-            <AccordionTrigger className="hover:no-underline py-4">
+            <AccordionTrigger className="cursor-pointer hover:no-underline py-4">
               <span className="font-bold">
                 Module {index + 1} — {module.title}
               </span>
@@ -58,7 +47,7 @@ export default async function CourseCurriculum({ courseId, modules }: { courseId
                   return isAccessible ? (
                     <Link
                       key={lesson.id}
-                      href={`/courses/${courseId}/lessons/${lesson.id}`}
+                      href={`/courses/${encodeURIComponent(courseId)}/lessons/${encodeURIComponent(lesson.id)}`}
                       className="flex items-center justify-between py-2 px-2 rounded-lg transition-colors hover:bg-gray-50"
                     >
                       <div className="flex items-center gap-3">

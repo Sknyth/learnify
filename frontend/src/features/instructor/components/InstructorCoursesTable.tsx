@@ -1,5 +1,6 @@
 'use client'
 
+import CourseTitleLink from '@/features/courses/components/CourseTitleLink'
 import { PendingButton } from '@/components/ui/pending-button'
 import { BookOpen, Trash } from 'lucide-react'
 import Image from 'next/image'
@@ -8,7 +9,7 @@ import EditCourseButton from '@/features/courses/components/EditCourseButton'
 import { deleteCourse } from '@/features/courses/actions/course-actions'
 import { toast } from 'sonner'
 import { useState, useTransition } from 'react'
-import { CourseDto } from '@/types'
+import { courseStatusLabels, courseStatusStyles, type CourseDto } from '@/types/course'
 
 type Props = {
 	courses: CourseDto[]
@@ -52,6 +53,7 @@ export default function InstructorCoursesTable({ courses }: Props) {
 						<tr className="bg-gray-50/80 border-b border-gray-200">
 							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Course</th>
 							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Category</th>
+							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Status</th>
 							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Students</th>
 							<th className="text-left text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap">Price</th>
 							<th className="text-gray-400 text-xs font-semibold uppercase tracking-wide px-4 sm:px-6 py-3 whitespace-nowrap text-right">Actions</th>
@@ -60,7 +62,7 @@ export default function InstructorCoursesTable({ courses }: Props) {
 					<tbody className="divide-y divide-gray-100">
 						{courses.length === 0 ? (
 							<tr>
-								<td className="px-4 sm:px-6 py-16">
+								<td colSpan={6} className="px-4 sm:px-6 py-16">
 									<div className="flex flex-col items-center justify-center text-center">
 										<div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#4338ca]/10">
 											<BookOpen className="h-6 w-6 text-[#4338ca]" />
@@ -84,14 +86,17 @@ export default function InstructorCoursesTable({ courses }: Props) {
 												height={40}
 												className="h-10 w-16 shrink-0 rounded-lg object-cover"
 											/>
-											<span className="min-w-0 truncate text-sm font-semibold text-gray-800">
-												{c.title}
-											</span>
+											<CourseTitleLink course={c} className="min-w-0 truncate text-sm font-semibold" />
 										</div>
 									</td>
 									<td className="px-4 sm:px-6 py-4">
 										<span className="inline-flex items-center gap-1.5 whitespace-nowrap bg-[#4338ca]/10 text-[#4338ca] px-2.5 py-1 rounded-full text-xs font-bold">
 											{c.category}
+										</span>
+									</td>
+									<td className="px-4 sm:px-6 py-4 whitespace-nowrap">
+										<span className={`inline-flex rounded-full border px-3 py-1.5 text-xs font-semibold ${courseStatusStyles[c.status]}`}>
+											{courseStatusLabels[c.status]}
 										</span>
 									</td>
 									<td className="px-4 sm:px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
@@ -102,7 +107,7 @@ export default function InstructorCoursesTable({ courses }: Props) {
 									</td>
 									<td className="px-4 sm:px-6 py-4">
 										<div className="flex items-center justify-end gap-1">
-											<EditCourseButton course={c} />
+											<EditCourseButton courseId={c.id} />
 											<PendingButton
 												pending={isPending && deletingId === c.id}
 												pendingLabel="Deleting…"

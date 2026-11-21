@@ -1,6 +1,5 @@
 import {
   BookOpen,
-  ChartNoAxesColumn,
   LayoutDashboard,
   Package,
   TrendingUp,
@@ -31,7 +30,8 @@ export const instructorNavItems: NavItem[] = [
 ]
 
 export const adminNavItems: NavItem[] = [
-  { href: '/admin/dashboard', label: 'Dashboard', icon: ChartNoAxesColumn },
+  { href: '/admin/dashboard', label: 'Overview', icon: LayoutDashboard },
+  { href: '/admin/courses', label: 'Courses', icon: BookOpen },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/sales', label: 'Sales', icon: TrendingUp },
 ]
