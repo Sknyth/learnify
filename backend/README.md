@@ -1,12 +1,13 @@
 # Learnify Backend
 
 The Learnify REST API manages the course catalog, course publishing, enrollments,
-and student progress. It uses Java 21, Spring Boot, and PostgreSQL. The Gradle
+and student progress. It uses Java 21, Spring Boot, PostgreSQL, and Redis. The Gradle
 Wrapper pins the Gradle version.
 
 ## Local setup
 
-1. Install JDK 21 and start PostgreSQL.
+1. Install JDK 21 and start PostgreSQL and Redis. With Docker, start Redis with
+   `docker run --rm -d --name learnify-redis -p 127.0.0.1:6379:6379 redis:8`.
 2. Create an empty database named `learnify` and grant the application user
    permission to create tables and modify the schema. Flyway creates the tables
    on the first startup.
@@ -44,6 +45,9 @@ Spring reads settings from environment variables or the `.env` file.
 | `DB_URL` | PostgreSQL JDBC URL | `jdbc:postgresql://localhost:5432/learnify` |
 | `DB_USERNAME` | PostgreSQL user | `postgres` |
 | `DB_PASSWORD` | PostgreSQL password | `postgres` |
+| `REDIS_HOST` | Redis hostname | `localhost` |
+| `REDIS_PORT` | Redis port | `6379` |
+| `REDIS_PASSWORD` | Redis password | Empty |
 | `JWT_SECRET` | JWT signing key of at least 32 bytes | Required |
 | `PORT` | Backend port | `8080` |
 | `FRONTEND_ORIGIN` | Frontend origin allowed to send requests with cookies | `http://localhost:3000` |
@@ -52,6 +56,21 @@ Spring reads settings from environment variables or the `.env` file.
 Next.js proxies `/api/*` requests to the backend. If the backend runs at a
 different address than `http://localhost:8080`, set `API_URL` in the frontend
 environment.
+
+### Public catalog cache
+
+`GET /api/courses` fills `learnify:published-courses::all` with the list of
+published courses as JSON. Further requests reuse that list for up to one
+minute. Course edits, status changes, deletions, and user profile updates or
+deletions evict the entry after the PostgreSQL transaction commits.
+
+Call the catalog twice and compare the Hibernate SQL logs. On a cold cache,
+only the first request loads the catalog from PostgreSQL. With the Docker
+container above, inspect the remaining lifetime in seconds with:
+
+```bash
+docker exec learnify-redis redis-cli TTL 'learnify:published-courses::all'
+```
 
 ## Main API endpoints
 
@@ -91,13 +110,9 @@ GROUP BY lower(btrim(email))
 HAVING count(*) > 1;
 ```
 
-## Tests and builds
-
-Create a separate PostgreSQL database for integration tests. The tests run
-Flyway against the database specified by `DB_URL`.
+## Build
 
 ```bash
-DB_URL=jdbc:postgresql://localhost:5432/learnify_test ./gradlew test
 ./gradlew bootJar
 ```
 
@@ -111,11 +126,13 @@ Build the image from the `backend` directory.
 docker build -t learnify-backend .
 ```
 
-Pass the environment variables to the container and use a JDBC URL reachable
-from inside it. With Docker Desktop, `host.docker.internal` points to the host.
+Pass the environment variables to the container and use PostgreSQL and Redis
+addresses reachable from it. With Docker Desktop, `host.docker.internal`
+points to the host.
 
 ```bash
 docker run --rm -p 8080:8080 --env-file .env \
   -e DB_URL=jdbc:postgresql://host.docker.internal:5432/learnify \
+  -e REDIS_HOST=host.docker.internal \
   learnify-backend
 ```

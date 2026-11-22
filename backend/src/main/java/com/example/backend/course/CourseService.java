@@ -8,6 +8,9 @@ import com.example.backend.model.enums.Role;
 import com.example.backend.model.enums.StatusCourse;
 import com.example.backend.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,10 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.example.backend.config.CacheConfig.COURSES_SALES;
+import static com.example.backend.config.CacheConfig.PUBLISHED_COURSES;
+import static com.example.backend.config.CacheConfig.PUBLISHED_COURSE_DETAILS;
+
 @Service
 @RequiredArgsConstructor
 public class CourseService {
@@ -27,6 +34,7 @@ public class CourseService {
     private final CourseRepository courseRepository;
     private final UserRepository userRepository;
 
+    @Cacheable(cacheNames = PUBLISHED_COURSES, key = "'all'")
     @Transactional(readOnly = true)
     public List<CourseDto> findPublishedCourses() {
         return courseRepository.findAllByStatus(StatusCourse.Published).stream()
@@ -53,6 +61,7 @@ public class CourseService {
         return courseRepository.findAllSummaries();
     }
 
+    @Cacheable(cacheNames = COURSES_SALES, key = "'all'")
     @Transactional(readOnly = true)
     public List<CourseSalesDto> findSales() {
         Map<String, Long> counts = courseRepository.countEnrollmentsPerCourse().stream()
@@ -64,6 +73,7 @@ public class CourseService {
                 .toList();
     }
 
+    @Cacheable(cacheNames = PUBLISHED_COURSE_DETAILS, key = "#id")
     @Transactional(readOnly = true)
     public CourseDetailDto<LessonDto> findPublishedDetail(String id) {
         CourseEntity course = courseRepository.findByIdAndStatus(id, StatusCourse.Published)
@@ -80,6 +90,7 @@ public class CourseService {
         return CourseDetailDto.fromEntity(course, LessonEditDto::fromEntity);
     }
 
+    @CacheEvict(cacheNames = COURSES_SALES, key = "'all'")
     @Transactional
     public CourseDto create(String currentUserId, CourseFormRequest req) {
         UserEntity owner = requireCourseCreator(currentUserId);
@@ -92,6 +103,10 @@ public class CourseService {
         return CourseDto.fromEntity(courseRepository.save(course));
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = {PUBLISHED_COURSES, COURSES_SALES}, key = "'all'"),
+            @CacheEvict(cacheNames = PUBLISHED_COURSE_DETAILS, key = "#id")
+    })
     @Transactional
     public CourseDto update(String currentUserId, String id, CourseFormRequest req) {
         UserEntity actor = findUser(currentUserId);
@@ -105,6 +120,10 @@ public class CourseService {
         return CourseDto.fromEntity(courseRepository.save(course));
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = {PUBLISHED_COURSES, COURSES_SALES}, key = "'all'"),
+            @CacheEvict(cacheNames = PUBLISHED_COURSE_DETAILS, key = "#id")
+    })
     @Transactional
     public void updateStatus(String adminId, String id, StatusCourse status) {
         if (findUser(adminId).getRole() != Role.ADMIN) {
@@ -116,6 +135,10 @@ public class CourseService {
         course.setUpdatedAt(LocalDateTime.now());
     }
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = {PUBLISHED_COURSES, COURSES_SALES}, key = "'all'"),
+            @CacheEvict(cacheNames = PUBLISHED_COURSE_DETAILS, key = "#id")
+    })
     @Transactional
     public void delete(String currentUserId, String id) {
         UserEntity actor = findUser(currentUserId);

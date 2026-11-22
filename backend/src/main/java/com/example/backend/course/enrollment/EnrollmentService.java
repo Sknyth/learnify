@@ -4,6 +4,7 @@ import com.example.backend.course.CourseRepository;
 import com.example.backend.course.lesson.LessonRepository;
 import com.example.backend.model.EnrollmentEntity;
 import com.example.backend.model.enums.StatusCourse;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.example.backend.config.CacheConfig.COURSES_SALES;
 
 @Service
 @RequiredArgsConstructor
@@ -40,6 +43,7 @@ public class EnrollmentService {
                 .toList();
     }
 
+    @CacheEvict(cacheNames = COURSES_SALES, key = "'all'")
     @Transactional
     public EnrollmentDto enroll(String userId, String courseId) {
 

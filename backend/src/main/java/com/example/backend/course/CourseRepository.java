@@ -28,6 +28,9 @@ public interface CourseRepository extends JpaRepository<CourseEntity, String> {
     @EntityGraph(attributePaths = "instructor")
     List<CourseEntity> findAllByInstructor_Id(String instructorId);
 
+    @Query("select c.id from CourseEntity c where c.instructor.id = :instructorId")
+    List<String> findIdsByInstructorId(String instructorId);
+
     @Query("""
             select new com.example.backend.course.AdminCourseSummaryDto(c.id, c.title, i.name, c.studentsCount, c.status)
             from CourseEntity c left join c.instructor i
